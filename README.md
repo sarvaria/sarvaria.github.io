@@ -3,5 +3,4 @@ Public website
 
 Commiting:
 
-git commit -am "Commit"
-git push
+git commit -am "Commit";git push
