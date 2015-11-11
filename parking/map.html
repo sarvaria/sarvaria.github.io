@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+overflow: hidden;
+      }
+#cont {
+transition: 2s ease-in-out;
+border: solid;
+        height: 1050px;
+width: 1000px;
+position: absolute;
+left: -250px;
+top: -175px;
+        
+transform-origin: 50% 50%;
+      }
+
+      #map {
+        height: 100%;
+      }
+
+#a {
+position: absolute;
+left: 100px;
+top: 100px;
+}
+    </style>
+  </head>
+  <body>
+    <div id="cont">
+        <div id="map"></div>
+    </div>
+<input id="a" type="button" value="ok">
+    <script>
+
+var map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 12,
+disableDefaultUI: true,
+scrollwheel: false,
+draggable: false
+  });
+}
+var i = 0;
+
+setTimeout(function() {
+i = 45;
+document.getElementById('cont').style.transform = 'rotate('+ i + 'deg)';
+}, 3000);
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_g3Fyf45fsKd7iQHr0Ms96HYVRJxUbA8&callback=initMap"
+        async defer></script>
+  </body>
+</html>

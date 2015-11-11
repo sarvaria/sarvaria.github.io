@@ -1,0 +1,235 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<!--
+Description:
+
+Represents a bag.
+-->
+
+<dom-module id="app-bag">
+
+    <!-- Style of the component -->
+
+    <style>
+        .bag {
+            position:                           absolute;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <img class="bag" src="images/bag.png" width$="{{size}}" height$="{{size}}" style$="{{setStyle(x, y)}}">
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-bag',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                nr:             { type: Number, value: 0, notify: true, readyOnly: false },
+                x:              { type: Number, value: 0, notify: true, readyOnly: false },
+                y:              { type: Number, value: 0, notify: true, readyOnly: false },
+                size:           { type: Number, value: 0, notify: true, readyOnly: false },
+                ballsize:       { type: Number, value: 0, notify: true, readyOnly: false },
+                player:         { type: Number, value: 1, notify: true, readyOnly: false },
+                ballcount:      { type: Number, computed: 'getBallCount(ball.splices)' },
+                balls:          { type: Array, value: [], notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Observers.
+             */
+             
+            observers: [
+                'setCenter(x, y, size)'
+            ],
+            
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                self.ball = [];
+            },
+            
+            /**
+             * Setting the style of the component.
+             * 
+             * @param     {Number}      x           x coordinate where the
+             *                                      bag will be placed
+             * @param     {Number}      y           y coordinate where the
+             *                                      bag will be placed
+             */
+             
+            setStyle: function(x, y) {
+                return 'left: ' + x + 'px;top: ' + y + 'px;';
+            },
+            
+            /**
+             * Sets the center coordinates of the ball.
+             */
+
+            setCenter: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Setting the center of the bag
+
+                self.centerx = self.x + (self.size / 2);
+                self.centery = self.y + (self.size / 2);
+                self.arrangeBalls();
+            },
+            
+            getBallCount: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+
+                return self.ball ? self.ball.length : 0;
+            },
+            
+            /**
+             * Rotates the ball with x1-y1 coordinates arround the specified
+             * x2-y2 coordinates and the specified alpha degrees. The new
+             * coordinates of the ball will be returned as a {x: ..., y: ...}
+             * json object.
+             * 
+             * @param     {Number}      x1          x coordinate of the ball
+             * @param     {Number}      y1          y coordinate of the ball
+             * @param     {Number}      x2          x coordinate where the
+             *                                      ball will be rotated
+             *                                      arround
+             * @param     {Number}      y2          y coordinate where the
+             *                                      ball will be rotated
+             *                                      arround
+             * @param     {Number}      alpha       alpha degrees of the
+             *                                      rotating
+             */
+
+            rotate: function(x1, y1, x2, y2, alpha) {
+
+                // Rotates the sprite around a point
+
+                var x = x1 - x2;
+                var y = y1 - y2;
+                var rad = (alpha * 2 * Math.PI) / 360;
+
+                // Returns the new sprite position
+
+                return {
+                    x:  x2 + (x * Math.cos(rad) - y * Math.sin(rad)),
+                    y:  y2 + (x * Math.sin(rad) + y * Math.cos(rad))
+                };
+            },
+            
+            /**
+             * Adds the specified ball to the bag.
+             * 
+             * @param   {String}    ballid  ballid that has to add to this bag
+             */
+
+            addBall: function(ballid, arrange) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Setting arrange parameter
+                
+                arrange = arrange == undefined ? true : arrange;
+                
+                // Getting the index of the ball in the bag
+                
+                var index = parseInt(ballid.substring(5), 10);
+
+                // Adding ball to the bag
+                
+                self.set('balls.' + index + '.bag', self.nr);
+                self.push('ball', index);
+
+                // Moving the ball to the center of the bag
+                
+                self.set('balls.' + index + '.x', (self.centerx - (self.ballsize / 2)));
+                self.set('balls.' + index + '.y', (self.centery - (self.ballsize / 2)));
+
+                // Arranging balls
+
+                if (arrange) {
+                    self.arrangeBalls();
+                }
+            },
+            
+            /**
+             * Arranging balls ing the bag.
+             */
+             
+            arrangeBalls: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Checking balls in the bag
+
+                if (self.ball && self.ball.length > 1) {
+
+                    // Arranging balls if there are more balls in the bag than 0
+
+                    var count = self.ball.length - 1;
+
+                    if (count >= 1) {
+                        for (var i = 0; i < self.ball.length - 1; i++) {
+                            var pos;
+                            
+                            if (i < 6) {
+                                pos = self.rotate(self.centerx, self.centery + self.ballsize, self.centerx, self.centery, i * (360 / (count > 6 ? 6 : count)));
+                            } else if (i < 18) {
+                                pos = self.rotate(self.centerx, self.centery + self.ballsize * 2, self.centerx, self.centery, i * (360 / (count > 18 ? 12 : count - 6)));
+                            } else if (i < 38) {
+                                pos = self.rotate(self.centerx, self.centery + self.ballsize * 3, self.centerx, self.centery, i * (360 / (count > 38 ? 18 : count - 18)));
+                            } else {
+                                pos = self.rotate(self.centerx, self.centery + self.ballsize * 4, self.centerx, self.centery, i * (360 / (count > 72 ? 24 : count - 38)));
+                            }
+
+                            self.set('balls.' + self.ball[i] + '.x', (pos.x - self.ballsize / 2));
+                            self.set('balls.' + self.ball[i] + '.y', (pos.y - self.ballsize / 2));
+                        }
+                    }
+                }
+            }            
+        });
+    </script>
+</dom-module>

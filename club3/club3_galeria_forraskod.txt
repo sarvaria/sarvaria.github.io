@@ -1,0 +1,53 @@
+<!-- Menürendszer -->
+<table style="border-collapse:collapse;border-color:rgb(136,136,136);border-width:0px;" width="100%" border="0" bordercolor="#888" cellspacing="0"><tr>
+
+            <!-- Logo -->
+
+            <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/home/club3_logo.png" height="125" width="240" border="0"></td>
+
+            <!-- Szabad hely -->
+
+            <td width="100%"></td>
+
+            <!-- étterem menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/home" style="margin-left:60px;padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">étterem</a></td>
+
+            <!-- ételeink menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/eteleink" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">ételeink</a></td>
+           
+            <!-- referenciáink menüpont -->
+
+             <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/referenciaink" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">referenciáink</a></td>
+               
+             <!-- ételfutár menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/etelfutar" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">ételfutár</a></td>
+             
+             <!-- aktualitások menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/aktualitasok" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">aktualitások</a></td>
+             
+             <!-- galéria menüpont -->
+
+             <td style="vertical-align:middle;white-space:nowrap"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/galeria" style="margin-left:8px;padding:8px;font-weight:bold;font-size:14px;background-color:#9a9450;color:#ffffff !important;text-decoration:none">galéria</a></td>
+              
+             <!-- napi menü menüpont -->
+
+             <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/napimenu" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none;white-space:nowrap">napi menü</a></td>
+            
+             <!-- kapcsolat menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/kapcsolat" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">kapcsolat</a></td>
+</tr></table>
+
+<!-- Menürendszer vége-->
+
+<div><img src="https://www.google.com/chart?chc=sites&amp;cht=d&amp;chdp=sites&amp;chl=%5B%5BGoogle+Modul%27%3D20%27f%5Cv%27a%5C%3D0%2710%27%3D499%270%27dim%27%5Cbox1%27b%5CF6F6F6%27fC%5CF6F6F6%27eC%5C0%27sk%27%5C%5B%22Diavet%C3%ADt%C3%A9s%22%27%5D%27a%5CV%5C%3D12%27f%5C%5DV%5Cta%5C%3D10%27%3D0%27%3D500%27%3D147%27dim%27%5C%3D10%27%3D10%27%3D500%27%3D147%27vdim%27%5Cbox1%27b%5Cva%5CF6F6F6%27fC%5CC8C8C8%27eC%5C%27a%5C%5Do%5CLauto%27f%5C&amp;sig=RJe7RVoTKiYNSDfPGyxlSwbF9Ec" data-igsrc="http://4.gmodules.com/ig/ifr?mid=4&amp;synd=trogedit&amp;url=http%3A%2F%2Fwww.google.com%2Fig%2Fmodules%2Fimage_slideshow%2Fimage_slideshow.xml&amp;up_type=0&amp;up_user=admin%40club3restaurant.com&amp;up_feed=https%3A%2F%2Fplus.google.com%2Fphotos%2F117347668709139620552%2FClub3EtteremEsKavezo&amp;up_color=black&amp;up_displaytime=3&amp;up_crop=disable&amp;up_query=sunset&amp;up_feed_url=http%3A%2F%2Fpicasaweb.google.com%2Fdata%2Ffeed%2Fapi%2Fsearch%3Fkind%3Dphoto%26q%3Dsunset%26alt%3Drss%26max-results%3D20&amp;up_album_url=&amp;h=150&amp;w=100%25" data-type="ggs-gadget" data-props="align:left;borderTitle:Diavetítés;height:150;igsrc:http#58//4.gmodules.com/ig/ifr?mid=4&amp;synd=trogedit&amp;url=http%3A%2F%2Fwww.google.com%2Fig%2Fmodules%2Fimage_slideshow%2Fimage_slideshow.xml&amp;up_type=0&amp;up_user=admin%40club3restaurant.com&amp;up_feed=https%3A%2F%2Fplus.google.com%2Fphotos%2F117347668709139620552%2FClub3EtteremEsKavezo&amp;up_color=black&amp;up_displaytime=3&amp;up_crop=disable&amp;up_query=sunset&amp;up_feed_url=http%3A%2F%2Fpicasaweb.google.com%2Fdata%2Ffeed%2Fapi%2Fsearch%3Fkind%3Dphoto%26q%3Dsunset%26alt%3Drss%26max-results%3D20&amp;up_album_url=&amp;h=150&amp;w=100%25;mid:4;scrolling:no;showBorder:false;showBorderTitle:null;spec:http#58//www.google.com/ig/modules/image_slideshow/image_slideshow.xml;up_album_url:;up_color:black;up_crop:disable;up_displaytime:3;up_feed:https#58//plus.google.com/photos/117347668709139620552/Club3EtteremEsKavezo;up_feed_url:http#58//picasaweb.google.com/data/feed/api/search?kind=photo&amp;q=sunset&amp;alt=rss&amp;max-results=20;up_query:sunset;up_type:0;up_user:admin@club3restaurant.com;view:canvas;width:100%;" style="display:block;text-align:left;margin-right:auto;" class="igm" height="150" width="500"></div>
+<div><br>
+<br>
+</div>
+
+
+

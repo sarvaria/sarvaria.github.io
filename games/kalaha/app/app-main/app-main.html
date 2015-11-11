@@ -1,0 +1,212 @@
+// jshint global Polymer
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../app-bag/app-bag.html">
+<link rel="import" href="../app-counter/app-counter.html">
+<link rel="import" href="../app-ball/app-ball.html">
+
+<!--
+Description:
+
+Main module of the application.
+-->
+
+<dom-module id="app-main">
+
+    <!-- Style of the component -->
+
+    <style>
+        .main {
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="main" style$="{{setStyle(width, height)}}">
+            <template is="dom-repeat" items="{{bag}}" as="b">
+                <app-bag id="{{b.id}}" nr="{{b.nr}}" x="{{b.x}}" y="{{b.y}}" size="{{b.size}}" ballsize="{{ballsize}}" balls="{{ball}}"></app-bag>
+            </template>
+
+            <template is="dom-repeat" items="{{counter}}" as="c">
+                <app-counter id="{{c.id}}" nr="{{c.nr}}" player="{{c.player}}" x="{{c.x}}" y="{{c.y}}" width="{{c.width}}" height="{{c.height}}" value="{{getBallCount(c.nr, ball.*)}}"></app-counter>
+            </template>
+            
+            <template is="dom-repeat" items="{{ball}}" as="b">
+                <app-ball id="{{b.id}}" x="{{b.x}}" y="{{b.y}}" size="{{b.size}}"></app-ball>
+            </template>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer sprintf*/
+        
+        Polymer({
+            is:                     'app-main',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                width:           { type: Number, value: 0, notify: true, readyOnly: false },
+                height:          { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Observers.
+             */
+             
+            observers: [
+                'redraw(width, height)'
+            ],
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                // Initializing
+                
+                var i;
+                var bag = [];
+                var counter = [];
+                
+                for (i = 0; i < 12; i++) {
+                    bag.push({ id: sprintf('bag_%d', i + 1), nr: i + 1, player: 2 - parseInt(i / 6, 10) });
+                    counter.push({ id: sprintf('counter_%d', i + 1), nr: i + 1, player: 2 - parseInt(i / 6, 10) });
+                }
+
+                self.bag = bag;
+                self.counter = counter;
+                
+                var ball = [];
+                
+                for (i = 0; i < 72; i++) {
+                    ball.push({ id: sprintf('ball_%d', i + 1) });
+                }
+                
+                self.ball = ball;
+                
+                setTimeout(function() {
+                    self.start();                
+                }, 1000);
+            },
+
+            /**
+             * Sets the style of the main area.
+             *
+             * @param   {Number}    width       width of the browser
+             * @param   {Number}    height      height of the browser
+             * @return  {String}    style       style of the main area
+             */
+
+            setStyle: function(width, height) {
+                return sprintf('width: %dpx; height: %dpx', width, height);
+            },
+            
+            getBallCount: function(nr) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                return self.$$(sprintf('#bag_%d', nr)).ballcount;    
+            },
+            
+            redraw: function(width, height) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.margin = {
+                    x: Math.min(width, height) * 0.01,
+                    y: Math.min(width, height) * 0.04
+                };
+                
+                self.counterMargin = Math.min(width, height) * 0.008;
+                self.counterHeight = Math.min(width, height) * 0.03;
+                
+                var size = ((width - (self.margin.x * 2)) / 6) - self.margin.x;
+                self.ballsize = size / 9;
+                var i;
+                
+                for (i = 0; i < 6; i++) {
+                    var x = self.margin.x + (((width - (self.margin.x * 2)) / 6) * i) + (self.margin.x / 2);
+                    
+                    self.set('bag.' + i + '.x', x);
+                    self.set('bag.' + (i + 6) + '.x', x);
+                    self.set('bag.' + i + '.y', self.margin.y);
+                    self.set('bag.' + (i + 6) + '.y', height - self.margin.y - size);
+                    self.set('bag.' + i + '.size', size);
+                    self.set('bag.' + (i + 6) + '.size', size);
+
+                    self.set('counter.' + i + '.x', x);
+                    self.set('counter.' + (i + 6) + '.x', x);
+                    self.set('counter.' + i + '.y', self.counterMargin);
+                    self.set('counter.' + (i + 6) + '.y', height - self.counterMargin - self.counterHeight);
+                    self.set('counter.' + i + '.width', size);
+                    self.set('counter.' + (i + 6) + '.width', size);
+                    self.set('counter.' + i + '.height', self.counterHeight);
+                    self.set('counter.' + (i  + 6) + '.height', self.counterHeight);
+                }
+                
+                if (self.ball && self.ball.length) {
+                    for (i = 0; i < 72; i++) {
+                        if (!self.ball[i].bag) {
+                            self.set('ball.' + i + '.x', i < 18 || (i > 35 && i < 53) ? self.ballsize * -1 : width + self.ballsize);
+                            self.set('ball.' + i + '.y', i < 18 || (i > 35 && i < 53) ? height + self.ballsize : self.ballsize * -1);
+                        }
+                        
+                        self.set('ball.' + i + '.size', self.ballsize);
+                    }
+                }
+            },
+            
+            start: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var move = function(index, time) {
+                    setTimeout(function() {
+                        self.$$(sprintf('#bag_%d', parseInt(index / 6, 10) + 1)).addBall(sprintf('ball_%d', index), true);
+                    }, time);
+                };
+                
+                for (var i = 0; i < 6; i++) {
+                    for (var j = 0; j < 6; j++) {
+                        move((i * 6) + j, (i * 6) + j * 500);
+                        move((i * 6) + j + 36, (i * 6) + j * 500);
+                    }
+                }
+            }
+        });
+    </script>
+</dom-module>

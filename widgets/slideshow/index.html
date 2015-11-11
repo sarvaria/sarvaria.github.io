@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="hu">
+	<head>
+
+        <!-- Meta informations about the site -->
+
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="title" content="Slideshow"/>
+        <meta name="keywords" content="slideshow,google photos,picassa"/>
+        <meta name="application-name" content="Slideshow"/>
+        <meta name="description" content="Google Photo's slideshow"/>
+
+        <!-- Adding Roboto font support -->
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        
+        <style>
+
+            /**
+             * HTML and BODY designing.
+             */
+
+            html, body {
+                -webkit-background-clip:    border-box;
+                -webkit-background-origin:  padding-box;
+                -webkit-background-size:    auto;
+                
+                background-color:           #ffffff;
+                background-attachment:      scroll;
+                background-clip:            border-box;
+                background-image:           none;
+                background-origin:          padding-box;
+                background-size:            auto;
+                
+                color:                      #000000;
+                display:                    block;
+                
+                font-family:                'Roboto', sans-serif;
+                font-size:                  18px;
+                margin:                     0;
+                padding:                    0;
+                height:                     100%;
+            }
+            
+            .horizontal {
+                display:                    -ms-flexbox;
+                display:                    -webkit-flex;
+                display:                    flex;
+                -ms-flex-direction:         row;
+                -webkit-flex-direction:     row;
+                flex-direction:             row;
+            }
+
+            .vertical {
+                display:                    -ms-flexbox;
+                display:                    -webkit-flex;
+                display:                    flex;
+                -ms-flex-direction:         column;
+                -webkit-flex-direction:     column;
+                flex-direction:             column;
+            }
+
+            .flex {
+                -ms-flex:                   1 1 0.000000001px;
+                -webkit-flex:               1;
+                flex:                       1;
+                -webkit-flex-basis:         0.000000001px;
+                flex-basis:                 0.000000001px;
+            }
+
+            .center {
+                -ms-flex-align:             center;
+                -webkit-align-items:        center;
+                align-items:                center;
+            }
+
+            .end {
+                -ms-flex-align:             end;
+                -webkit-align-items:        flex-end;
+                align-items:                flex-end;
+            }
+
+            .center-justified {
+                -ms-flex-pack:              center;
+                -webkit-justify-content:    center;
+                justify-content:            center;
+            }
+
+            .wrap {
+                -ms-flex-wrap:              wrap;
+                -webkit-flex-wrap:          wrap;
+                flex-wrap:                  wrap;
+            }
+            
+            #galery {
+                width:                      600px;
+                height:                     510px;
+            }
+            
+            .photo {
+                -webkit-transition:         opacity 10s ease;
+                -moz-transition:            opacity 2s ease;
+                -o-transition:              opacity 2s ease;
+                transition:                 opacity 10s ease;
+                cursor:                     pointer;
+                width:                      524px;
+                height:                     410px;
+            }
+
+            .thumb {
+                width:                      100px;
+                height:                     76px;
+                cursor:                     pointer;
+                border:                     solid #000000 1px;
+            }
+
+            .selectedThumb {
+                border:                     solid #ff0000 1px;
+            }
+            
+            .stepper {
+                cursor:                     pointer;
+            }
+            
+            #thumbnails {
+                overflow-x:                 auto;
+                overflow-y:                 hidden;
+            }            
+        </style>
+    </head>
+
+    <body oncontextmenu="return false">
+        <div id="galery" class="vertical">
+            <div class="horizontal center-justified">            
+                <div class="photo horizontal center center-justified">
+                    <img id="photo" onclick="window.gallery.showLargePhoto()">
+                </div>
+            </div>
+            <div class="horizontal center">
+                <div class="stepper" onclick="window.gallery.prevPhoto()"><</div>
+                <div class="flex">
+                    <div id="thumbnails" class="horizontal center" style="height: 93px"></div>
+                </div>
+                <div class="stepper" onclick="window.gallery.nextPhoto()">></div>
+            </div>
+        </div>
+        
+        <script>
+            var Gallery = function(options) {
+                
+                // Reference to the current object
+                
+                var self = this;
+                
+                // Checking option parameters
+            
+                options = options || {};
+                
+                if (typeof (options) !== 'object') {
+                    throw new TypeError('options must be an object');
+                } else if (options.url !== undefined && typeof (options.url) !== 'string') {
+                    throw new TypeError('options.url must be a string');
+                }
+                
+                if (options.url === undefined) {
+                    throw new TypeError('options.url is mandatory');
+                }                
+    
+                // Initializing
+    
+                self.url = options.url;
+
+                // Loading photos from Google photos
+                
+                self.load();
+            };
+            
+            // Define constanses
+            
+            Gallery.THUMBNAIL_SIZE = {
+                width:  100,
+                height: 74
+            };
+            
+            Gallery.prototype.load = function(response) {
+                
+                // Reference to the current object
+                
+                var self = this;
+                
+                // Processing response of the Google photos RSS
+                
+                if (response) {
+                    var photo  = response.responseData.feed.entries;
+
+                    for (var i = 0; i < photo.length; i++) {
+                        self.photo.push({
+                            url:    photo[i].mediaGroups[0].contents[0].url,
+                            width:  photo[i].mediaGroups[0].contents[0].width,
+                            height: photo[i].mediaGroups[0].contents[0].height,
+                            aspect: photo[i].mediaGroups[0].contents[0].width / photo[i].mediaGroups[0].contents[0].height
+                        });
+                    }
+                    
+                    self.createThumbnails();
+                } else {
+
+                    // Loading photos from Google photos
+
+                    self.photo = [];
+                    self.photoIndex = 0;
+                    var script = document.createElement('script');
+                    script.setAttribute('src', self.url);
+                    document.body.appendChild(script);
+                }
+            };
+            
+            Gallery.prototype.createThumbnails = function() {
+
+                // Reference to the current object
+                
+                var self = this;
+                
+                // Getting thumbnail container
+                
+                var thumbnails = document.getElementById('thumbnails');
+                var nodes = thumbnails.childNodes;
+                var i;
+                
+                // Remove children of the thumbnail container
+                
+                for (i = 0; i < nodes.length; i++) {
+                    thumbnails.removeChild(nodes.item(i));
+                }
+                
+                // Adding photos to the thumbnail container
+                
+                for (i = 0; i < self.photo.length; i++) {
+                    var tn = document.createElement('div');
+                    tn.setAttribute('class', 'thumb');
+                    tn.setAttribute('onclick', 'window.gallery.showPhoto(' + i + ')');
+                    tn.innerHTML = '<img src="' + self.photo[i].url + '" width="' + Gallery.THUMBNAIL_SIZE.width + '" height="' + Gallery.THUMBNAIL_SIZE.height + '">';
+                    thumbnails.appendChild(tn);
+                }
+                
+                // Showing the first photo
+                
+                self.showPhoto();
+                
+                // Starting slideshow
+                
+                self.slideshow();
+            };
+            
+            Gallery.prototype.showPhoto = function(index) {
+                
+                // Reference to the current object
+                
+                var self = this;
+                
+                // Showing the selected photo
+                
+                var photoIndex = (index == undefined) ? self.photoIndex : index;
+                var photo = document.getElementById('photo');
+                photo.setAttribute('src', self.photo[photoIndex].url);
+                
+                var w = self.photo[photoIndex].width * self.photo[photoIndex].aspect;
+                var h = self.photo[photoIndex].height * self.photo[photoIndex].aspect;
+                
+                // Setting the aspect ratio of the photo
+                
+                if (w > 524) {
+                    w = 524;
+                    h = w / self.photo[photoIndex].aspect;
+                }
+
+                if (h > 410) {
+                    h = 410;
+                    w = self.photo[photoIndex].aspect * h;
+                }
+
+                photo.setAttribute('width', w);
+                photo.setAttribute('height', h);
+                
+                // Setting scrollbar position
+                
+                var thumbnails = document.getElementById('thumbnails');
+                thumbnails.scrollLeft = Gallery.THUMBNAIL_SIZE.width * photoIndex;
+
+                // Highlight the current thumbnail photo
+                
+                var th = thumbnails.getElementsByTagName('img');
+                
+                for (var i = 0; i < th.length; i++) {
+                    if (i != photoIndex) {
+                        th[i].setAttribute('class', 'thumb');
+                    }
+                }
+
+                th[photoIndex].setAttribute('class', 'thumb selectedThumb');
+            };
+            
+            Gallery.prototype.showLargePhoto = function() {
+                
+                // Reference to the current object
+                
+                var self = this;
+                
+                // Showing a large photo
+                
+                window.open(self.photo[self.photoIndex].url);
+            };
+            
+            Gallery.prototype.slideshow = function() {
+                
+                // Reference to the current object
+                
+                var self = this;
+                
+                // Starting slideshow
+                
+                self.showPhoto();
+                
+                self.timer = setInterval(function() {
+                    if (self.photoIndex + 1 >= self.photo.length) {
+                        self.photoIndex = -1;
+                    }
+                    
+                    self.nextPhoto();
+                }, 2000);
+            };
+            
+            Gallery.prototype.pause = function() {
+                
+                // Reference to the current object
+                
+                var self = this;
+                
+                clearInterval(self.timer);
+            };
+            
+            Gallery.prototype.prevPhoto = function() {
+                
+                // Reference to the current object
+                
+                var self = this;
+                
+                if (self.photoIndex > 0) {
+                    self.photoIndex--;
+                    self.showPhoto();
+                }
+            };
+
+            Gallery.prototype.nextPhoto = function() {
+
+                // Reference to the current object
+                
+                var self = this;
+
+                if (self.photoIndex < self.photo.length - 1) {
+                    self.photoIndex++;
+                    self.showPhoto();
+                }
+            };
+            
+            window.gallery = new Gallery({
+                url:    'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&q=http%3A%2F%2Fphotos.googleapis.com%2Fdata%2Ffeed%2Fapi%2Fuser%2F100482557839366720564%2Falbumid%2F6212546945087874737%3Falt%3Drss&callback=window.gallery.load'
+            });
+        </script>
+    </body>
+</html>

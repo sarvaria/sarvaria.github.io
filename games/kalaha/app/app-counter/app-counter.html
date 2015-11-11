@@ -1,0 +1,114 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<!--
+Description:
+
+Represents a counter.
+-->
+
+<dom-module id="app-counter">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+        
+        .flex {
+            @apply(--layout-flex);
+        }
+        
+        .counter {
+            position:                           absolute;
+        }
+        
+        .counterinner {
+            opacity:                            0.6;
+            background-color:                   #000000;
+            color:                              #ffffff;
+            font-weight:                        bold;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="horizontal center-justified counter" style$="{{setStyle(x, y, width, height)}}">
+            <div class="horizontal center-justified center counterinner" style$="{{setInnerStyle(player, width, height)}}">{{value}}</div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-counter',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                nr:             { type: Number, value: 0, notify: true, readyOnly: false },
+                player:         { type: Number, value: 1, notify: true, readyOnly: false },
+                x:              { type: Number, value: 0, notify: true, readyOnly: false },
+                y:              { type: Number, value: 0, notify: true, readyOnly: false },
+                width:          { type: Number, value: 0, notify: true, readyOnly: false },
+                height:         { type: Number, value: 0, notify: true, readyOnly: false },
+                value:          { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Setting the style of the component.
+             * 
+             * @param     {Number}      x           x coordinate where the
+             *                                      counter will be placed
+             * @param     {Number}      y           y coordinate where the
+             *                                      counter will be placed
+             * @param     {Number}      width       width of the counter
+             * @param     {Number}      height      height of the counter
+             */
+             
+            setStyle: function(x, y, width, height) {
+                return  'left: ' + x + 'px;top: ' + y + 'px;width: ' + 
+                        width + 'px;height: ' + height + 'px;';
+            },
+            
+            setInnerStyle: function(player, width, height) {
+                return (player === 2 ? '-webkit-transform: rotate(-180deg);' : '') + 'width: ' + parseInt(width / 4, 10) + 'px;border-radius:' + parseInt(height / 2, 10) + 'px;font-size: ' + parseInt(height * 0.6, 10) + 'px;';
+            }
+        });
+    </script>
+</dom-module>

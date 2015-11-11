@@ -1,0 +1,99 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<!--
+Description:
+
+Represents a ball.
+-->
+
+<dom-module id="app-ball">
+
+    <!-- Style of the component -->
+
+    <style>
+        .ball {
+            position:                           absolute;
+            -webkit-transition:                 left 0.5s ease, top 0.5s ease;
+            -moz-transition:                    left 0.5s ease, top 0.5s ease;
+            -o-transition:                      left 0.5s ease, top 0.5s ease;
+            transition:                         left 0.5s ease, top 0.5s ease;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <img class="ball" src="images/ball.png" width$="{{size}}" height$="{{size}}" style$="{{setStyle(x, y)}}">
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-ball',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                x:              { type: Number, value: 0, notify: true, readyOnly: false },
+                y:              { type: Number, value: 0, notify: true, readyOnly: false },
+                size:           { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Observers.
+             */
+             
+            observers: [
+                'setCenter(x, y, size)'
+            ],
+            
+            /**
+             * Setting the style of the component.
+             * 
+             * @param     {Number}      x           x coordinate where the
+             *                                      bag will be placed
+             * @param     {Number}      y           y coordinate where the
+             *                                      bag will be placed
+             */
+             
+            setStyle: function(x, y) {
+                return 'left: ' + x + 'px;top: ' + y + 'px;';
+            },
+            
+            /**
+             * Sets the center coordinates of the ball.
+             */
+
+            setCenter: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.centerx = self.x + (self.size / 2);
+                self.centery = self.y + (self.size / 2);
+            }
+        });
+    </script>
+</dom-module>

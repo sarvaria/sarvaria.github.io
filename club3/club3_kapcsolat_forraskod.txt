@@ -1,0 +1,92 @@
+<!-- Menürendszer -->
+<table style="border-collapse:collapse;border-color:rgb(136,136,136);border-width:0px;" width="100%" border="0" bordercolor="#888" cellspacing="0"><tr>
+
+            <!-- Logo -->
+
+            <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/home/club3_logo.png" height="125" width="240" border="0"></td>
+
+            <!-- Szabad hely -->
+
+            <td width="100%"></td>
+
+            <!-- étterem menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/home" style="margin-left:60px;padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">étterem</a></td>
+
+            <!-- ételeink menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/eteleink" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">ételeink</a></td>
+           
+            <!-- referenciáink menüpont -->
+
+             <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/referenciaink" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">referenciáink</a></td>
+               
+             <!-- ételfutár menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/etelfutar" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">ételfutár</a></td>
+             
+             <!-- aktualitások menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/aktualitasok" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">aktualitások</a></td>
+             
+             <!-- galéria menüpont -->
+             
+             <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/galeria" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">galéria</a></td>
+            
+             <!-- napi menü menüpont -->
+
+             <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/napimenu" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none;white-space:nowrap">napi menü</a></td>
+            
+             <!-- kapcsolat menüpont -->
+
+            <td style="vertical-align:middle;white-space:nowrap"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/kapcsolat" style="margin-left:8px;padding:8px;font-weight:bold;font-size:14px;background-color:#9a9450;color:#ffffff !important;text-decoration:none">kapcsolat</a></td>
+        </table>
+
+<!-- Menürendszer vége-->
+
+<br>
+<table width="100%">
+    <tr><td>
+    <div style="font-size:15px;font-weight: bold;">CLUB3 Étterem - Kávéház</div>
+    <div style="font-size:13px">9970 Szentgotthárd, Mártírok út 1.</div>
+
+    <div style="font-size:15px;font-weight: bold;margin-top:20px">Telefon</div>
+    <div style="font-size:13px">Asztalfoglalás, ételfutár: +36-94-554-166</div>
+    <div style="font-size:13px">Ételfutár: +36-30-249-45-55</div>
+
+    <div style="font-size:15px;font-weight: bold;margin-top:20px">Főszakács:</div>
+    <div style="font-size:13px">Merkli András</div>
+
+    <div style="font-size:15px;font-weight: bold;margin-top:20px">Üzletvezetők:</div>
+    <div style="font-size:13px">Nagy Bálint</div>
+    <div style="font-size:13px">Nagy Dávid</div>
+
+    <div style="font-size:15px;margin-top:20px"><b>Fax:</b><span style="font-size:13px;">+36-94-554-167</span></div>
+    <div style="font-size:15px;"><b>E-mail:</b><span style="font-size:13px;"> club3@sztgnet.hu</span></div>
+   
+    <div style="font-size:13px;margin-top:20px">Vendégeink részére ingyenes parkolási</div>
+    <div style="font-size:13px">lehetőséget biztosítunk.</div>
+    
+    </td><td>
+    <span style="color:rgb(48,39,20)"><img src="https://www.google.com/chart?chc=sites&amp;cht=d&amp;chdp=sites&amp;chl=%5B%5BGoogle-t%C3%A9rk%C3%A9p%27%3D20%27f%5Cv%27a%5C%3D0%2710%27%3D499%270%27dim%27%5Cbox1%27b%5CF6F6F6%27fC%5CF6F6F6%27eC%5C0%27sk%27%5C%5B%22Club3+%C3%89tterem+megk%C3%B6zel%C3%ADt%C3%A9se%22%27%5D%27a%5CV%5C%3D12%27f%5C%5DV%5Cta%5C%3D10%27%3D0%27%3D500%27%3D497%27dim%27%5C%3D10%27%3D10%27%3D500%27%3D497%27vdim%27%5Cbox1%27b%5Cva%5CF6F6F6%27fC%5CC8C8C8%27eC%5C%27a%5C%5Do%5CLauto%27f%5C&amp;sig=oB9BpvBHW4orKS2xrEDx42OFHI0" data-origsrc="maps/ms?msid=203022102601613718180.0004e27ad32b58415e1a0&amp;msa=0&amp;ll=46.952679,16.273663&amp;spn=0.000818,0.001998&amp;t=k&amp;z=30" data-type="map" data-props="align:left;borderTitle:Club3 Étterem megközelítése;height:500;showBorder:false;showBorderTitle:false;" style="display:block;text-align:left;margin-right:auto;" height="500" width="500"></span>
+    </td></tr>
+    <tr><td colspan="2">
+    <div style="font-size:13px;font-weight: bold;margin-top:20px">Éttermünk hivatalos Erzsébet utalvány és Széchenyi kártya elfogadóhely.</div>
+    <table width="100%">
+        <tr>
+        <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/szep_3.jpg" border="0"></td>
+        <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/szep_2.jpg" border="0"></td>
+        <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/szep_1.jpg" border="0"></td>
+        <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/erzsebet.jpg" border="0"></td>
+        <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/visa_mastercard_logo.png" border="0"></td>
+        </tr>
+    </table>
+    <div style="font-size:15px;font-weight: bold;margin-top:20px">Partner szálláshelyünk:</div>
+    <table width="100%">
+        <tr>
+        <td style="text-align: center"><a href="http://villapergola.hu"><img style="cursor: pointer" src="https://sites.google.com/a/club3restaurant.com/aaaa/villapergola_logo.png" height="200" width="300px" border="0"></a></td>
+        </tr>
+    </table>
+    </td></tr>
+</table>
+

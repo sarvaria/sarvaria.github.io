@@ -1,0 +1,129 @@
+<!-- Menürendszer -->
+<table style="border-collapse:collapse;border-color:rgb(136,136,136);border-width:0px;" width="100%" border="0" bordercolor="#888" cellspacing="0"><tr>
+
+            <!-- Logo -->
+
+            <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/home/club3_logo.png" height="125" width="240" border="0"></td>
+
+            <!-- Szabad hely -->
+
+            <td width="100%"></td>
+
+            <td style="vertical-align:middle">
+            <div><img src="https://www.google.com/chart?chc=sites&amp;cht=d&amp;chdp=sites&amp;chl=%5B%5BHTML-mez%C5%91%27%3D20%27f%5Cv%27a%5C%3D0%2710%27%3D199%270%27dim%27%5Cbox1%27b%5CF6F6F6%27fC%5CF6F6F6%27eC%5C0%27sk%27%5C%5B%27%5D%27a%5CV%5C%3D12%27f%5C%5DV%5Cta%5C%3D10%27%3D0%27%3D200%27%3D197%27dim%27%5C%3D10%27%3D10%27%3D200%27%3D197%27vdim%27%5Cbox1%27b%5Cva%5CF6F6F6%27fC%5CC8C8C8%27eC%5C%27a%5C%5Do%5CLauto%27f%5C&amp;sig=66tUh59hh1x76ACoQdSuw1_i04Y" data-type="html" data-props="align:left;html:<style>&amp;#35xD#59            body {&amp;#35xD#59                background-color#58           #35ffffff#59&amp;#35xD#59   color#58           #35bdb769#59&amp;#35xD#59             font-family#58                Arial#59&amp;#35xD#59            }&amp;#35xD#59            table tr td {&amp;#35xD#59                white-space#58                nowrap#59&amp;#35xD#59                margin#58 0px#59&amp;#35xD#59                padding#58 0px#59&amp;#35xD#59            }&amp;#35xD#59            .mp {&amp;#35xD#59            cursor#58 pointer#59&amp;#35xD#59            }&amp;#35xD#59            .animmenu {&amp;#35xD#59                transition#58             height 0.5s#59&amp;#35xD#59                -moz-transition#58         height 0.5s#59&amp;#35xD#59                -webkit-transition#58     height 0.5s#59&amp;#35xD#59                -o-transition#58           height 0.5s#59&amp;#35xD#59            }&amp;#35xD#59            .animcolor {&amp;#35xD#59                transition#58             color 0.5s#59&amp;#35xD#59                -moz-transition#58         color 0.5s#59&amp;#35xD#59                -webkit-transition#58     color 0.5s#59&amp;#35xD#59                -o-transition#58           color 0.5s#59&amp;#35xD#59                position#58 relative#59&amp;#35xD#59                top#58 -64px#59&amp;#35xD#59                margin#58 0px 16px 0px 16px#59&amp;#35xD#59            }&amp;#35xD#59            .smp {&amp;#35xD#59            background-color#58 #35bdb769#59&amp;#35xD#59            height#58 0px#59&amp;#35xD#59            }&amp;#35xD#59            .dmp {&amp;#35xD#59background-color#58 #35ffffff#59&amp;#35xD#59height#58 120px#59&amp;#35xD#59            }&amp;#35xD#59        </style>&amp;#35xD#59&amp;#35xD#59        
+<script>&amp;#35xD#59            function selectMenupoint(e, jump) {&amp;#35xD#59                if (e.className.indexOf('selected') < 0) {&amp;#35xD#59   deselectMenupoint(e.parentNode.querySelector('.selected'))#59&amp;#35xD#59&amp;#35xD#59                e.className = 'mp selected'#59&amp;#35xD#59                    e.querySelector('.a').style.height = '120px'#59&amp;#35xD#59                    e.querySelector('.b').style.height = '0px'#59&amp;#35xD#59                    e.querySelector('span').style.color = '#35ffffff'#59&amp;#35xD#59&amp;#35xD#59                    if (jump) {&amp;#35xD#59                   setTimeout(function() {&amp;#35xD#59                    location.href = jump#59&amp;#35xD#59                   }, 500)#59&amp;#35xD#59               }&amp;#35xD#59                }&amp;#35xD#59            }&amp;#35xD#59&amp;#35xD#59            function overMenupoint(e) {&amp;#35xD#59                if (e.className.indexOf('selected') < 0 &amp;&amp; e.className.indexOf('overed') < 0) {&amp;#35xD#59   deselectMenupoint(e.parentNode.querySelector('.overed'))#59&amp;#35xD#59&amp;#35xD#59                e.className = 'mp overed'#59&amp;#35xD#59                    e.querySelector('.a').style.height = '120px'#59&amp;#35xD#59                    e.querySelector('.b').style.height = '0px'#59&amp;#35xD#59                    e.querySelector('span').style.color = '#35ffffff'#59&amp;#35xD#59                }&amp;#35xD#59            }&amp;#35xD#59&amp;#35xD#59            function deselectMenupoint(e) {&amp;#35xD#59            if (e) {&amp;#35xD#59            e.className = 'mp'#59&amp;#35xD#59               e.querySelector('.a').style.height = '0px'#59&amp;#35xD#59               e.querySelector('.b').style.height = '120px'#59&amp;#35xD#59               e.querySelector('span').style.color = '#35000000'#59&amp;#35xD#59           }&amp;#35xD#59            }&amp;#35xD#59&amp;#35xD#59            function deselectOverMenupoint(e) {&amp;#35xD#59            if (e &amp;&amp; e.className.indexOf('selected') < 0 &amp;&amp; e.className.indexOf('overed') >= 0) {&amp;#35xD#59            e.className = 'mp'#59&amp;#35xD#59               e.querySelector('.a').style.height = '0px'#59&amp;#35xD#59               e.querySelector('.b').style.height = '120px'#59&amp;#35xD#59               e.querySelector('span').style.color = '#35000000'#59&amp;#35xD#59           }&amp;#35xD#59            }&amp;#35xD#59        </script>
+&amp;#35xD#59&amp;#35xD#59        
+<table border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; width=&quot;100%&quot;>&amp;#35xD#59            
+<tr>&amp;#35xD#59                
+<td width=&quot;100%&quot;></td>
+&amp;#35xD#59                
+
+<td class=&quot;mp selected&quot; onmouseover=&quot;overMenupoint(this)&quot; onmouseout=&quot;deselectOverMenupoint(this)&quot; onclick=&quot;selectMenupoint(this, 'https#58\\sites.google.com/a/club3restaurant.com/aaaa/home')&quot;>&amp;#35xD#59                  
+<div class=&quot;a animmenu smp&quot; style=&quot;height#58 120px&quot;></div>
+&amp;#35xD#59                  
+<div class=&quot;b animmenu dmp&quot; style=&quot;height#58 0px&quot;></div>
+&amp;#35xD#59                  <span class=&quot;animcolor&quot; style=&quot;color#58 #35ffffff&quot;>
+étterem
+</span>&amp;#35xD#59                </td>
+
+
+&amp;#35xD#59                
+<td class=&quot;mp&quot; onmouseover=&quot;overMenupoint(this)&quot; onmouseout=&quot;deselectOverMenupoint(this)&quot; onclick=&quot;selectMenupoint(this, 'http#58\\sites.google.com/a/club3restaurant.com/aaaa/eteleink')&quot;>&amp;#35xD#59                    
+<div class=&quot;a animmenu smp&quot;></div>
+&amp;#35xD#59                    
+<div class=&quot;b animmenu dmp&quot;></div>
+&amp;#35xD#59                    <span class=&quot;animcolor&quot;>
+ételeink
+</span>&amp;#35xD#59                </td>
+
+
+&amp;#35xD#59                
+<td class=&quot;mp&quot; onmouseover=&quot;overMenupoint(this)&quot; onmouseout=&quot;deselectOverMenupoint(this)&quot; onclick=&quot;selectMenupoint(this, 'http#58\\sites.google.com/a/club3restaurant.com/aaaa/referenciaink')&quot;>&amp;#35xD#59                    
+<div class=&quot;a animmenu smp&quot;></div>
+&amp;#35xD#59                    
+<div class=&quot;b animmenu dmp&quot;></div>
+&amp;#35xD#59                    <span class=&quot;animcolor&quot;>
+referenciáink
+</span>&amp;#35xD#59                </td>
+
+
+&amp;#35xD#59            </tr>
+&amp;#35xD#59        </table>
+&amp;#35xD#59&amp;#35xD#59        
+;" style="display:block;float:left;" height="200" width="200"></div>
+            </td>
+
+            
+</tr></table>
+
+<!-- Menürendszer vége-->
+
+<br>
+
+<!-- Főoldal szöveg-->
+
+<table width="100%">
+    <tr>
+        <td colspan="2">
+            <img src="https://sites.google.com/a/club3restaurant.com/aaaa/animal.gif?attredirects=0&d=1" height="350" width="950" border="0">
+        </td>
+    </tr>
+    <tr><td><br></td></tr>
+    <tr>
+    <td width="550px">
+        <table border="0">
+            <tr>
+                <td rowspan="3" style="padding: 4px 4px 4px 4px;background-color:#000000;color:#ffffff;width:170px !important;text-align:center;font-size:18px;font-family:Georgia,Times New Roman,Times,serif;">
+                <img src="https://sites.google.com/a/club3restaurant.com/aaaa/4_kretatabla_uj_meret_ajanlatok_szoveggel.jpg" width="170" height="580"></img>
+                </td>
+                <!-- A -->
+                <td colspan="2" style="padding: 0px 4px 0px 4px;"><img src="https://sites.google.com/a/club3restaurant.com/aaaa/foldalra2.jpg" height="230" width="352px" border="0"></td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <!-- B -->
+                            <td colspan="2" style="padding: 0px 0px 4px 0px;"><img src="https://sites.google.com/a/club3restaurant.com/aaaa/fooldal3.jpg?attredirects=0&d=1" height="166" width="232px" border="0"></td>
+                        </tr>
+                        <tr>
+                            <!-- D -->
+                            <td style="padding: 0px 4px 4px 0px;"><img src="https://sites.google.com/a/club3restaurant.com/aaaa/Sorvacsora.jpeg?attredirects=0&d=1" height="166" width="112px" border="0"></td>
+
+                            <!-- E -->
+                            <td style="padding: 0px 4px 4px 0px;"><img src="https://sites.google.com/a/club3restaurant.com/aaaa/csaladi_vasarnap.png?attredirects=0&d=1" height="166" width="112px" border="0"></td>
+                        </tr>
+                    </table>
+                </td>
+
+                <td style="padding: 0px 4px 4px 0px;">
+                    <table>
+                        <tr>
+                            <td style="padding: 0px 4px 4px 0px;">
+                                <!-- C -->
+                                <img src="https://sites.google.com/a/club3restaurant.com/aaaa/fooldal4.jpg?attredirects=0&d=1" height="166" width="112px" border="0">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!-- F -->
+                                <img src="https://sites.google.com/a/club3restaurant.com/aaaa/nonap.png?attredirects=0&d=1" height="166" width="112px" border="0">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+    <td style="padding-left: 10px;padding-right: 15px;vertical-align: top"><table width="100%"><tr><td style="text-align:left;padding: 0px 0px 0px 0px"></td></tr></table><div style="padding: 0px 10px 0px 4px;text-align: justify;text-justify: inter-word;font-size:16px;font-family:Georgia,Times New Roman,Times,serif;color:#000000;line-height: 150%;"><i>A Club3 Étterem-Kávéház 1972-óta működik Szentgotthárd szívében, a Nagy család második generációjának vezetése alatt.<br><br>
+
+Mint olvastad generációk óta a vendéglátással foglalkozik a &quot;Nagy&quot; Családunk, mondhatni a vérünkben van....!<br>
+A konyha a szezonalitást helyezi a középpontba és egy nagyon fontos dolgot, hogy az Étel JÓ legyen és ebben a JÓ-ban minden benne van!<br>
+Nagyszerű Magyar borokat kínálunk az ország minden tájáról és két féle csapoltsör is szerepel a repertoárunkban!<br>
+Befogadó képességünk 180 fő, nyáron hűvös teraszunkon 120 fő is kényelmesen elfér!<br>
+Gyere be hozzánk de előtte edzd az izlelőbimbóid!!!<br><br>
+Szeretettel várunk: Nagy Bálint & Dávid tulajdonosok és Merkli András konyhafőnök</i></div></td>
+</tr></table>
+
+<!-- Főoldal szöveg vége>
+

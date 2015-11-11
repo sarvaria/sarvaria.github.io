@@ -1,0 +1,114 @@
+<!-- Menürendszer -->
+<table style="border-collapse:collapse;border-color:rgb(136,136,136);border-width:0px;" width="100%" border="0" bordercolor="#888" cellspacing="0"><tr>
+
+            <!-- Logo -->
+
+            <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/home/club3_logo.png" height="125" width="240" border="0"></td>
+
+            <!-- Szabad hely -->
+
+            <td width="100%"></td>
+
+            <!-- étterem menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/home" style="margin-left:60px;padding:8px;font-weight:bold;font-size:14px;background-color:#9a9450;color:#ffffff !important;text-decoration:none">étterem</a></td>
+
+            <!-- ételeink menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/eteleink" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">ételeink</a></td>
+           
+            <!-- referenciáink menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/home" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">referenciáink</a></td>
+             
+             <!-- ételfutár menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/etelfutar" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">ételfutár</a></td>
+             
+             <!-- aktualitások menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/aktualitasok" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">aktualitások</a></td>
+             
+             <!-- galéria menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/home" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">galéria</a></td>
+            
+             <!-- napi menü menüpont -->
+
+            <td style="vertical-align:middle;white-space:nowrap"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/napimenu" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">napi menü</a></td>
+            
+             <!-- kapcsolat menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/home" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">kapcsolat</a></td>
+</tr></table>
+
+<!-- Menürendszer vége-->
+
+<br>
+
+<!-- Főoldal szöveg-->
+
+<table width="100%">
+    <tr>
+        <td colspan="2">
+            <img src="https://sites.google.com/a/club3restaurant.com/aaaa/animal.gif?attredirects=0&d=1" height="350" width="950" border="0">
+        </td>
+    </tr>
+    <tr><td><br></td></tr>
+    <tr>
+    <td width="550px">
+        <table border="0">
+            <tr>
+                <td rowspan="3" style="padding: 4px 4px 4px 4px;background-color:#000000;color:#ffffff;width:170px !important;text-align:center;font-size:18px;font-family:Georgia,Times New Roman,Times,serif;"><br><i>Aktuális ajánlatok</i></td>
+                
+                <!-- A -->
+                <td colspan="2" style="padding: 0px 4px 0px 4px;"><img src="https://sites.google.com/a/club3restaurant.com/aaaa/foldalra2.jpg?attredirects=0&d=1" height="230" width="352px" border="0"></td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <!-- B -->
+                            <td colspan="2" style="padding: 0px 0px 4px 0px;"><img src="https://sites.google.com/a/club3restaurant.com/aaaa/fooldal3.jpg?attredirects=0&d=1" height="166" width="232px" border="0"></td>
+                        </tr>
+                        <tr>
+                            <!-- D -->
+                            <td style="padding: 0px 4px 4px 0px;"><img src="https://sites.google.com/a/club3restaurant.com/aaaa/Sorvacsora.jpeg?attredirects=0&d=1" height="166" width="112px" border="0"></td>
+
+                            <!-- E -->
+                            <td style="padding: 0px 4px 4px 0px;"><img src="https://sites.google.com/a/club3restaurant.com/aaaa/csaladi_vasarnap.png?attredirects=0&d=1" height="166" width="112px" border="0"></td>
+                        </tr>
+                    </table>
+                </td>
+
+                <td style="padding: 0px 4px 4px 0px;">
+                    <table>
+                        <tr>
+                            <td style="padding: 0px 4px 4px 0px;">
+                                <!-- C -->
+                                <img src="https://sites.google.com/a/club3restaurant.com/aaaa/fooldal4.jpg?attredirects=0&d=1" height="166" width="112px" border="0">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!-- F -->
+                                <img src="https://sites.google.com/a/club3restaurant.com/aaaa/nonap.png?attredirects=0&d=1" height="166" width="112px" border="0">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+    <td style="padding-left: 10px;padding-right: 15px;vertical-align: top"><table width="100%"><tr><td style="text-align:left;padding: 0px 0px 0px 0px"></td></tr></table><div style="padding: 0px 10px 0px 4px;text-align: justify;text-justify: inter-word;font-size:16px;font-family:Georgia,Times New Roman,Times,serif;color:#000000;line-height: 150%;"><i>A Club3 Étterem-Kávéház 1972-óta működik Szentgotthárd szívében, a Nagy család második generációjának vezetése alatt.<br><br>
+
+Mint olvastad generációk óta a vendéglátással foglalkozik a &quot;Nagy&quot; Családunk, mondhatni a vérünkben van....!<br>
+A konyha a szezonalitást helyezi a középpontba és egy nagyon fontos dolgot, hogy az Étel JÓ legyen és ebben a JÓ-ban minden benne van!<br>
+Nagyszerű Magyar borokat kínálunk az ország minden tájáról és két féle csapoltsör is szerepel a repertoárunkban!<br>
+Befogadó képességünk 180 fő, nyáron hűvös teraszunkon 120 fő is kényelmesen elfér!<br>
+Gyere be hozzánk de előtte edzd az izlelőbimbóid!!!<br><br>
+Szeretettel várunk: Nagy Bálint & Dávid tulajdonosok és Merkli András konyhafőnök</i></div></td>
+</tr></table>
+
+<!-- Főoldal szöveg vége>
+

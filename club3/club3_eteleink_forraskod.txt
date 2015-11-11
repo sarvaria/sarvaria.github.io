@@ -1,0 +1,49 @@
+<!-- Menürendszer -->
+<table style="border-collapse:collapse;border-color:rgb(136,136,136);border-width:0px;" width="100%" border="0" bordercolor="#888" cellspacing="0"><tr>
+
+            <!-- Logo -->
+
+            <td><img src="https://sites.google.com/a/club3restaurant.com/aaaa/home/club3_logo.png" height="125" width="240" border="0"></td>
+
+            <!-- Szabad hely -->
+
+            <td width="100%"></td>
+
+            <!-- étterem menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/home" style="margin-left:60px;padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">étterem</a></td>
+
+            <!-- ételeink menüpont -->
+
+            <td style="vertical-align:middle;white-space:nowrap"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/eteleink" style="margin-left:8px;padding:8px;font-weight:bold;font-size:14px;background-color:#9a9450;color:#ffffff !important;text-decoration:none">ételeink</a></td>
+           
+            <!-- referenciáink menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/referenciaink" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">referenciáink</a></td>
+             
+             <!-- ételfutár menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/etelfutar" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">ételfutár</a></td>
+             
+             <!-- aktualitások menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/aktualitasok" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">aktualitások</a></td>
+             
+             <!-- galéria menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/galeria" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">galéria</a></td>
+            
+             <!-- napi menü menüpont -->
+
+             <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/napimenu" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none;white-space:nowrap">napi menü</a></td>
+            
+             <!-- kapcsolat menüpont -->
+
+            <td style="vertical-align:middle"><a href="https://sites.google.com/a/club3restaurant.com/aaaa/kapcsolat" style="padding-left:10px;font-weight:bold;font-size:14px;color:#9a9450;text-decoration:none">kapcsolat</a></td>
+</tr></table>
+
+<!-- Menürendszer vége-->
+
+<br>
+
+
