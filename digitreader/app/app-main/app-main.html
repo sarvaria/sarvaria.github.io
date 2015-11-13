@@ -1,0 +1,191 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../app-video/app-video.html">
+
+<!--
+Description:
+
+Main module of the application.
+-->
+
+<dom-module id="app-main">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+        
+        .flex {
+            @apply(--layout-flex);
+        }
+        
+        .titlebar {
+            background-color:               #455A64;
+            color:                          #ffffff;
+            font-size:                      34px;
+            padding:                        26px 34px 16px 34px;
+            height:                         56px;
+        }
+        
+        .comment {
+            font-size:                      16px;
+            color:                          #ffffff;
+            padding:                        34px 34px 16px 34px;
+        }
+        
+        .ocr {
+            margin-top:                     34px;
+        }
+        
+        .control {
+            margin-top:                     16px;
+            background-color:               #B0BEC5;
+            color:                          #000000;
+            font-size:                      21px;
+            border-radius:                  4px;
+            width:                          120px;
+            height:                         48px;
+        }
+        
+        .resultcomment {
+            font-size:                      21px;
+            color:                          #ffffff;
+            padding:                        64px 34px 16px 34px;
+        }
+        
+        .result {
+            font-size:                      84px;
+            font-weight:                    bold;
+            color:                          #ffffff;
+            padding:                        34px 34px 16px 34px;
+        }
+        
+        .error {
+            color:                          #c0401a;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+
+        <!-- Titlebar -->
+        
+        <div class="titlebar">
+            <div class="horizontal center">
+                <span>Digit Reader</span>
+                <div class="flex"></div>
+                <img src="images/settings.png" width="34" height="34">
+            </div>
+        </div>
+        
+        <!-- Comment -->
+        
+        <div class="comment">
+            Move the camera over the digits that you want to scan and OCR. The result will be appeared automaticly if the OCR was successfull.<br>
+            Use the <img src="images/settings.png" width="18" height="18" style="position: relative; top: 4px"> button for customize the OCR process and the settings.
+        </div>
+        
+        <!-- Video -->
+
+        <div class="horizontal center-justified ocr">
+            <app-video id="video" width="{{width}}" height="{{height}}" orientation="{{orientation}}" error="{{error}}" result="{{result}}"></app-video>
+        </div>
+
+        <!-- Control -->
+        
+        <div class="horizontal center-justified">
+            <div class="control horizontal vertical center center-justified" on-click="scan">Start</div>
+        </div>
+        
+        <!-- Result -->
+        
+        <div class="resultcomment">Result:</div>
+        <div class="horizontal center-justified result">{{result}}</div>
+        
+        <!-- Error message -->
+
+        <div class="error">{{error}}</div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-main',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                width:           { type: Number, value: 0, notify: true, readyOnly: false },
+                height:          { type: Number, value: 0, notify: true, readyOnly: false },
+                orientation:     { type: Number, value: -1, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+            },
+            
+            /**
+             * Is the device in portrait mode?
+             * 
+             * @param   {Number}    orientation     orientation value in
+             *                                      degrees
+             * @return  {Boolean}   portrait        device in portrait mode
+             */
+            
+            isPortrait: function(orientation) {
+                return orientation == 0 || orientation == 180;
+            },
+            
+            scan: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                self.$.video.scan();
+            }
+        });
+    </script>
+</dom-module>

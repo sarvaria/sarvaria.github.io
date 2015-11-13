@@ -1,0 +1,528 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<!--
+Description:
+
+Video module of the application.
+-->
+
+<dom-module id="app-video">
+
+    <!-- Style of the component -->
+
+    <style>    
+        video { 
+           position:                        absolute;
+           visibility:                      hidden;
+        }        
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+
+        <!-- Hidden video -->
+        
+        <video id='video'></video>
+        
+        <!-- Canvas for holding the video stream -->
+
+        <canvas id="canvas" width$="{{videosize.width}}" height$="{{videosize.height}}"></canvas>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-video',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                width:           { type: Number, value: 0, notify: true, readyOnly: false },
+                height:          { type: Number, value: 0, notify: true, readyOnly: false },
+                orientation:     { type: Number, value: -1, notify: true, readyOnly: false },
+                error:           { type: String, notify: true, readOnly: false },
+                digit:           { type: Number, value: 7, notify: true, readyOnly: false },
+                treshold:        { type: Number, value: 10, notify: true, readyOnly: false },
+                result:          { type: String, notify: true, readOnly: false },
+                videosize:       { type: Object, computed: 'setVideoSize(orientation, width, height)' }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Define constanses
+                
+                self.MARGIN_PERCENT = 0.1;
+                self.SCREEN_RATIO = 0.7;
+                self.DRAW_FREQ = 33;
+                
+                // Initializing
+                
+                self.videosource = [];        
+                self.isStreaming = false;
+                self.mirror = false;
+                self.startscan = false;
+                self.context = self.$.canvas.getContext('2d');
+    
+                // Preparing the canvas for the video stream play
+                
+                self.$.video.addEventListener('canplay', function(event) {
+                    var canvas = self.$.canvas;
+                    
+                    if (!self.isStreaming) {
+                        if (self.mirror) {
+                            self.context.translate(self.videosize.width, 0);
+                            self.context.scale(-1, 1);
+                        }
+                        
+                        self.isStreaming = true;
+                    }
+                }, false);
+
+                // Showing stream data in the canvas
+                
+                self.$.video.addEventListener('play', function() {
+                    var video = self.$.video;
+
+                    setInterval(function() {
+                        if (video.paused || video.ended || self.startscan) {
+                            return;
+                        }
+                        
+                        self.context.fillRect(
+                            0,
+                            0,
+                            self.videosize.width,
+                            self.videosize.height
+                        );
+                        self.context.drawImage(
+                            video,
+                            0,
+                            0,
+                            self.videosize.width,
+                            self.videosize.height
+                        );
+                        
+                        // Drawing border
+                        
+                        self.context.beginPath();
+                        var borderSize = self.videosize.height / 3;
+                        self.context.lineWidth = 10;
+                        self.context.strokeStyle = '#ffffff';
+                        
+                        self.context.moveTo(borderSize, 0);
+                        self.context.lineTo(0, 0);
+                        self.context.lineTo(0, borderSize);
+                        self.context.stroke();
+                        
+                        self.context.moveTo(self.videosize.width - borderSize, 0);
+                        self.context.lineTo(self.videosize.width, 0);
+                        self.context.lineTo(self.videosize.width, borderSize);
+                        self.context.stroke();
+                        
+                        self.context.moveTo(borderSize, self.videosize.height);
+                        self.context.lineTo(0, self.videosize.height);
+                        self.context.lineTo(0, self.videosize.height - borderSize);
+                        self.context.stroke();
+                        
+                        self.context.moveTo(self.videosize.width - borderSize, self.videosize.height);
+                        self.context.lineTo(self.videosize.width, self.videosize.height);
+                        self.context.lineTo(self.videosize.width, self.videosize.height - borderSize);
+                        self.context.stroke();
+                        self.context.closePath();
+                        
+                    }, self.DRAW_FREQ);
+                }, false);
+                
+                // Initializing the media service
+
+                self.initializingMedia();
+            },
+            
+            /**
+             * Gets the video (canvas) size when the orientation of the device
+             * has been changed.
+             * 
+             * @param   {Number}    orientation     orientation value in
+             *                                      degrees
+             * @param   {Number}    width           width of the screen
+             * @param   {Number}    height          height of the screen
+             * @return  {Object}    videosize       size of the video
+             */
+            
+            setVideoSize: function(orientation, width, height) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Getting base data for the video size calculation
+                
+                var margin = parseInt(width * self.MARGIN_PERCENT, 10);
+                var w = width - (margin * 2);
+
+                // Returns the video size
+
+                return {
+                    margin:     margin,
+                    width:      w,
+                    height:     parseInt(w * self.SCREEN_RATIO, 10)
+                };
+            },
+
+            /**
+             * Initializing the media service.
+             */
+            
+            initializingMedia: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Preparing
+                
+                if (!!window.stream) {
+                    self.$.video.src = null;
+                    window.stream.stop();
+                }
+
+                // Getting user media
+
+                navigator.getUserMedia = (navigator.getUserMedia || 
+                                          navigator.webkitGetUserMedia || 
+                                          navigator.mozGetUserMedia || 
+                                          navigator.msGetUserMedia);
+
+                // Checking the support of the user media
+                
+                if (navigator.getUserMedia) {
+                    if (typeof(MediaStreamTrack) === 'undefined' ||
+                        typeof(MediaStreamTrack.getSources) === 'undefined') {
+                        self.error = 'No MediaStreamTrack support';
+                    } else {
+                        
+                        // Getting the available video devices
+                        
+                        MediaStreamTrack.getSources(function(sourceInfo) {
+                            for (var i = 0; i < sourceInfo.length; i++) {
+                                if (sourceInfo[i].kind === 'video') {
+                                    self.push('videosource', {
+                                        id:     sourceInfo[i].id,
+                                        label:  sourceInfo[i].label
+                                    });
+                                }
+                            }
+                            
+                            // Starting video service
+                            
+                            self.selectedVideo = self.videosource[self.videosource.length - 1].id;
+                            self.startVideoService();
+                        });
+                    }
+                } else {
+                    self.error = 'No UserMedia support';
+                }
+            },
+
+            /**
+             * Starts the video service.
+             */
+            
+            startVideoService: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Starting video service
+                
+                navigator.getUserMedia({
+                    video: {
+                        optional: [{ sourceId: self.selectedVideo }]
+                    },
+                    audio: false
+                }, function(stream) {
+                    
+                    // Starting the streaming
+                    
+                    var url = window.URL || window.webkitURL;
+                    var video = self.$.video;
+                    video.setAttribute('src', url ? url.createObjectURL(stream) : stream);
+                    video.play();
+                }, function(error) {
+                    
+                    // Error occured during the stream start
+                    
+                    self.error = error;
+                });
+            },
+            
+            /**
+             * Freezes the video and scans the current picture as a grey scaled
+             * image.
+             */
+            
+            scan: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Preparing
+                
+                self.startscan = true;
+
+                // Getting image data
+
+                var imageData = self.context.getImageData(
+                    0,
+                    0,
+                    self.videosize.width,
+                    self.videosize.height
+                );
+
+                // Getting all of the pixels and grayscaling these
+
+                var pixels = imageData.data;
+                var grayscale;
+
+                for (var i = 0; i < pixels.length; i += 4) {
+                    grayscale = pixels[i] * 0.3 + pixels[i + 1] * 0.59 + pixels[i + 2] * 0.11;
+
+                    pixels[i] = grayscale;        									  // red
+                    pixels[i + 1] = grayscale;        								// green
+                    pixels[i + 2] = grayscale;        								 // blue
+                }
+
+                // Drawing image with gray scale
+
+                self.context.putImageData(imageData, 0, 0);
+
+                // Drawing scan line
+
+                var scanPos = 0;
+
+                var timer = setInterval(function() {
+                    if (scanPos > self.videosize.height) {
+                        self.startscan = false;
+                        clearInterval(timer);
+                    }
+
+                    self.context.putImageData(imageData, 0, 0);
+                    self.context.beginPath();
+                    self.context.lineWidth = 2;
+                    self.context.strokeStyle = '#00ff00';
+
+                    self.context.moveTo(0, scanPos);
+                    self.context.lineTo(self.videosize.width, scanPos);
+                    self.context.stroke();
+                    self.context.closePath();
+
+                    scanPos+=33;
+                }, self.DRAW_FREQ);
+                
+                // OCRs the image
+                
+                self.ocr();
+            },
+            
+            ocr: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Preparing
+                
+                var segment = [];
+	            var number = [];
+
+                for (var i = 0; i < self.digit; i++) {
+                    segment.push([false, false, false, false, false, false, false]);
+                    number.push(null);
+                }
+                
+                // Getting pixel informations
+                
+                var pixel = [];
+
+                for (var y = 0; y < self.videosize.height; y++) {
+                    var line = [];
+
+                    for (var x = 0; x < self.videosize.width; x++) {
+                        line.push(self.context.getImageData(x, y, 1, 1).data[0]);
+                    }
+
+                    pixel.push(line);
+                }
+                
+                // Scanning
+
+                var cellWidth = self.videosize.width / self.digit;
+                var cellHeight = parseInt(self.videosize.height / 3, 10);
+                var cellPatternWidth = parseInt(cellWidth / 15, 10);
+                var cellPatternHeight = parseInt(cellHeight / 10, 10);
+                var treshold = parseInt(255 * (self.treshold / 100), 10);
+                var etalon;
+                var dark;
+                var i, x, y, p;
+
+                // Vertical processing
+
+                for (p = 0; p < 3; p++) {
+                    etalon = [];
+
+                    for (i = 0; i < self.digit; i++) {
+                        x = parseInt((cellWidth / 2) + (i * cellWidth), 10);
+
+                        etalon.push([
+                            pixel[p * cellHeight][x - cellPatternWidth],
+                            pixel[p * cellHeight][x],
+                            pixel[p * cellHeight][x + cellPatternWidth]
+                        ]);
+                    }
+
+                    for (i = 0; i < self.digit; i++) {
+                        dark = false;
+
+                        for (y = 1 + (p * cellHeight); y < ((p + 1) * cellHeight); y++) {
+                            x = parseInt((cellWidth / 2) + (i * cellWidth), 10);
+
+                            if (Math.abs(etalon[i][0] - pixel[y][x - cellPatternWidth]) >= treshold ||
+                            Math.abs(etalon[i][1] - pixel[y][x]) >= treshold ||
+                            Math.abs(etalon[i][2] - pixel[y][x + cellPatternWidth]) >= treshold) {
+                                if (pixel[y][x - cellPatternWidth] < etalon[i][0] || pixel[y][x] < etalon[i][1] || pixel[y][x + cellPatternWidth] < etalon[i][2]) {
+                                    dark = true;
+                                    segment[i][p] = true;
+                                } else {
+                                    dark = false;
+                                }
+                            }
+
+                            etalon[i][0] = dark ?
+                                           Math.min(etalon[i][0], pixel[y][x - cellPatternWidth]) :
+                                           Math.max(etalon[i][0], pixel[y][x - cellPatternWidth]);
+                            etalon[i][1] = dark ?
+                                           Math.min(etalon[i][1], pixel[y][x]) :
+                                           Math.max(etalon[i][1], pixel[y][x]);
+                            etalon[i][2] = dark ?
+                                           Math.min(etalon[i][2], pixel[y][x + cellPatternWidth]) :
+                                           Math.max(etalon[i][2], pixel[y][x + cellPatternWidth]);
+                        }
+                    }
+                }
+
+                // Horizontal processing
+
+                etalon = [[], []];
+
+                for (p = 0; p < 2; p++) {
+                    for (y = cellHeight; y < cellHeight * 3; y+=cellHeight) {
+                        for (i = 0; i < self.digit; i++) {
+                            dark = false;
+
+                            etalon[p].push([
+                                pixel[y - cellPatternHeight][parseInt((i * cellWidth) + p * (cellWidth / 2), 10)],
+                                pixel[y][parseInt((i * cellWidth) + p * (cellWidth / 2), 10)],
+                                pixel[y + cellPatternHeight][parseInt((i * cellWidth) + p * (cellWidth / 2), 10)]
+                            ]);
+
+                            for (x = parseInt(1 + ((i * cellWidth) + p * (cellWidth / 2)), 10); x < parseInt(((i * cellWidth) + p * (cellWidth / 2)) + (cellWidth / 2), 10); x++) {
+                                if (Math.abs(etalon[p][i][0] - pixel[y - cellPatternHeight][x]) >= treshold) {
+                                    if (pixel[y - cellPatternHeight][x] < etalon[p][i][0]) {
+                                        dark = true;
+                                        var h = (y / cellHeight) - 1;
+
+                                        if (h === 0 && p === 0) {
+                                            segment[i][6] = true;
+                                        } else if (h === 0 && p === 1) {
+                                            segment[i][3] = true;
+                                        } else if (h === 1 && p === 0) {
+                                            segment[i][5] = true;
+                                        } else if (h === 1 && p === 1) {
+                                            segment[i][4] = true;
+                                        }
+                                    } else {
+                                        dark = false;
+                                    }
+                                }
+
+                                etalon[p][i][0] = dark ?
+                                                  Math.min(etalon[p][i][0], pixel[y - cellPatternHeight][x]) :
+                                                  Math.max(etalon[p][i][0], pixel[y - cellPatternHeight][x]);
+                            }
+                        }
+                    }
+                }
+
+                // Getting the numbers from the segments
+
+                for (i = 0; i < self.digit; i++) {
+                    if (segment[i][0] && !segment[i][1] && segment[i][2] && segment[i][3] && segment[i][4] && segment[i][5] && segment[i][6]) {
+                        number[i] = 0;
+                    } else if (!segment[i][0] && !segment[i][1] && !segment[i][2] && segment[i][3] && segment[i][4] && !segment[i][5] && !segment[i][6]) {
+                        number[i] = 1;
+                    } else if (segment[i][0] && segment[i][1] && segment[i][2] && segment[i][3] && !segment[i][4] && segment[i][5] && !segment[i][6]) {
+                        number[i] = 2;
+                    } else if (segment[i][0] && segment[i][1] && segment[i][2] && segment[i][3] && segment[i][4] && !segment[i][5] && !segment[i][6]) {
+                        number[i] = 3;
+                    } else if (!segment[i][0] && segment[i][1] && !segment[i][2] && segment[i][3] && segment[i][4] && !segment[i][5] && segment[i][6]) {
+                        number[i] = 4;
+                    } else if (segment[i][0] && segment[i][1] && segment[i][2] && !segment[i][3] && segment[i][4] && !segment[i][5] && segment[i][6]) {
+                        number[i] = 5;
+                    } else if (segment[i][0] && segment[i][1] && segment[i][2] && !segment[i][3] && segment[i][4] && segment[i][5] && segment[i][6]) {
+                        number[i] = 6;
+                    } else if (segment[i][0] && !segment[i][1] && !segment[i][2] && segment[i][3] && segment[i][4] && !segment[i][5] && !segment[i][6]) {
+                        number[i] = 7;
+                    } else if (segment[i][0] && segment[i][1] && segment[i][2] && segment[i][3] && segment[i][4] && segment[i][5] && segment[i][6]) {
+                        number[i] = 8;
+                    } else if (segment[i][0] && segment[i][1] && segment[i][2] && segment[i][3] && segment[i][4] && !segment[i][5] && segment[i][6]) {
+                        number[i] = 9;
+                    }
+                }
+
+                // Post processing to get result
+                
+                var result = '';
+                
+                for (i = 0; i < number.length; i++) {
+                    if (number[i] == null) {
+                        result += ' ';
+                    } else {
+                        result += number[i];
+                    }
+                }
+                
+                self.result = result;
+            }
+        });
+    </script>
+</dom-module>

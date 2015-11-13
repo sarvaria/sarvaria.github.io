@@ -7,11 +7,11 @@
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="title" content="CarParking"/>
-        <meta name="keywords" content="Car,Parking,Hungary,Sarvari Andras"/>
-        <meta name="description" content="Car Parking"/>
-        <meta name="application-name" content="Car Parking"/>
-        <meta name="application-url" content="carparking"/>
+        <meta name="title" content="DigitReader"/>
+        <meta name="keywords" content="Digit,Reader,Sarvari Andras"/>
+        <meta name="description" content="Digit Reader"/>
+        <meta name="application-name" content="Digit Reader"/>
+        <meta name="application-url" content="digitreader"/>
 
         <!-- Loading libraries and CSS -->
 
@@ -28,7 +28,7 @@
         <!-- Icon and title of the site -->
 
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-        <title>Car Parking</title>
+        <title>Digit Reader</title>
 
         <style>
 
@@ -64,7 +64,7 @@
                 color:                          #000000;
                 display:                        block;
                 
-                font-family:                    'Roboto', sans-serif;
+                font-family:                    'Roboto', Arial;
                 font-size:                      18px;
                 margin:                         0px 0px 0px 0px;
                 padding:                        0px 0px 0px 0px;
@@ -104,15 +104,8 @@
                 main.setAttribute('height', window.innerHeight);
             }
 
-            function initMap() {
-                document.getElementById('main').initMap();
-            }
-            
             (function () {
                 resize();
-                var script = document.createElement('script');
-                script.setAttribute('src', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyC_g3Fyf45fsKd7iQHr0Ms96HYVRJxUbA8&callback=initMap');
-                document.body.appendChild(script);
             })();
         </script>
     </body>
