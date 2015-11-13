@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="hu">
+	<head>
+
+        <!-- Meta informations about the site -->
+
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="title" content="CarParking"/>
+        <meta name="keywords" content="Car,Parking,Hungary,Sarvari Andras"/>
+        <meta name="description" content="Car Parking"/>
+        <meta name="application-name" content="Car Parking"/>
+        <meta name="application-url" content="carparking"/>
+
+        <!-- Loading libraries and CSS -->
+
+        <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="../../bower_components/polymer/polymer.html">
+
+        <script src="../../js/sprintf.min.js"></script>
+        <script src="js/action.js"></script>
+
+        <!-- Adding Roboto font support -->
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+        <!-- Icon and title of the site -->
+
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        <title>Car Parking</title>
+
+        <style>
+
+            /**
+             * HTML and BODY designing.
+             */
+
+            html, body {
+                -webkit-background-clip:        border-box;
+                -webkit-background-origin:      padding-box;
+                -webkit-background-size:        auto;
+
+                -webkit-touch-callout:          none;
+                -webkit-text-size-adjust:       none;
+                -webkit-user-select:            none;
+                -moz-user-select:               none;
+                -webkit-highlight:              none;
+                -webkit-tap-highlight-color:    rgba(0,0,0,0) ;
+                -webkit-tap-highlight-color:    transparent;
+                -ms-user-select:                none;
+                -ms-text-size-adjust:           none;
+                -ms-touch-action:               pan-y;
+                -ms-content-zooming:            none;
+                user-select:                    none;
+                
+                background-color:               #ffffff;
+                background-repeat:              no-repeat;
+                background-attachment:          scroll;
+                background-clip:                border-box;
+                background-origin:              padding-box;
+                background-size:                cover;
+                
+                color:                          #000000;
+                display:                        block;
+                
+                font-family:                    'Roboto', sans-serif;
+                font-size:                      18px;
+                margin:                         0px 0px 0px 0px;
+                padding:                        0px 0px 0px 0px;
+                overflow:                       hidden;
+            }
+            
+            input, textarea  {
+                -webkit-user-select:            text;
+                -moz-user-select:               text;
+                -ms-user-select:                text;
+                user-select:                    text;
+            }                
+            
+        </style>
+    </head>
+
+    <body unresolved oncontextmenu="return false" onresize="resize()">
+
+        <!-- Importing templates -->
+
+        <link rel="import" href="app/app-main/app-main.html">
+
+        <!-- Main entry point of the application -->
+
+        <app-main id="main"></app-main>
+
+        <script>
+            function resize() {
+
+                // Getting the main module and 
+        
+                var main = document.getElementById('main');
+        
+                // Setting the width and height of the main module
+        
+                main.setAttribute('width', window.innerWidth);
+                main.setAttribute('height', window.innerHeight);
+            }
+
+            function initMap() {
+                document.getElementById('main').initMap();
+            }
+            
+            (function () {
+                resize();
+                var script = document.createElement('script');
+                script.setAttribute('src', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyC_g3Fyf45fsKd7iQHr0Ms96HYVRJxUbA8&callback=initMap');
+                document.body.appendChild(script);
+            })();
+        </script>
+    </body>
+</html>
