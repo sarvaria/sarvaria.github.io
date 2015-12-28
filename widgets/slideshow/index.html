@@ -12,10 +12,6 @@
         <meta name="application-name" content="Slideshow"/>
         <meta name="description" content="Google Photo's slideshow"/>
 
-        <!-- Adding Roboto font support -->
-
-        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-        
         <style>
 
             /**
@@ -100,15 +96,22 @@
             }
             
             .photo {
-                -webkit-transition:         opacity 10s ease;
-                -moz-transition:            opacity 2s ease;
-                -o-transition:              opacity 2s ease;
-                transition:                 opacity 10s ease;
-                cursor:                     pointer;
                 width:                      524px;
                 height:                     410px;
             }
 
+            .nextphoto {
+                width:                      524px;
+                height:                     410px;
+            }
+
+            #photo {
+                -webkit-transition:         opacity 0.1s ease;
+                -moz-transition:            opacity 0.1s ease;
+                -o-transition:              opacity 0.1s ease;
+                transition:                 opacity 0.1s ease;
+            }
+            
             .thumb {
                 width:                      100px;
                 height:                     76px;
@@ -117,33 +120,54 @@
             }
 
             .selectedThumb {
-                border:                     solid #ff0000 1px;
+                border:                     solid #ffffff 4px;
+                box-sizing:                 border-box;
+                -moz-box-sizing:            border-box;
+                -webkit-box-sizing:         border-box;
             }
             
             .stepper {
                 cursor:                     pointer;
             }
             
+            .photocontainer {
+                position:                   relative;
+                cursor:                     pointer;
+            }
+            
             #thumbnails {
                 overflow-x:                 auto;
                 overflow-y:                 hidden;
-            }            
+            }
+            
+            .playpausebutton {
+                position:                   absolute;
+                left:                       250px;
+                top:                        155px;
+                cursor:                     pointer;
+            }
         </style>
     </head>
 
     <body oncontextmenu="return false">
         <div id="galery" class="vertical">
-            <div class="horizontal center-justified">            
+            <div class="photocontainer horizontal center-justified" onclick="window.gallery.toggle()">
                 <div class="photo horizontal center center-justified">
-                    <img id="photo" onclick="window.gallery.showLargePhoto()">
+                    <img id="photo">
                 </div>
+                <img id="playbutton" class="playpausebutton" style="display: none" src="data:image/png;base64,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" width="100" height="100">
+                <img id="pausebutton" class="playpausebutton" style="display: none" src="data:image/png;base64,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" width="100" height="100">
             </div>
             <div class="horizontal center">
-                <div class="stepper" onclick="window.gallery.prevPhoto()"><</div>
+                <div class="stepper" onclick="window.gallery.prevPhoto()">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAABGCAYAAAC363Y9AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwLCRovKWCSVwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAADSSURBVGje7djNCcJAEEDhJx78IVc9ppIcbMVOtgpL8SwIFmAligXESwQRQn4EM4vvwdyW5WOOA/Y/lX0ezYNgK+ACLIBT9M1WwAOom0k5YUOj27Ah0V3YUOi+2BDoodhJ0WOxNXAF1jlhN2LFihUrVqxYsWLFihUrVqzYIZVfYG/A9hfI9/vwvbnP7kb8swQK4DjFhSaN3HINHICZaNGiRYsWLVq0aNGiRYsWLVp0+5yBFROVRmALJi7lhO2LDoXtQofEtqFDYz/RWWBf7XPCWpieeIlEFQ7m8soAAAAASUVORK5CYII=" width="22" height="35">
+                </div>
                 <div class="flex">
                     <div id="thumbnails" class="horizontal center" style="height: 93px"></div>
                 </div>
-                <div class="stepper" onclick="window.gallery.nextPhoto()">></div>
+                <div class="stepper" onclick="window.gallery.nextPhoto()">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAABGCAYAAAC363Y9AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwLCRsEnMdaVgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAC0SURBVGje7dixCcJQAEXRa6nYaukkLuMmTuFCbuAkQgaITYQUISZf8L8v98LrT/3AMjq1hL0CHXBuBdsPi0ePsfHoKWwseg4bh16CjUGvwVZH74BHAbgq+iBatGjRokWLFi1atGjRokWLFv25I/D8Av3Tf3oD3Aqx/fBIiRUrVqxYsWLFihUrVqxYsWL/EwuwBe6tYN/tC9DVsCXo6tg16BjsEnQcdg4di51Cx2PH6Atmmb0ArCBQ/IxvZBMAAAAASUVORK5CYII=" width="22" height="35">
+                </div>
             </div>
         </div>
         
@@ -171,6 +195,8 @@
                 // Initializing
     
                 self.url = options.url;
+                self.play = false;
+                self.wait = 2000;
 
                 // Loading photos from Google photos
                 
@@ -264,42 +290,47 @@
                 
                 var photoIndex = (index == undefined) ? self.photoIndex : index;
                 var photo = document.getElementById('photo');
-                photo.setAttribute('src', self.photo[photoIndex].url);
+                photo.style.opacity = 0.4;
                 
-                var w = self.photo[photoIndex].width * self.photo[photoIndex].aspect;
-                var h = self.photo[photoIndex].height * self.photo[photoIndex].aspect;
-                
-                // Setting the aspect ratio of the photo
-                
-                if (w > 524) {
-                    w = 524;
-                    h = w / self.photo[photoIndex].aspect;
-                }
-
-                if (h > 410) {
-                    h = 410;
-                    w = self.photo[photoIndex].aspect * h;
-                }
-
-                photo.setAttribute('width', w);
-                photo.setAttribute('height', h);
-                
-                // Setting scrollbar position
-                
-                var thumbnails = document.getElementById('thumbnails');
-                thumbnails.scrollLeft = Gallery.THUMBNAIL_SIZE.width * photoIndex;
-
-                // Highlight the current thumbnail photo
-                
-                var th = thumbnails.getElementsByTagName('img');
-                
-                for (var i = 0; i < th.length; i++) {
-                    if (i != photoIndex) {
-                        th[i].setAttribute('class', 'thumb');
+                setTimeout(function() {
+                    photo.setAttribute('src', self.photo[photoIndex].url);
+                    photo.style.opacity = 1;
+                    
+                    var w = self.photo[photoIndex].width * self.photo[photoIndex].aspect;
+                    var h = self.photo[photoIndex].height * self.photo[photoIndex].aspect;
+                    
+                    // Setting the aspect ratio of the photo
+                    
+                    if (w > 524) {
+                        w = 524;
+                        h = w / self.photo[photoIndex].aspect;
                     }
-                }
-
-                th[photoIndex].setAttribute('class', 'thumb selectedThumb');
+    
+                    if (h > 410) {
+                        h = 410;
+                        w = self.photo[photoIndex].aspect * h;
+                    }
+    
+                    photo.setAttribute('width', w);
+                    photo.setAttribute('height', h);
+                    
+                    // Setting scrollbar position
+                    
+                    var thumbnails = document.getElementById('thumbnails');
+                    thumbnails.scrollLeft = Gallery.THUMBNAIL_SIZE.width * photoIndex;
+    
+                    // Highlight the current thumbnail photo
+                    
+                    var th = thumbnails.getElementsByTagName('img');
+                    
+                    for (var i = 0; i < th.length; i++) {
+                        if (i != photoIndex) {
+                            th[i].setAttribute('class', 'thumb');
+                        }
+                    }
+    
+                    th[photoIndex].setAttribute('class', 'thumb selectedThumb');
+                }, 110);
             };
             
             Gallery.prototype.showLargePhoto = function() {
@@ -313,7 +344,7 @@
                 window.open(self.photo[self.photoIndex].url);
             };
             
-            Gallery.prototype.slideshow = function() {
+            Gallery.prototype.slideshow = function(norefresh) {
                 
                 // Reference to the current object
                 
@@ -321,7 +352,11 @@
                 
                 // Starting slideshow
                 
-                self.showPhoto();
+                self.play = true;
+                
+                if (!norefresh) {
+                    self.showPhoto();
+                }
                 
                 self.timer = setInterval(function() {
                     if (self.photoIndex + 1 >= self.photo.length) {
@@ -329,7 +364,7 @@
                     }
                     
                     self.nextPhoto();
-                }, 2000);
+                }, self.wait);
             };
             
             Gallery.prototype.pause = function() {
@@ -338,7 +373,39 @@
                 
                 var self = this;
                 
+                // Pause slideshow
+                
+                self.play = false;
                 clearInterval(self.timer);
+            };
+            
+            Gallery.prototype.toggle = function() {
+
+                // Reference to the current object
+                
+                var self = this;
+
+                // Toggle between pasuse and slideshow
+                
+                if (!self.play) {
+                    document.getElementById('pausebutton').style.display = 'none';
+                    document.getElementById('playbutton').style.display = 'block';
+                    
+                    setTimeout(function() {
+                        document.getElementById('playbutton').style.display = 'none';
+                    }, 1000);
+                    
+                    self.slideshow(true);
+                } else {
+                    document.getElementById('playbutton').style.display = 'none';
+                    document.getElementById('pausebutton').style.display = 'block';
+
+                    setTimeout(function() {
+                        document.getElementById('pausebutton').style.display = 'none';
+                    }, 1000);
+
+                    self.pause();
+                }
             };
             
             Gallery.prototype.prevPhoto = function() {
@@ -366,7 +433,7 @@
             };
             
             window.gallery = new Gallery({
-                url:    'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&q=http%3A%2F%2Fphotos.googleapis.com%2Fdata%2Ffeed%2Fapi%2Fuser%2F100482557839366720564%2Falbumid%2F6212546945087874737%3Falt%3Drss&callback=window.gallery.load'
+                url:    'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=1000&q=http%3A%2F%2Fphotos.googleapis.com%2Fdata%2Ffeed%2Fapi%2Fuser%2F117347668709139620552%2Falbumid%2F5913388396525600033%3Falt%3Drss&callback=window.gallery.load'
             });
         </script>
     </body>

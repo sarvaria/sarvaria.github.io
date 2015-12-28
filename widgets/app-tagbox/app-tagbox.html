@@ -1,0 +1,288 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<!--
+Description:
+
+Represents an inputbox that allows to input tags.
+-->
+
+<dom-module id="app-tagbox">
+
+    <!-- Style of the component -->
+
+    <style>
+        .taginput {
+            height:         20px;
+            padding:        0px;
+            margin:         0px;
+            border:         none;
+            font-size:      12px;
+        }
+
+        .taginput:focus {
+            outline:        0;
+        }
+        
+        .tags {
+            position:       absolute;
+            left:           0px;
+            top:            0px;
+            background:     #ffffff;
+            padding:        2px 0px 0px 2px;
+            border:         #00B388 solid 1px;
+        }
+        
+        .tag {
+            height:         20px;
+            border:         #00B388 solid 1px;
+            border-radius:  12px;
+            background:     #00B388;
+            color:          #ffffff;
+            font-size:      12px;
+            margin:         0px 2px 2px 0px;
+            padding:        0px 8px 0px 8px;
+            cursor:         pointer;
+        }
+        
+        .closer {
+            position:       relative;
+            top:            -6px;
+            font-size:      6px;
+            color:          #ffffff;
+            cursor:         pointer;
+            padding-left:   4px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div id="tags" class="tags wrap horizontal" style$="{{setTagsStyle(width, height, dynamicheight)}}" on-click="setFocus">
+            
+            <!-- Tags -->
+            
+            <template is="dom-repeat" id="tagrepeater" items="{{value}}" as="tag">
+                <div class="tag horizontal center" title$="{{setTooltip(tooltip, tag)}}" on-click="removeTag">
+                    <span>{{tag}}</span><span class="closer">x</span>
+                </div>
+            </template>
+            
+            <!-- Input field -->
+            
+            <input id="taginput" type="text" class="taginput" style$="{{setInputStyle(inputWidth)}}" on-keydown="onEnter"/>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-tagbox',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                value:             { type: Array, notify: true, readyOnly: false },
+                tooltip:           { type: String, notify: true, readyOnly: false },
+                width:             { type: Number, value: 200, notify: true, readyOnly: false },
+                height:            { type: Number, value: 24, notify: true, readyOnly: false },
+                dynamicheight:     { type: Boolean, value: false, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Observers.
+             */
+             
+            observers: [
+                'setInputWidth(value.splices)'
+            ],
+            
+            /**
+             * Constanses.
+             */
+            
+            SCROLLBAR_WIDTH:    25,
+            MINIMUM_INPUTWIDTH: 40,
+            GAP:                6,
+
+            /**
+             * Sets the style of the tags container.
+             * 
+             * @param   {Number}    width           width of the component
+             * @param   {Number}    height          height of the component
+             * @param   {Boolean}   dynamicheight   dynamic height
+             * @return  {String}    style           style of the tags container
+             */
+             
+            setTagsStyle: function(width, height, dynamicheight) {
+                return 'width: ' + width + 'px;' +
+                        (dynamicheight ? '' : ('height: ' + height + 'px;overflow-y: auto'));
+            },
+            
+            /**
+             * Sets the style of the input field.
+             * 
+             * @param   {Number}    inputWidth  width of the input field
+             * @return  {String}    style       style of the input field
+             */
+             
+            setInputStyle: function(inputWidth) {
+                return 'width: ' + inputWidth + 'px';
+            },
+            
+            /**
+             * Sets the width of the input field. It fires when the length of
+             * the tag list has been changed.
+             */
+             
+            setInputWidth: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Getting all of the tag elements
+                
+                setTimeout(function() {
+                    var tag = document.querySelectorAll('div.tag');
+                    
+                    // Are there any tag content?
+                    
+                    if (tag.length > 0) {
+                        
+                        // Getting the right X position of the last tag element
+                        
+                        var x = tag[tag.length - 1].offsetLeft + tag[tag.length - 1].offsetWidth;
+                        
+                        // Calculating the width of the input field
+                        
+                        var width = self.width - x - self.GAP - self.SCROLLBAR_WIDTH;
+                        
+                        if (width < self.MINIMUM_INPUTWIDTH) {
+                            width = self.width - self.GAP;
+                        }
+                        
+                        // Setting the input field width
+                        
+                        self.inputWidth = width;
+                    }
+                }, 10);
+            },
+            
+            /**
+             * Key down listener for the input field.
+             * 
+             * @param   {Object}    event       event object
+             */
+             
+            onEnter: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Getting the code of the pressed key
+                
+                var keyCode = event.keyCode ? event.keyCode : event.which;
+                
+                // ENTER
+                
+                if (keyCode === 13 && self.$.taginput.value != '') {
+                    
+                    // Adding the input field value to the tag list
+                    
+                    self.inputWidth = 0;
+                    self.push('value', self.$.taginput.value);
+                    self.$.taginput.value = '';
+                    
+                    // Scrolling down in the field
+                    
+                    setTimeout(function() {
+                        self.$.tags.scrollTop = self.$.tags.scrollHeight;
+                    }, 100);
+                    
+                // BACKSPACE
+                
+                } else if (keyCode === 8 && self.$.taginput.value === '' && self.value.length > 0) {
+                    
+                    // Removing the last tag from the tag list
+                    
+                    self.splice('value', self.value.length - 1, 1);
+                }
+            },
+            
+            /**
+             * Removes the clicked tag from the tag list.
+             * 
+             * @param   {Object}    event       event object
+             */
+             
+            removeTag: function(event) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Getting the clicked tag item
+                
+                var tag = self.$.tagrepeater.itemForElement(event.target);
+                
+                // Searching the tag in the value and removes it from the array
+                
+                for (var i = 0; i < self.value.length; i++) {
+                    if (self.value[i] == tag) {
+                        self.splice('value', i, 1);
+                        break;
+                    }
+                }
+            },
+            
+            /**
+             * Sets the focus to the input field.
+             */
+             
+            setFocus: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Setting the focus to the input field
+                
+                self.$.taginput.focus();
+            },
+            
+            /**
+             * Sets the tooltip for a tag.
+             * 
+             * @param   {String}    tooltip     predefined tooltip temlate for tags
+             * @param   {String}    tag         tag wich has to add the tooltip to
+             * @return  {String}    tooltip     tooltip for the tag
+             */
+             
+            setTooltip: function(tooltip, tag) {
+                return tooltip ? tooltip.replace('%s', tag) : undefined;
+            }
+        });
+    </script>
+</dom-module>

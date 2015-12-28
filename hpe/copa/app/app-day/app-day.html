@@ -1,0 +1,1048 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../app-columnheader/app-columnheader.html">
+
+<!--
+Description:
+
+A day in the week.
+-->
+
+<dom-module id="app-day">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+        
+        .flex {
+            @apply(--layout-flex);
+        }
+
+        .day {
+            background: #fafafa;
+            position: absolute;
+            border: #d4d4d4 solid 1px;
+            -webkit-transition: width 1.2s ease, opacity 1s ease, left 1.2s ease;
+            -moz-transition: width 1.2s ease, opacity 1s ease, left 1.2s ease;
+            -o-transition: width 1.2s ease, opacity 1s ease, left 1.2s ease;
+            transition: width 1.2s ease, opacity 1s ease, left 1.2s ease;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .header {
+            background:     #dddddd;
+           height: 40px;
+        }
+
+        .event {
+            -webkit-transition: height 0.5s ease, top 0.75s ease;
+            -moz-transition: height 0.5s ease, top 0.75s ease;
+            -o-transition: height 0.5s ease, top 0.75s ease;
+            transition: height 0.5s ease, top 0.75s ease;
+            position: absolute;
+            cursor: pointer;
+            left: 12px;
+        }
+
+        .ss {
+            background:     #f15a25;
+        }
+
+        .aa {
+            background:     #8cc63e;
+        }
+
+        .as {
+            background:     #f9b13b;
+        }
+
+        .sa {
+            background:     #00a4bf;
+        }
+
+        .dragevent {
+            position: absolute;
+            margin: 0px 0px 0px 0px;
+        }
+
+        .draginnerevent {
+            border: red dashed 2px ;
+        }
+
+        .events {
+            overflow-y: scroll;
+        }
+
+        .eventcontainer {
+            overflow: hidden;
+        }
+
+        .view {
+            -webkit-transition: opacity 0.75s ease;
+            -moz-transition: opacity 0.75s ease;
+            -o-transition: opacity 0.75s ease;
+            transition: opacity 0.75s ease;
+        }
+
+        .agendaview {
+            opacity: 0;
+        }
+
+        .weeklyview {
+            opacity: 1;
+        }
+
+        .eventholder {
+            position: relative;
+        }
+
+        .resizeline {
+            height:     8px;
+            top: 0px;
+            left: 0px;
+            cursor:                 ns-resize;
+        }
+
+        .eventcontent {
+            color: #ffffff;
+            margin-left: 0px;
+            padding: 0px 8px 8px 8px;
+        }
+
+        .duration {
+            position: relative;
+            padding-right: 8px;
+            top: -2px;
+        }
+
+        .eventname {
+            display:        inline-block;
+            font-weight:    bold;
+            white-space:    nowrap;
+            overflow:hidden !important;
+            text-overflow:  ellipsis;
+        }
+
+        .engineername {
+            position: relative;
+            top: -5px;
+        }
+
+        .menu {
+            position: absolute;
+            background-color: #ffffff;
+            border: solid;
+            border-width: 1px;
+            border-color: #d4d4d4;
+            z-index: 10000;
+        }
+
+        .menuitem {
+            font-size: 12px;
+            color: #404040;
+        }
+
+        .menuitem:hover {
+            background-color: #d4d4d4;
+            cursor: pointer;
+        }
+
+        .line {
+            padding:                                0px;
+            margin:                                 0px;
+        }
+
+        .legend {
+            width:      20px;
+            height:     20px;
+        }
+
+        .legendtext {
+            padding-left: 8px;
+            font-size: 12px;
+            color: #404040;
+        }
+        table {
+    border-collapse:        collapse;
+}
+
+table tr td {
+    padding:                0px;
+    margin:                 0px;
+    border-spacing:         0px;
+    border-collapse:        collapse;
+}
+
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="day" style$="{{setDayStyle(nr, x, y, width, height, show)}}">
+            
+            <!-- Column header -->
+
+            <div class="header horizontal vertical center center-justified" style$="{{setHeaderStyle(headerHeight)}}">
+                <app-columnheader date="{{date}}" events="{{events}}"></app-columnheader>
+            </div>
+
+            <div class="eventcontainer" on-mousemove="cursormove" on-mouseup="resizeEnd" on-dragover="dragOver" on-contextmenu="templateMenu" on-dblclick="createNewEvent">
+                <div id="events" class="events" style$="{{setEventsStyle(height, width, headerHeight)}}" on-scroll="scrolled">
+                    <div class="eventholder" style$="{{setAllEventContainer(nr, weeklyview, maxagendaheight, maxweeklyviewheight, events.length)}}">
+                        <template is="dom-repeat" items="{{events}}" as="e" filter="{{eventFilter(engineerid, nr, settings.*)}}" observe="date">
+                            <div data-id$="{{e.id}}" class$="{{setEventClass(weeklyview, e.flexibility)}}" style$="{{setEventStyle(weeklyview, agendaheight, width, height, settings.condensed, e, e.*)}}" title="{{e.name}}" draggable="{{isDraggable(e.flexibility, draggable)}}" on-dragstart="dragStart" on-dragend="dragEnd" on-contextmenu="menu" on-dblclick="eventSelected">
+                                <div class="resizeline" on-mousedown="initResizeTop"></div>
+                                <div id$="{{getEventID(e.id)}}" class="eventcontent" style$="{{setEventNameStyle(weeklyview, settings.condensed, agendaheight, width, height, e, e.*)}}">
+                                    <div hidden$="{{settings.condensed}}" class="horizontal">
+                                        <table><tr><td>
+                                        <div class="duration vertical">
+                                            <div>{{fromDate(e.date)}}</div>
+                                            <div>{{toDate(e.date, e.duration)}}</div>
+                                        </div>
+                                    </td><td>
+                                        <div class="vertical">
+                                            <div class="eventname" style$="{{setEventWidth(width)}}">{{e.name}}</div>
+                                            <div class="engineername">{{shortName(e.engineer.name)}}</div>
+                                        </div>
+                                    </td></tr></table>
+                                    </div>
+                                    <div hidden$="{{!settings.condensed}}">
+                                        <div class="horizontal">
+                                            <div>{{fromDate(e.date)}}</div>
+                                            <div>&nbsp;</div>
+                                            <div>({{toDate(e.date, e.duration)}})</div>
+                                            <div>&nbsp;</div>
+                                            <div>{{shortName(e.engineer.name)}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="resizeline" on-mousedown="initResizeBottom"></div>
+                            </div>
+                        </template>
+
+                        <!-- Dragged event -->
+
+                        <div class="dragevent" style$="{{setDraggedEventStyle(nr, dragdata.targetdaynr, dragdata.show, width, height, dragdata.date, dragdata.event.duration, dragdata.*)}}">
+                            <div class="draginnerevent" style$="{{setDraggedEventInnerStyle(width, dragdata.event.duration, dragdata.event.flexibility)}}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right click flexibility changer/Delete in this team menu -->
+
+        <div hidden$="{{!isMenuOpened(menuopened, nr)}}" class="menu" style$="{{setMenuStyle(menux, menuy, menuscrollpos, scrollpos)}}">
+            <paper-item data-type="ss" hidden$="{{showTemplateMenupoint('ss', selectedEvent.flexibility)}}" class="menuitem" on-click="changeFlexibility">
+                <div class="horizontal center">
+                    <div class="legend ss"></div>
+                    <span class="legendtext">Specific person, specific time</span>
+                </div>
+            </paper-item>
+            <paper-item data-type="sa" hidden$="{{showTemplateMenupoint('sa', selectedEvent.flexibility)}}" class="menuitem" on-click="changeFlexibility">
+                <div class="horizontal center">
+                    <div class="legend sa"></div>
+                    <span class="legendtext">Specific person, any time</span>
+                </div>
+            </paper-item>
+            <paper-item data-type="as" hidden$="{{showTemplateMenupoint('as', selectedEvent.flexibility)}}" class="menuitem" on-click="changeFlexibility">
+                <div class="horizontal center">
+                    <div class="legend as"></div>
+                    <span class="legendtext">Any person, specific time</span>
+                </div>
+            </paper-item>
+            <paper-item data-type="aa" hidden$="{{showTemplateMenupoint('aa', selectedEvent.flexibility)}}" class="menuitem" on-click="changeFlexibility">
+                <div class="horizontal center">
+                    <div class="legend aa"></div>
+                    <span class="legendtext">Any person, any time</span>
+                </div>
+            </paper-item>
+            <hr class="line">
+            <paper-item class="menuitem" on-click="deleteEvent">Delete</paper-item>
+            <paper-item class="menuitem" on-click="saveAsTemplate">Save as template</paper-item>
+        </div>
+
+        <!-- Template menu -->
+
+        <div hidden$="{{!isTemplateMenuOpened(menuopened, nr)}}" class="menu" style$="{{setMenuStyle(menux, menuy, menuscrollpos, scrollpos)}}">
+            <paper-item data-id="1" class="menuitem" on-click="createEventByTemplate">Templ1</paper-item>
+            <paper-item data-id="2" class="menuitem" on-click="createEventByTemplate">Templ2</paper-item>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-day',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                nr:                     { type: Number, value: 0, notify: true, readyOnly: false },
+                x:                      { type: Number, value: 0, notify: true, readyOnly: false },
+                y:                      { type: Number, value: 0, notify: true, readyOnly: false },
+                width:                  { type: Number, value: 0, notify: true, readyOnly: false },
+                height:                 { type: Number, value: 0, notify: true, readyOnly: false },
+                date:                   { type: Date, notify: true, readyOnly: false },
+                agendaheight:           { type: Number, value: 0, notify: true, readyOnly: false },
+                weeklyviewheight:       { type: Number, value: 0, notify: true, readyOnly: false },
+                maxagendaheight:        { type: Number, value: 0, notify: true, readyOnly: false },
+                maxweeklyviewheight:    { type: Number, value: 0, notify: true, readyOnly: false },
+                show:                   { type: Boolean, notify: true, readyOnly: false },
+                weeklyview:             { type: Boolean, value: false, notify: true, readyOnly: false, observer: 'weeklyviewChanged' },
+                halfhours:              { type: Array, value: [], notify: true, readyOnly: false },
+                scrollpos:              { type: Number, value: 0, notify: true, readyOnly: false, observer: 'scrollposChanged' },
+                events:                 { type: Array, value: [], notify: true, readyOnly: false },
+                engineerid:             { type: Number, value: 0, notify: true, readyOnly: false },
+                engineer:               { type: Object, notify: true, readyOnly: false },
+                settings:               { type: Object, notify: true, readyOnly: false },
+                dragdata:               { type: Object, notify: true, readyOnly: false },
+                menuopened:             { type: Number, value: -1, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.flexColor = {
+                    ss: '#f15a25',
+                    sa: '#00a4bf',
+                    as: '#f9b13b',
+                    aa: '#8cc63e'
+                };
+
+                self.headerHeight = 40;
+                self.halfhourHeight = 120;
+                self.draggable = true;
+
+                self.dragdata = {
+                    daynr:      self.nr,
+                    startX:     0,
+                    startY:     0,
+                    index:      -1,
+                    event:      { duration: 0 },
+                    date:       new Date(),
+                    duration:   0,
+                    targetdaynr: 0,
+                    show:       false
+                };
+
+                self.halfhour = [];
+
+                var tt = '<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="' + (self.halfhourHeight * 48) + '" viewBox="0 0 2000 ' + (self.halfhourHeight * 48) + '" shape-rendering="crispEdges">';
+                var timeTable = [ tt, tt ];
+
+                for (var i = 0; i < 48; i++) {
+                    self.push('halfhour', { time: i });
+                    var l = '<line x1="0" y1="' + (120 * i) + '" x2="2000" y2="' + (120 * i) + '" style="stroke:rgb(0,0,0);stroke-width:1" stroke-dasharray="5, 10" />';
+                    timeTable[0] += l;
+                    timeTable[1] += l;
+                    timeTable[0] += '<text x="0" y="' + ((120 * i) - 2) + '" font-family="Arial" font-size="11" fill="black">' + self.formatTime(i) + '</text>';
+                }
+
+                timeTable[0] += '</svg>';
+                timeTable[1] += '</svg>';
+                self.timeTable = [ 'data:image/svg+xml;base64,' + btoa(timeTable[0]), 'data:image/svg+xml;base64,' + btoa(timeTable[1]) ];
+            },
+
+            isDraggable: function(flexibility, draggable) {
+                return flexibility != 'ss' && draggable;
+            },
+
+            fromDate: function(date) {
+                return moment(date).format('HH:mm');
+            },
+
+            toDate: function(date, duration) {
+                return moment(date).add(duration, 'minutes').format('HH:mm');
+            },
+
+            eventFilter: function(engid, nr) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                return function(event) {
+                    var dnr = moment(event.date).weekday();
+                    return (engid === -1 || event.engineerid == engid) && nr == (dnr === 0 ? 7 : (dnr - 1)) &&
+                    !(event.flexibility == 'ss' && self.settings.hidered) && // Hide red
+                    (self.settings.hidebasedonduration === 0 ? true : event.duration > self.settings.hidebasedonduration); // Hide based on duration
+                };
+            },
+
+            /**
+             * Formats the specified time - in nr of the 30 minutes format - and
+             * returns it.
+             *
+             * @param   {Number}    time    time nr
+             * @return  {String}    ftime   formatted time in hh:mm format
+             */
+
+            formatTime: function(time) {
+
+                // Formatting the time
+
+                var h = parseInt(time / 2, 10);
+                return (h < 10 ? '0' : '') + h + (time % 2 === 0 ? ':00' : ':30');
+            },
+
+            initResizeTop: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.eventResize(event, 2);
+                
+                return false;
+            },
+
+            initResizeBottom: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Prevent the dragging the event in resize mode
+
+                self.eventResize(event, 1);
+                return false;
+            },
+
+            eventResize: function(event, mode) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Prevent the dragging the event in resize mode
+
+                self.resizeData = {
+                    startY:     event.clientY,
+                    mode:       mode
+                };
+                self.draggable = false;
+
+                // Getting the row and column index of the event and the event
+                // itself.
+
+                var node = event.target;
+
+                while (!node.getAttribute('data-id')) {
+                    node = node.parentElement;
+                }
+
+                var id = node.getAttribute('data-id');
+
+                var index;
+
+                for (var i = 0; i < self.events.length; i++) {
+                    if (self.events[i].id == id) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                self.resizeData.index = index;
+                self.resizeData.date = self.events[index].date;
+                self.resizeData.duration = self.events[index].duration;
+            },
+
+            resizeEnd: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.draggable = true;
+                self.dragdata = undefined;
+            },
+
+            /**
+             * Resize event.
+             *
+             * @param   {Object}    event   mouse move event
+             */
+
+            cursormove: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Handling the event in resize mode only
+
+                if (!self.draggable) {
+                    if (self.weeklyview) {
+                        var diff = Math.round((event.clientY - self.resizeData.startY) / self.halfhourHeight);
+                        var duration;
+
+                        if (self.resizeData.mode == 1) { // Bottom
+                            duration = self.resizeData.duration + (diff * 30);
+
+                            if (duration > 0 && duration != self.events[self.resizeData.index].duration) {
+                                if (!self.isReserved(self.events[self.resizeData.index].id, self.events[self.resizeData.index].date, duration, self.events[self.resizeData.index].engineer.id)) {
+                                    self.set('events.' + self.resizeData.index + '.duration', duration);
+                                }
+                            }
+                        } else if (self.resizeData.mode == 2) { // Top
+                            var date = moment(self.resizeData.date).add(diff * 30, 'minutes').toDate();
+                            var md = moment(date).format('YYYY.MM.DD HH:mm');
+                            duration = self.resizeData.duration - (diff * 30);
+
+                            if (duration > 0 && (duration != self.events[self.resizeData.index].duration || md != moment(self.events[self.resizeData.index].date).format('YYYY.MM.DD HH:mm'))) {
+                                if (!self.isReserved(self.events[self.resizeData.index].id, date, duration, self.events[self.resizeData.index].engineer.id)) {
+                                    self.set('events.' + self.resizeData.index + '.date', date);
+                                    self.set('events.' + self.resizeData.index + '.duration', duration);
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+
+            isReserved: function(id, date, duration, engineerid) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var dt1 = moment(date);
+                var dt2 = moment(date).add(duration, 'minutes');
+
+                for (var i = 0; i < self.events.length; i++) {
+                    if (engineerid == self.events[i].engineerid) {
+                        var e = self.events[i];
+                        var d1 = moment(e.date);
+                        var d2 = moment(e.date).add(e.duration, 'minutes');
+
+                        if (e.id != id) {
+                            if (dt1.isSame(d1) || dt1.isBetween(d1, d2) || dt2.isBetween(d1, d2) || dt2.isSame(d2) || (dt1.isBefore(d1) && dt2.isAfter(d2))) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            },
+
+            dragStart: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var node = event.target;
+
+                while (!node.getAttribute('data-id')) {
+                    node = node.parentElement;
+                }
+
+                var id = node.getAttribute('data-id');
+
+                var index;
+
+                for (var i = 0; i < self.events.length; i++) {
+                    if (self.events[i].id == id) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                self.dragdata = {
+                    daynr:          self.nr,
+                    startX:         event.clientX,
+                    startY:         event.clientY,
+                    scrollpos:      self.scrollpos,
+                    index:          index,
+                    event:          self.events[index],
+                    date:           self.events[index].date,
+                    duration:       self.events[index].duration,
+                    flexibility:    self.events[index].flexibility,
+                    show:           false
+                };
+
+                if (!self.weeklyview) {
+                    var date = moment(self.dragdata.event.date);
+                    var top = (date.hours() * self.halfhourHeight * 2) + (date.minutes() === 0 ? 0 : self.halfhourHeight);
+
+                    var h = new Date(self.dragdata.event.date).getHours();
+                    var m = new Date(self.dragdata.event.date).getMinutes();
+
+                    self.dragdata.scrollpos = self.halfhourHeight * 2 * h + (m === 0 ? 0 : self.halfhourHeight);
+
+                    setTimeout(function() {
+//console.log(event.clientY, event.clientX, self.dragdata.scrollpos);
+                    }, 1000);
+
+self.dragdata.startY = 784;
+//self.dragdata.scrollpos = 2023;
+//self.dragdata.scrollpos = self.scrollpos;
+                    /*self.dragdata.startX = 727;
+                    self.dragdata.startY = 784;
+                    self.dragdata.scrollpos = 2023;*/
+                } else {
+                    console.log(self.dragdata.startX);
+                }
+
+                if (!self.weeklyview) {
+                    var date = moment(self.dragdata.date);
+                    var top = (date.hours() * self.halfhourHeight * 2) + (date.minutes() === 0 ? 0 : self.halfhourHeight);
+
+                    var dragIcon = document.createElement('div');
+                    dragIcon.style.opacity = '0.75';
+                    dragIcon.style.width = (self.width - 24) + 'px';
+                    dragIcon.style.height= (self.halfhourHeight * (self.dragdata.duration / 30)) + 'px';
+                    dragIcon.style.background = self.flexColor[self.dragdata.flexibility];
+
+                    var clone = self.$$('#event' + self.dragdata.event.id).cloneNode(true);
+                    clone.style.position = 'relative';
+                    clone.style.top = '8px';
+                    dragIcon.appendChild(clone);
+                    document.body.appendChild(dragIcon);
+
+                    event.dataTransfer.setDragImage(dragIcon, event.offsetX, event.offsetY);
+                }
+
+                if (!self.weeklyview) {
+                    self.engineerid = self.events[index].engineerid;
+                    self.weeklyview = true;
+                }
+            },
+
+            getEventID: function(id) {
+                return 'event' + id;
+            },
+
+            dragOver: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Getting day
+
+                if (self.dragdata) {
+                    var movedDay = Math.round((event.clientX - self.dragdata.startX) / self.width);
+                    var moved30 = Math.round((event.clientY - (self.dragdata.startY + (self.dragdata.scrollpos - self.scrollpos))) / self.halfhourHeight);
+
+                    if (self.dragdata.flexibility == 'as') {
+
+                    } else {
+                        var h = parseInt(moved30 / 2, 10);
+                        var m = (moved30 % 2) * 30;
+
+                        var d = moment(self.dragdata.event.date).add(movedDay, 'days').add(h, 'hours').add(m, 'minutes');
+
+                        if (!d.isSame(self.dragdata.date)) {
+                            if (!self.isReserved(self.dragdata.event.id, d.toDate(), self.dragdata.event.duration, self.dragdata.event.engineer.id)) {
+                                self.set('dragdata.date', d.toDate());
+                                self.set('dragdata.show', !d.isSame(self.dragdata.event.date));
+                                self.set('dragdata.targetdaynr', self.dragdata.daynr + movedDay);
+                            }
+                        }
+                    }
+                }
+            },
+
+            dragEnd: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                if (self.dragdata.targetdaynr == self.dragdata.daynr) {
+                    self.set('events.' + self.dragdata.index + '.date', self.dragdata.date);
+                } else {
+                    self.set('events.' + self.dragdata.index + '.date', self.dragdata.date);
+                }
+
+                self.set('dragdata.show', false);
+                self.set('dragdata.index', -1);
+            },
+
+            scrollToTop: function(node, scrollDuration) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var step = self.scrollpos / (scrollDuration / 5);
+
+                var scrollInterval = setInterval(function() {
+                    if (self.scrollpos <= 0) {
+                        self.scrollpos = 0;
+                        clearInterval(scrollInterval);
+                    } else {
+                        self.scrollpos-=step;
+                    }
+                }, 5);
+            },
+
+            weeklyviewChanged: function(newValue, oldValue) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                if (newValue) {
+                    if (self.nr == 1) {
+                        setTimeout(function() {
+                            if (self.dragdata && self.dragdata.index != -1) {
+                                var h = new Date(self.dragdata.event.date).getHours();
+                                var m = new Date(self.dragdata.event.date).getMinutes();
+
+                                self.scrollpos = self.halfhourHeight * 2 * h + (m === 0 ? 0 : self.halfhourHeight);
+                            } else {
+                                self.scrollpos = self.halfhourHeight * 2 * 6;
+                            }
+                        }, 100);
+                    }
+                } else if (!newValue && oldValue !== undefined) {
+                    self.scrollToTop(self.$.events, 1000);
+                }
+            },
+
+            setEventClass: function(weeklyview, flexibility) {
+                return 'event ' + flexibility + ' vertical';
+            },
+
+            setHourStyle: function(height) {
+                return 'height: 100px';
+            },
+
+            setWeeklyViewClass: function(weeklyview) {
+                return 'view ' + (weeklyview ? 'weeklyview' : 'agendaview');
+            },
+
+            setAllEventContainer: function(nr, weeklyview, maxagendaheight, maxweeklyviewheight) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                return 'height: ' + ((weeklyview ? maxweeklyviewheight : maxagendaheight)) + 'px;' + (weeklyview ? 'background-image: url("' + self.timeTable[nr === 0 ? 0 : 1] + '")' : '');
+            },
+
+            scrollposChanged: function(newValue) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.$.events.scrollTop = newValue;
+            },
+
+            scrolled: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.scrollpos = event.target.scrollTop;
+            },
+
+            setHeaderStyle: function(height) {
+                return 'height: ' + height + 'px';
+            },
+
+            setEventsStyle: function(height, width, headerHeight) {
+                return 'height: ' + (height - headerHeight) + 'px; width: ' + (width + 15) + 'px';
+            },
+
+            setDraggedEventStyle: function(nr, targetnr, show, width, height, d, duration) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var date = moment(d);
+                var top = (date.hours() * self.halfhourHeight * 2) + (date.minutes() === 0 ? 0 : self.halfhourHeight);
+
+                return 'position: absolute; opacity: 0.75;top: ' + top + 'px; height: ' + (self.halfhourHeight * (duration / 30)) + 'px;width: ' + (self.width - 5) + 'px; ' + (show && nr == targetnr ? '' : 'display: none');
+            },
+
+            setDraggedEventInnerStyle: function(width, duration, flexibility) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                return 'width: ' + (parseInt(width, 10) - 5) + 'px; height: ' + ((self.halfhourHeight * (duration / 30)) - 4) + 'px;border: ' + self.flexColor[flexibility] + ' dashed 2px;';
+            },
+
+            setEventStyle: function(weeklyview, agendaheight, width, height, condensed, event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                if (weeklyview) {
+                    var date = moment(event.date);
+                    var top = (date.hours() * self.halfhourHeight * 2) + (date.minutes() === 0 ? 0 : self.halfhourHeight);
+
+                    return 'position: absolute; opacity: 0.75;top: ' + top + 'px; height: ' + (self.halfhourHeight * (event.duration / 30)) + 'px;width: ' + (self.width - 24) + 'px';
+                } else {
+                    return 'position: relative; margin-top: 8px;top: 0px;height: ' + ((weeklyview ? self.weeklyviewheight : agendaheight) - (condensed ? 14 : 0)) + 'px;margin-bottom: 8px;width: ' + (width - 24) + 'px';
+                }
+            },
+
+            setEventNameStyle: function(weeklyview, condensed, agendaheight, width, height, event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                if (weeklyview) {
+                    var top = moment(event.date).hours() * self.halfhourHeight * 2;
+                    return 'height: ' + ((self.halfhourHeight * (event.duration / 30)) - 24) + 'px;font-size: ' + (condensed ? 9 : 12) + 'px;';
+                } else {
+                    return 'height: ' + ((weeklyview ? self.weeklyviewheight : agendaheight) - 24) + 'px;font-size: ' + (condensed ? 9 : 12) + 'px;';
+                }
+            },
+
+            setDayStyle: function(nr, x, y, width, height, show) {
+                return 'left: ' + x + 'px; top: ' + y + 'px; width: ' + width + 'px; height: ' + height + 'px;' + (nr == 6 ? 'border-right: #d4d4d4 solid 1px;' : '') + 'opacity: ' + (show ? 1 : 0);
+            },
+
+            shortName: function(name) {
+                if (name) {
+                    var pos = name.lastIndexOf(' ');
+
+                    if (pos >= 0) {
+                        return name.substring(0, pos + 1) + name.substring(pos + 1, pos + 2).toUpperCase();
+                    }
+                }
+
+                return '';
+            },
+
+            setEventWidth: function(width) {
+                return 'width: ' + parseInt(width - 82, 10) + 'px';
+            },
+
+            menu: function(event, opt, sender) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                window.eventmenuclicked = true;
+
+                var node = event.target;
+
+                while (!node.getAttribute('data-id')) {
+                    node = node.parentElement;
+                }
+
+                var id = node.getAttribute('data-id');
+                var index;
+
+                for (var i = 0; i < self.events.length; i++) {
+                    if (self.events[i].id == id) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                self.menux = event.clientX;
+                self.menuy = event.clientY;
+                self.menuscrollpos = self.scrollpos;
+                self.selectedEvent = self.events[index];
+                self.selectedEventIndex = index;
+                self.menuopened = self.nr;
+
+                return false;
+            },
+
+            templateMenu: function(event, opt, sender) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                if (!window.eventmenuclicked && self.weeklyview) {
+                    window.templatemenuclicked = true;
+
+                    self.menux = event.clientX;
+                    self.menuy = event.clientY;
+                    self.menuscrollpos = self.scrollpos;
+                    self.menuopened = 100 * self.nr;
+                }
+
+                return false;
+            },
+
+            setMenuStyle: function(x, y, menuscrollpos, scrollpos) {
+                var top = y + menuscrollpos - scrollpos - 76;
+
+                return 'left: ' + x + 'px; top: ' + top + 'px;' + (top <= 100 ? 'display: none;' : '');
+            },
+
+            isMenuOpened: function(menuopened, nr) {
+                return menuopened == nr;
+            },
+
+            isTemplateMenuOpened: function(menuopened, nr) {
+                return menuopened >= 100 && (menuopened / 100) == nr;
+            },
+
+            changeFlexibility: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var node = event.target;
+
+                while (!node.getAttribute('data-type')) {
+                    node = node.parentElement;
+                }
+
+                var type = node.getAttribute('data-type');
+                self.set('events.' + self.selectedEventIndex + '.flexibility', type);
+            },
+
+            showTemplateMenupoint: function(mpflex, flexibility) {
+                return mpflex == flexibility;
+            },
+
+            deleteEvent: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.splice('events', self.selectedEventIndex, 1);
+            },
+
+            createEventByTemplate: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var node = event.target;
+
+                while (!node.getAttribute('data-id')) {
+                    node = node.parentElement;
+                }
+
+                var id = node.getAttribute('data-id');
+                var y = event.clientY - 189 + self.scrollpos;
+                var cellnr = parseInt((y < 0 ? 0 : y) / 120);
+                var date = moment(self.date).add(cellnr * 30, 'minutes').toDate();
+
+                self.push('events', {id: self.events.length + 1, engineerid: self.engineerid, name: 'Igen', date: date, duration: 30, flexibility: 'sa', engineer: { id: self.engineerid, name: 'Sarvari Andras' } });
+            },
+
+            saveAsTemplate: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                console.log('SAVE AS');
+            },
+
+            createNewEvent: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                if (!window.eventSelected && self.weeklyview) {
+                    var date = moment(self.date).add(parseInt((event.clientY + self.scrollpos - (self.y + self.headerHeight + 72)) / self.halfhourHeight, 10) * 30, 'minutes').toDate();
+                    var e = {
+                        engineerid:     self.engineer.id,
+                        name:           'Untitled',
+                        date:           date,
+                        duration:       30,
+                        flexibility:    'aa',
+                        engineer:       self.engineer
+                    };
+
+                    self.fire('new-event', { event: e });
+                }
+
+                delete window.eventSelected;
+            },
+
+            eventSelected: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                window.eventSelected = true;
+
+                var node = event.target;
+
+                while (!node.getAttribute('data-id')) {
+                    node = node.parentElement;
+                }
+
+                var id = node.getAttribute('data-id');
+
+                var index;
+
+                for (var i = 0; i < self.events.length; i++) {
+                    if (self.events[i].id == id) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                self.fire('event-selected', { event: self.events[index], index: index });
+            }
+        });
+    </script>
+</dom-module>

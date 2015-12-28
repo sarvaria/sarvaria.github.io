@@ -1,0 +1,84 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+
+<!--
+Description:
+
+Column header.
+-->
+
+<dom-module id="app-refresh">
+
+    <!-- Style of the component -->
+
+    <style>
+        paper-fab.grey {
+          --paper-fab-background: #d4d4d4;
+        }    
+
+        paper-fab.red {
+          --paper-fab-background: #ff0000;
+        }     
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div>
+            <paper-fab hidden$="{{!hasNewEvents(eventcount)}}" src$="{{setEventCountStyle(eventcount)}}" class="grey" on-click="refresh"></paper-fab>
+            <paper-fab hidden$="{{hasNewEvents(eventcount)}}"src$="{{setEventCountStyle(eventcount)}}" class="red" on-click="refresh"></paper-fab>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-refresh',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                eventcount:         { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+
+            setEventCountStyle: function(eventcount) {
+                return 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
+                '<text x="24" y="42" font-family="Arial" font-size="48" text-anchor="middle" fill="white">' + eventcount + '</text>' +
+                '</svg>');
+            },
+
+            hasNewEvents: function(eventcount) {
+                return eventcount === 0;
+            },
+
+            refresh: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.fire('refresh');
+            }
+        });
+    </script>
+</dom-module>

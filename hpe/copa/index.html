@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="hu">
+	<head>
+
+        <!-- Meta informations about the site -->
+
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="title" content="COPA Weekly View"/>
+        <meta name="keywords" content="HP,HPE,PDM,COPA,Production,Management,Weekly,View,Calendar of Planned Activities"/>
+        <meta name="description" content="COPA Weekly View"/>
+        <meta name="application-name" content="COPA Weekly View"/>
+        <meta name="application-url" content="copa"/>
+
+        <!-- Loading libraries and CSS -->
+
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="bower_components/polymer/polymer.html">
+
+        <script src="js/moment.min.js"></script>
+        <script src="js/sprintf.min.js"></script>
+        <script src="js/util.js"></script>
+
+        <!-- Icon and title of the site -->
+
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        <title>COPA - Weekly View</title>
+
+        <style>
+
+            /**
+             * Font definitions.
+             */
+
+            @font-face {
+                font-family:            MetricLight;
+                src:                    url("fonts/Metric-Light.otf") format("opentype");
+            }
+
+            @font-face {
+                font-family:            MetricLight;
+                font-weight:            bold;
+                src:                    url("fonts/Metric-Bold.otf") format("opentype");
+            }
+
+            /**
+             * HTML and BODY designing.
+             */
+
+            html, body {
+                -webkit-background-clip:    border-box;
+                -webkit-background-origin:  padding-box;
+                -webkit-background-size:    auto;
+
+                background-color:           #f3f3f3;
+                background-attachment:      scroll;
+                background-clip:            border-box;
+                background-image:           none;
+                background-origin:          padding-box;
+                background-size:            auto;
+                
+                color:                      #000000;
+                display:                    block;
+                
+                font-family:                MetricLight, Arial;
+                font-size:                  18px;
+                margin:                     0px 0px 0px 0px;
+                padding:                    0px 0px 0px 0px;
+                overflow:                   hidden;
+            }
+        </style>
+    </head>
+
+    <body unresolved oncontextmenu="return false" onresize="resize()">
+
+        <!-- Importing templates -->
+
+        <link rel="import" href="app/app-main/app-main.html">
+
+        <!-- Main entry point of the application -->
+
+        <app-main id="main"></app-main>
+
+        <script>
+
+            /**
+             * Redraws the screen when the browser has been resized.
+             */
+
+            function resize() {
+
+                // Getting the main module and 
+        
+                var main = document.getElementById('main');
+        
+                // Setting the width and height of the main module
+        
+                main.setAttribute('width', window.innerWidth);
+                main.setAttribute('height', window.innerHeight);
+            }
+
+            /**
+             * Redrawing the screen by self-invkoing way when the document
+             * is ready.
+             */
+
+            (function () {
+                resize();
+            })();
+        </script>
+    </body>
+</html>

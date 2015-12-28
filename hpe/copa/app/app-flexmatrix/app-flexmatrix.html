@@ -1,0 +1,164 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<!--
+Description:
+
+Flexibility matrix.
+-->
+
+<dom-module id="app-flexmatrix">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+
+        .flexmatrix {
+            height:                             166px;
+            cursor:                             pointer;
+            transition:                         all 0.4s;
+            -moz-transition:                    all 0.4s;
+            -webkit-transition:                 all 0.4s;
+            -o-transition:                      all 0.4s;   
+            -webkit-transition-timing-function: cubic-bezier(0.275, 0.100, 0.000, 0.995);
+            transition-timing-function:         cubic-bezier(0.275, 0.100, 0.000, 0.995);
+            background-color:                   #fafafa;
+            position:                           absolute;
+            right:                              0px;
+            top:                                70px;
+        }
+
+        .matrix {
+            white-space:                        nowrap;
+        }
+
+        .matrixcontent {
+                padding:                            16px;
+            }
+
+            .legend {
+    width:                              20px;
+    height:                             20px;
+    margin:                             4px;
+}
+
+.legendcontainer {
+    padding-bottom:                     5px
+}
+
+.legendtext {
+    padding-left:                       8px;
+    font-size:                          12px;
+    color:                              #404040;
+}
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="flexmatrix" style$="{{setStyle(opened, size)}}" on-click="toggle">
+            <div class="matrix">
+                <div class="horizontal center">
+                    <img src="images/matrix.png" width$="{{size.close}}" height="166" style$="{{setImageStyle(opened)}}">
+                    <div class="vertical matrixcontent">
+                        <div class="horizontal center legendcontainer"><div class="legend" style="background-color: #8cc63e;"></div><span class="legendtext"><span style="color: #8cc63e; font-weight: bold">Flex</span> engineer, <span style="color: #8cc63e; font-weight: bold">Flex</span> time</span></div>
+                        <div class="horizontal center legendcontainer"><div class="legend" style="background-color: #f9b13b;"></div><span class="legendtext"><span style="color: #f9b13b; font-weight: bold">Flex</span> engineer, <span style="color: #f9b13b; font-weight: bold">Fixed</span> time</span></div>
+                        <div class="horizontal center legendcontainer"><div class="legend" style="background-color: #00a4bf;"></div><span class="legendtext"><span style="color: #00a4bf; font-weight: bold">Fixed</span> engineer, <span style="color: #00a4bf; font-weight: bold">Flex</span> time</span></div>
+                        <div class="horizontal center legendcontainer"><div class="legend" style="background-color: #f15a25;"></div><span class="legendtext"><span style="color: #f15a25; font-weight: bold">Fixed</span> engineer, <span style="color: #f15a25; font-weight: bold">Fixed</span> time</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-flexmatrix',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                opened:         { type: Boolean, value: false, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.size = {                       // Open and close width of the legend
+                    open:   300,
+                    close:  37
+                };
+            },
+
+            setStyle: function(opened, size) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                return 'width: ' + (opened ? size.open : size.close) + 'px';
+            },
+
+            setImageStyle: function(size) {
+
+                return 'max-width: ' + size.close + 'px; min-width: ' + size.close + 'px';
+            },
+
+            toggle: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Closes or opens the legend
+
+                self.opened = !self.opened;
+
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+    </script>
+</dom-module>

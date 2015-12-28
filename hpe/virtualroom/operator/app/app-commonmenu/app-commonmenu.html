@@ -1,0 +1,246 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+Shows a standard HP common menubar.
+-->
+
+<dom-module id="app-commonmenu">
+    
+    <!-- Style of the component -->
+    
+    <style>
+        .menubar {
+        	margin:         		0px;
+        	padding:  				8px 0px 0px 0px;
+        	width:                  1000px;
+        }
+        
+        .menubar ul {
+        	height: 				14px;
+        	padding:        		0px;
+        	margin:         		0px;
+        }
+        
+        .menubar ul li {
+        	height: 				14px;
+        	line-height: 			14px;
+        	font-size:      		13px;
+        	list-style: 			none;
+        	padding:        		0px 35px 0px 35px;
+        	display: 				block;
+        	cursor:         		pointer;
+        	float:         			left;
+        }
+        
+        .menubar ul li a {
+        	color: 					rgb(118, 118, 118);
+        	text-decoration: 		none;
+        	display: 				inline;
+        }
+        
+        .empllink {
+        	background-color: 		rgba(0, 0, 0, 0);
+        	background-image: 		url(http://intranet.hp.com/panhp/brand/_experience/img/top-nav-carrot-grey.png);
+        	background-origin: 		padding-box;
+        	background-repeat: 		no-repeat;
+        	background-position: 	86% 80%;
+        }
+        
+        .empllistholder {
+        	background-color: 		#ffffff;
+            overflow: 				hidden;
+            margin:             	2px 0px 0px 0px;
+            transition: 			height 0.6s;
+            -moz-transition: 		height 0.6s;
+            -webkit-transition: 	height 0.6s;
+            -o-transition: 			height 0.6s;
+        }
+        
+        .empllistholder_inner {
+            padding: 				20px 0px 20px 0px;
+            margin:             	6px 0px 8px 0px
+        }
+        
+        .list {
+        	padding:           		0px 55px 0px 55px;
+        	width: 					270px;
+        	white-space: 			nowrap;
+        }
+        
+        .list ul li {
+        	padding:    			0px 0px 0px 16px !important;
+        	background: 			url(http://intranet.hp.com/panhp/brand/_experience/img/orangeArrow.png) no-repeat 3px .55em;
+        	display: 				block;
+        	clear: 					left;
+        	line-height: 			22px;
+        	height: 				22px;
+        }
+        
+        .list ul li a {
+        	padding:     			0px;
+        	line-height: 			22px;
+        	font-size: 				15px;
+        	color: 					#01a982 !important;
+        }
+        
+        .list ul li a:visited {
+        	color: 					#5f7a76 !important;
+        	margin: 				0px;
+        	padding: 				0px;
+        }
+    </style>
+    
+    <!-- Content of the component -->
+    
+    <template>
+        <div class="horizontal center-justified">
+        <div class="menubar">
+        	<ul>
+        		<li>
+        			<a href="http://athp.hp.com">@hp</a>
+        		</li>
+        		<li>
+        			<a href="http://athp.hp.com/portal/site/athp/menuitem.0dfd84041fd0540a0da96c32238f82f0/">Job tools &amp; services</a>
+        		</li>
+        		<li>
+        			<a href="https://hrcontent.corp.hp.com/sites/HRGateway/smp/protected/Home.page">Human Resources & benefits</a>
+        		</li>
+        		<li>
+        			<a href="http://athp.hp.com/portal/site/athp/menuitem.0f61045382dc0d55461f32b5548b81f0/">Organizations &amp; Locations</a>
+        		</li>
+        		<li>
+        			<a href="http://athp.hp.com/portal/site/athp/menuitem.be290989422bdb6192123920038f82f0/">Index</a>
+        		</li>
+        		<li class="empllink" on-click="showEmployeeLinks">
+        			<a href="javascript:void(0)">Employee links</a>
+        		</li>
+        	</ul>
+        	<div class="empllistholder" style$="{{setLinkHolderStyle(sel)}}">
+        		<div class="empllistholder_inner horizontal">
+	        		<div class="list">
+	        			<ul>
+	        				<li><a href="http://intranet.hp.com/Sites/atHP_help/Pages/at_hp_help_homepage.aspx">@hp help</a></li>
+	    					<li><a href="http://athp.hp.com/portal/site/athp/menuitem.defffafaf4885f2745876533c285ce01/">Approval Central</a></li>              
+	    					<li><a href="https://athp-idp-it.houston.hp.com/affwebservices/public/saml2sso?SPID=https://tib.carlsonwagonlit.com/hp">Book Travel</a></li>                
+	    					<li><a href="http://intranet.hp.com/marketingandcomms/ww/Pages/page.aspx?q=brandcenter">Brand guidelines and templates</a></li>             
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/HRGS/Bureaucracy_Busters.page">Bureaucracy Busters</a></li>                
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/CareerDevelopment/CareerDevelopment.page">Careers @hp</a></li>             
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/HRGateway/smp/protected/CompensationBenefits.page">Compensation &amp; benefits</a></li>                
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/ContactHR/ContactHR.page">Contact HR</a></li>              
+	    					<li><a href="http://athp.hp.com/portal/site/athp/menuitem.fce50e89ed5f2e5b0da96c32238f82f0/">Country sites</a></li>             
+	    					<li><a href="http://intranet.hp.com/marketing/brandmarketing/epp/Pages/index.aspx">Employee Purchase Program</a></li>               
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/GblEmployeeReferral/GlobalEmployeeReferralPage.page">Employee Referral Program</a></li>                
+	    					<li><a href="http://hub.corp.hp.com/er.html">Expense reimbursement</a></li>             
+	    					<li><a href="http://intranet.hp.com/HPIT/GetIT/Pages/index.aspx">Get IT @hp</a></li>                
+	    					<li><a href="http://intranet.hp.com/gre/ww/">Global Real Estate</a></li>                
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/TotalRewards/Global_Holiday_Calendar.page">Holiday calendar</a></li>               
+	    					<li><a href="http://blogs.hp.com/">HP Blogs</a></li>                
+	    					<li><a href="http://imt-pro.itcs.hp.com/IMT/default.aspx">HP Instant Translator</a></li>                
+	    					<li><a href="http://hpnn.hp.com/">HP News Now</a></li>              
+	    					<li><a href="http://ext.hpnn.hp.com/LandingPages/Breaking-News.aspx">HP Separation</a></li>         
+						</ul>       
+					</div>      
+					<div class="list">           
+						<ul>               
+	    					<li><a href="http://hpnow.corp.hp.com/hpwaynow/">HP Way now</a></li>                
+	    					<li><a href="http://hpedia.hp.com/wiki/Main_Page">HPedia</a></li>               
+	    					<li><a href="http://intranet.hp.com/panhp/learn/pages/index.aspx">HP University</a></li>                
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/HRGateway/smp/protected/Home.page">Human Resources @hp</a></li>                
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/GblCareerOpp/JobSearcher_CareerOpportunities.page">Job Searcher</a></li>               
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/ManagerGateway/smp/protected/Home.page">Manager Gateway</a></li>               
+	    					<li><a href="http://ent112.sharepoint.hp.com/teams/ManagerSource/SitePages/index.html">ManagerSource</a></li>               
+	    					<li><a href="https://hp.northernlight.com/">Market Vision</a></li>              
+	    					<li><a href="http://intranet.hp.com/cass/procurementcentral/MVP/SitePages/index.aspx">Mutual Value Program (MVP)</a></li>               
+	    					<li><a href="https://hr.freedom.corp.hp.com/hewittSSO">MyHPBenefits - US</a></li>               
+	    					<li><a href="http://propel-pro.houston.hp.com/propel/CMP_HP/Service/Service">myITservices (formerly Solution Source)</a></li>               
+	    					<li><a href="https://myitsupport.hp.com/myITsupport">myITsupport (formerly Get IT)</a></li>             
+	    					<li><a href="https://www.myroom.hp.com/">MyRoom</a></li>                
+	    					<li><a href="https://hpprivacyadvisor.atlanta.hp.com/Accountability/index.jsp">Privacy Advisor tool</a></li>                
+	    					<li><a href="http://intranet.hp.com/cass/procurementcentral/site/index.aspx">Procurement Central</a></li>               
+	    					<li><a href="http://intranet.hp.com/ipg/ams/GraphicArtsGTMU/Pages/quick_print.aspx">Quick Print</a></li>                
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/Recognition/Home.page">Recognition</a></li>                
+	    					<li><a href="http://legal.hp.com/legal/pages/ethicsconcernsquestions.aspx">Report ethical concerns</a></li>         
+						</ul>       
+					</div>      
+					<div class="list">           
+						<ul>               
+	    					<li><a href="http://intranet.hp.com/gtbp/so/salescomp/ResourceCentral/Pages/index.aspx">Sales Comp Resource Central</a></li>                
+	    					<li><a href="https://hp.my.salesforce.com/">Salesforce.com</a></li>             
+	    					<li><a href="https://hrcontent.corp.hp.com/sites/GblChecklists/SelfService.page">Self Service @hp</a></li>              
+	       					<li><a href="http://intranet.hp.com/cass/procurementcentral/SmartBuy/Pages/WelcometoSmartBuy.aspx">SmartBuy</a></li>                
+	       					<li><a href="http://intranet.hp.com/Sites/Travel/Meetings/Pages/SmartMeetingsProgram-TE.aspx">SmartMeetings</a></li>                
+	       					<li><a href="http://sbc.corp.hp.com/pages/index.aspx">Standards of Business Conduct</a></li>                
+	       					<li><a href="https://ipfusion.anaqua.com/anaqua/Survey/Survey.aspx?SurveyTemplateId=13">Submit Invention Disclosure</a></li>                
+	       					<li><a href="http://intranet.hp.com/APJ/HP_South_Pacific/Payroll_Forms/Pages/Payrollhomepage.aspx">Timecard - APJ</a></li>              
+	       					<li><a href="http://ent243.sharepoint.hp.com/teams/Canadapayroll/default.aspx">Timecard - Canada</a></li>               
+	       					<li><a href="https://hrcontent.corp.hp.com/sites/US/HR/US_TimeKeeping.page">Timecard - US</a></li>              
+	       					<li><a href="http://intranet.hp.com/cass/GBS/EMEA/FrontOffice_and_Payroll/Pages/EMEALinks.aspx">Timecard - EMEA</a></li>                
+	       					<li><a href="http://intranet.hp.com/sites/athp/PortalPages/timezonetools.htm">Time zone converter</a></li>              
+	       					<li><a href="http://intranet.hp.com/sites/travel/Pages/index.aspx">Travel</a></li>              
+	       					<li><a href="https://rooms.hp.com/Default.aspx">Virtual Rooms</a></li>              
+	       					<li><a href="http://voctool.hp.com/">Voice of the Customer</a></li>             
+	       					<li><a href="https://hrcontent.corp.hp.com/sites/GblWellness/HPGlobalWellness.page">Wellness</a></li>               
+	       					<li><a href="https://wd5.myworkday.com/hp/d/home.htmld">Workday</a></li>
+	       					<li><a href="https://hrcontent.corp.hp.com/sites/Workday/smp/protected/Workday_Support_Center.page">Workday Support Center</a></li>
+	   					</ul>
+	        		</div>
+	        	</div>
+        	</div>
+        </div>
+        </div>
+    </template>
+    
+     <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-commonmenu',
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                self.sel = false;
+            },
+
+            setLinkHolderStyle: function(sel) {
+                return 'height: ' + (sel ? 452 : 0) + 'px';
+            },
+            
+            showEmployeeLinks: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Shows or hides the employee links
+
+                self.sel = !self.sel;
+            }
+        });
+    </script>
+</dom-module>

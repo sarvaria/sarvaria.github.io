@@ -1,0 +1,407 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hp.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+Creates a radio button group.
+
+Attributes:
+
+orientation         {String}     orientation of the radio group. Can be 
+                                 "vertical" or "horizontal".
+                                 The default is: "vertical".
+selected            {String}     name of the selected radio button
+disabled            {Boolean}    disables the radio buttons in this group.
+                                 Default: false
+labelalign          {String}     align of the label. Can be "left" or "right".
+                                 The default is: "right".
+messageposition     {String}     position of the message for the label.
+                                 Can be "right" or "below". The default is:
+                                 "right".
+labelwidth          {Number}     width of the label for a button.
+                                 The default is 120.
+margintop           {Boolean}    margin from the top. The default is 0.
+marginbottom        {Boolean}    margin from the bottom. The default is 0.
+marginleft          {Boolean}    margin from the left. The default is 0.
+marginright         {Boolean}    margin from the right. The default is 0.
+-->
+
+<dom-module id="app-radiogroup">
+
+    <!-- Style of the component -->
+
+    <style>   
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-vertical);
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class$="{{setClass(orientation)}}" on-selected="radiobuttonSelected">
+            <content id="content" select="hp-radiobutton"></content>
+        </div>
+    </template>
+
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'hp-radiogroup',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                orientation:        { type: String, value: 'vertical', notify: true, readyOnly: false },
+                labelalign:         { type: String, value: 'right', notify: true, readyOnly: false },
+                messageposition:    { type: String, value: 'right', notify: true, readyOnly: false },
+                labelwidth:         { type: Number, value: 120, notify: true, readyOnly: false },
+                selected:           { type: String, value: null, notify: true, readyOnly: false },
+                disabled:           { type: Boolean, value: false, notify: true, readyOnly: false },
+                margintop:          { type: Number, value: 0, notify: true, readyOnly: false },
+                marginbottom:       { type: Number, value: 0, notify: true, readyOnly: false },
+                marginleft:         { type: Number, value: 0, notify: true, readyOnly: false },
+                marginright:        { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+             
+            ready: function() {
+
+                // Reference to the current object
+                
+                var self = this;
+
+                // Getting the nodes of the content
+
+                self.nodes = Polymer.dom(self.$.content).getDistributedNodes();
+
+                // Setting the selected radiobutton
+
+                if (self.nodes) {
+                    for (var i = 0; i < self.nodes.length; i++) {
+                        self.nodes[i].messageposition = self.messageposition;
+                        self.nodes[i].labelalign = self.labelalign;
+                        self.nodes[i].labelwidth = self.labelwidth;
+                        self.nodes[i].disabled = self.disabled;
+                        self.nodes[i].selected = self.nodes[i].name === self.selected;
+                    }
+                }
+            },
+
+            /**
+             * Sets the classes of the radiogroup.
+             * 
+             * @param   {String}    orientation     orientation of the radio
+             *                                      buttons
+             * @return  {String}    class           classes of the radiogroup
+             */
+
+            setClass: function(orientation) {
+
+                // Setting the classes of the textbox
+
+                var classes;
+
+                // Sets the orientation of the radio buttons?
+
+                if (orientation == 'vertical') {
+                    classes = 'vertical';
+                } else {
+                    classes = 'horizontal';
+                }
+
+                // Return the classes
+
+                return classes;
+            },
+
+            /**
+             * Event that fires when a radio button has been selected.
+             * 
+             * @param     {Object}     e     event object
+             */
+
+            radiobuttonSelected: function(e) {
+
+                // Reference to the current object
+                
+                var self = this;
+
+                // Assigning the selected radio button and fire the "select"
+                // event.
+
+                if (self.nodes) {
+                    for (var i = 0; i < self.nodes.length; i++) {
+                        self.nodes[i].selected = self.nodes[i].name === e.detail.selected;
+                    }
+
+                    // Fires the selected event
+
+                    self.fire('select', {selected: e.detail.selected});           
+                }
+            }
+        });
+    </script>
+</dom-module>
+
+<!--
+Description:
+
+Creates a radio button.
+
+Attributes:
+
+disabled            {Boolean}    radio button is disabled or not
+selected            {Boolean}    radio button is selected or not
+required            {Boolean}    required message has to shown or not
+name                {String}     name of the radio button
+label               {String}     label of the radio button
+labelwidth          {Number}     width of the label for a button
+labelalign          {String}     align of the label
+tooltip             {String}     tooltip for the radio button
+invalidmessage      {String}     text of the invalid message
+messageposition     {String}     position of the message for the label
+-->
+
+<dom-module id="hp-radiobutton">
+
+    <!-- Style of the component -->
+
+    <link rel="stylesheet" type="text/css" href="hp-radiobutton.css">
+
+    <style>   
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="horizontal center" title$="{{tooltip}}" on-click="clicked">
+            <div class$="setClass(invalidmessage)}}">
+                <div class="horizontal center">
+                    <template is="dom-if" if="{{labelalign == 'left'}}">
+                        <label class="radiolabel" style$="{{setStyle(labelwidth)}}">
+                            <span>{{label}}</span>
+
+                            <template is="dom-if" if="{{required}}">
+                                <span class="required">*</span>
+                            </template>
+                        </label>
+                    </template>
+
+                    <span class="radiobutton">
+                        <a class$="{{setButtonClass(selected, disabled)}}" href="javascript:void(0);">
+                            <label>{{title}}</label>
+                        </a>
+                    </span>
+
+                    <template is="dom-if" if="{{isRight(labelalign)}}">
+                        <label class="radiolabel" style$="{{setStyle(labelwidth)}}">
+                            <span>{{label}}</span>
+
+                            <template is="dom-if" if="{{required}}">
+                                <span class="required">*</span>
+                            </template>
+                        </label>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Invalid message -->
+
+            <template is="dom-if" if="{{invalidmessage}}">
+                <div class="radiobutton_invalid_message" style="{{setMessageStyle(messageposition)}}">{{invalidmessage}}</div>
+            </template>
+        </div>
+    </template>
+
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'hp-radiobutton',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                disabled:           { type: Boolean, value: false, notify: true, readyOnly: false },
+                selected:           { type: Boolean, value: false, notify: true, readyOnly: false },
+                required:           { type: Boolean, value: false, notify: true, readyOnly: false },
+                name:               { type: String, value: null, notify: true, readyOnly: false },
+                label:              { type: String, value: null, notify: true, readyOnly: false },
+                labelwidth:         { type: Number, value: 0, notify: true, readyOnly: false },
+                labelalign:         { type: String, value: null, notify: true, readyOnly: false },
+                tooltip:            { type: String, value: null, notify: true, readyOnly: false },
+                invalidmessage:     { type: String, value: null, notify: true, readyOnly: false },
+                messageposition:    { type: String, value: null, notify: true, readyOnly: false }
+            },
+
+            isRight: function(align) {
+                return align == 'right';
+            },
+
+            /**
+             * Sets the classes of the radio button.
+             * 
+             * @param   {String}    invalidmessage  text of the invalid message
+             * @return  {String}    class           classes of the radio button
+             */
+
+            setClass: function(invalidmessage) {
+
+                // Setting the classes of the radio button
+
+                var classes;
+
+                // Has the radio button any invalid message?
+
+                if (invalidmessage) {
+                    classes += 'radiobutton_invalid';
+                }
+
+                // Return the classes
+
+                return classes;
+            },
+
+            /**
+             * Sets the style of the radio button.
+             * 
+             * @param   {Number}    labelwidth      width of the label
+             * @return  {String}    style           style of the radio
+             */
+
+            setStyle: function(labelwidth) {
+
+                // Sets the style of the radio button
+
+                if (labelwidth) {
+                    style += 'width: ' + labelwidth + 'px;';
+                }
+
+                // Returns the style of the radio button
+
+                return style;
+            },
+
+            /**
+             * Sets the classes of the button itself.
+             * 
+             * @param   {Boolean}   selected        is the radio button selected
+             * @param   {Boolean}   disabled        is the radio button disabled
+             * @return  {String}    class           classes of the button
+             */
+
+            setButtonClass: function(selected, disabled) {
+
+                // Setting the classes of the radio button
+
+                var classes;
+
+                // Is the radio selected?
+
+                if (selected) {
+                    classes = 'radiobutton_checked';
+                } else {
+                    classes = 'radiobutton_unchecked';
+                }
+
+                // Is the radio disabled?
+
+                if (disabled) {
+                    if (selected) {
+                        classes += ' radiobutton_checked_disabled';
+                    } else {
+                        classes += ' radiobutton_unchecked_disabled';
+                    }
+                }
+
+                // Return the classes
+
+                return classes;
+            },
+
+            /**
+             * Sets the style of the invalid message.
+             * 
+             * @param   {String}    messageposition position of the message
+             * @return  {String}    style           style of the message
+             */
+
+            setMessageStyle: function(messageposition) {
+
+                // Setting the classes of the radio button
+
+                var style;
+
+                // Setting the position of the invalid message?
+
+                if (messageposition == 'below') {
+                    style = 'padding-left: 24px;';
+                }
+
+                // Return the style
+
+                return style;
+            },
+
+            /**
+             * Event that fires when the user clicks to the radio button.
+             * 
+             * @param     {Object}      e           click event
+             */
+
+            clicked: function(e) {
+
+                // Reference to the current object
+                
+                var self = this;
+
+                // Change selection of the radio button if the radio button
+                // is not disabled. Fires the selected event.
+
+                if (!self.disabled && !self.selected) {
+                    self.selected = true;
+
+                    // Fires the selected event
+
+                    self.fire('selected', {selected: self.name});
+                }
+            }            
+        });
+    </script>    
+</dom-module>

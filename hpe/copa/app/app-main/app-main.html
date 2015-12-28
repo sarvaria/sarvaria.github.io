@@ -1,0 +1,235 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<link rel="import" href="../app-header/app-header.html">
+<link rel="import" href="../app-agenda/app-agenda.html">
+<link rel="import" href="../app-flexmatrix/app-flexmatrix.html">
+<link rel="import" href="../app-settings/app-settings.html">
+<link rel="import" href="../app-refresh/app-refresh.html">
+
+<!--
+Description:
+
+Main module of the application.
+-->
+
+<dom-module id="app-main">
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="main" style$="{{setStyle(mainsize)}}" on-contextmenu="closemenu" on-click="closemenu">
+            <app-header login="{{login}}" date="{{date}}" capabilities="{{capabilities}}" capability="{{capability}}" subcapabilities="{{subcapabilities}}" subcapability="{{subcapability}}" wait="{{wait}}" on-open-settings="openSettings"></app-header>
+            <app-agenda id="agenda" date="{{date}}" x="{{agendasize.x}}" y="{{agendasize.y}}" width="{{agendasize.width}}" height="{{agendasize.height}}" engineer="{{engineer}}" events="{{events}}" settings="{{settings}}" wait="{{wait}}"></app-agenda>
+            <app-flexmatrix></app-flexmatrix>
+            <app-settings id="settings" settings="{{settings}}"></app-settings>
+            <app-refresh eventcount="{{eventcount}}" style$="{{setFABStyle(mainsize.*)}}" on-refresh="refresh"></app-refresh>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-main',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                width:           { type: Number, value: 0, notify: true, readyOnly: false },
+                height:          { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Observers.
+             */
+
+            observers: [
+                'resize(width, height)'
+            ],
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Initializing
+
+                self.eventcount = 0;
+                self.wait = false;
+
+                // Getting the calendar events
+
+                self.events = [
+                 {id: 3, engineerid: 2, name: 'Valamicske és ez egy hosszú szöveg', date: moment('2015.11.02 09:30', 'YYYY.MM.DD HH:mm').toDate(), duration: 60, flexibility: 'ss', engineer: { id: 2, name: 'Estok, Marton' } },
+                 {id: 1, engineerid: 1, name: 'Hahó', date: moment('2015.11.03 08:30', 'YYYY.MM.DD HH:mm').toDate(), duration: 30, flexibility: 'sa', engineer: { id: 1, name: 'Sarvari Andras' } },
+                 {id: 2, engineerid: 2, name: 'Másik', date: moment('2015.11.06 10:30', 'YYYY.MM.DD HH:mm').toDate(), duration: 60, flexibility: 'aa', engineer: { id: 2, name: 'Estok, Marton' } },
+                 {id: 4, engineerid: 1, name: 'Akármi', date: moment('2015.11.03 10:00', 'YYYY.MM.DD HH:mm').toDate(), duration: 30, flexibility: 'as', engineer: { id: 1, name: 'Sarvari, Andras' } },
+                 {id: 5, engineerid: 1, name: 'Rendben', date: moment('2015.11.04 11:30', 'YYYY.MM.DD HH:mm').toDate(), duration: 30, flexibility: 'ss', engineer: { id: 1, name: 'Sarvari, Andras' } } 
+                 ];
+
+                // Initializing capabilities
+
+                self.capabilities = [
+                    { id: '1', name: 'Elso' },
+                    { id: '2', name: 'Masodik' },
+                    { id: '3', name: 'Harmadik' }
+                ];
+
+                // Initiailizing subcapabilities
+
+                self.subcapabilities = [
+                    { parentid: 1, id: 5, name: 'Nana1' },
+                    { parentid: 1, id: 6, name: 'Masik1' },
+                    { parentid: 2, id: 7, name: 'Nana2' },
+                    { parentid: 2, id: 8, name: 'Masik2' },
+                    { parentid: 3, id: 9, name: 'Nana3' },
+                    { parentid: 3, id: 10, name: 'Masik3' },
+                ];
+
+                // Initializing engineers
+
+                self.engineer = [
+                    { id: 1, name: 'Sarvari, Andras' },
+                    { id: 2, name: 'Estok, Marton' }
+                ];
+                self.login = { name: 'Andras Sarvari' };
+
+                // Setting the current date in the calendar
+
+                setTimeout(function() {
+                    var date = moment(
+                        new Date().getFullYear() + '-' +
+                        (new Date().getMonth() + 1) + '-' +
+                        new Date().getDate(),
+                        'YYYY-M-D'
+                    );
+
+                    date.add(-1 * (date.weekday() - 1), 'days');
+                    self.date = date.toDate();
+                    self.capability = 2;
+                }, 1);
+            },
+
+            /**
+             * Resize event that occures when the browser has been resized.
+             *
+             * @param   {Number}    width   width of the browser
+             * @param   {Number}    height  height of the browser
+             */
+
+            resize: function(width, height) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Setting the agenda position and dimensions
+
+                self.mainsize = { width: width, height: height };
+                self.agendasize = { 
+                    x: 80,
+                    y: 70,
+                    width: self.mainsize.width - 162,
+                    height: self.mainsize.height - 92
+                };
+            },
+
+            /**
+             * Sets the style of the main area.
+             *
+             * @param   {Object}    mainsize    size information of the main
+             *                                  area
+             * @return  {String}    style       style of the main area
+             */
+
+            setStyle: function(mainsize) {
+                return sprintf(
+                    'width: %dpx; height: %dpx',
+                    mainsize.width,
+                    mainsize.height
+                );
+            },
+
+            /**
+             * Setting the style of the new events indicator.
+             *
+             * @return  {String}    style   style of the new events indicator
+             */
+
+            setFABStyle: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                return 'position: absolute;left: ' + (self.mainsize.width - 64) + 'px; top: ' + (self.mainsize.height - 66) + 'px';
+            },
+
+            /**
+             * Event that runs when the user clicks to the new events indicator.
+             */
+
+            refresh: function() {
+                console.log('REFRESH');
+            },
+
+            /**
+             * Event that runs then the user clicks by using the left or right
+             * mouse button on the main area. It closes an opened the popup
+             * menu.
+             */
+
+            closemenu: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Closes the opened popup menus
+
+                if (!window.templatemenuclicked && !window.eventmenuclicked) {
+                    self.$.agenda.closeMenu();
+                }
+
+                // Removes the event and template menu opened flags
+
+                delete window.eventmenuclicked;
+                delete window.templatemenuclicked;
+            },
+
+            openSettings: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.$.settings.open();
+            }
+        });
+    </script>
+</dom-module>

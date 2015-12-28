@@ -1,0 +1,223 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+
+<!--
+Description:
+
+Column header.
+-->
+
+<dom-module id="app-columnheader">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+        
+        .flex {
+            @apply(--layout-flex);
+        }
+
+        .columnheader {
+        }
+
+        .dayname {
+            font-size: 14px;
+            color: #404040;
+        }
+
+        .daydate {
+            font-size: 14px;
+            color: #404040;
+        }
+
+        .load {
+            color:          #ffffff;
+            border-radius:  2px;
+            height:         34px;
+            width:          34px;
+            margin-left:    2px;
+            margin-right:   8px;
+        }
+
+        .eventcnt {
+            font-size:      12px;
+            font-weight:    bold;
+        }
+
+        .eventdur {
+            font-size:      12px;
+            font-weight:    bold;
+        }
+
+        .loadline {
+            width:          26px;
+            margin:         2px 0px 2px 0px;
+        }        
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="columnheader horizontal">
+
+            <!-- Load index -->
+
+            <div class="horizontal vertical center center-justified load" style$="{{setLoadStyle(load)}}">
+                <div class="vertical center" style$="{{setLoadForeColor(load)}}">
+                    <div class="horizontal center-justified eventcnt">{{eventCount}}</div>
+                    <div class="loadline" style$="{{setLineStyle(load)}}"></div>
+                    <div class="horizontal center-justified eventdur">{{eventDuration}}</div>
+                </div>
+            </div>
+
+            <div class="columnheader vertical">
+                <div class="dayname horizontal center-justified">{{getDayName(date)}}</div>
+                <div class="daydate horizontal center-justified">{{getDayDate(date)}}</div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-columnheader',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                date:               { type: Date, value: 0, notify: true, readyOnly: false },
+                events:             { type: Array, value: [], notify: true, readyOnly: false }
+            },
+
+            observers: [
+                'refreshEvent(date, events.*)'
+            ],
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+            },
+
+            /**
+             * Gets the name of the day.
+             *
+             * @param   {Date}      date        date
+             * @return  {String}    dayname     name of the day
+             */
+
+            getDayName: function(date) {
+                return [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT' ][moment(date).weekday()];
+            },
+
+            getDayDate: function(date) {
+                return moment(date).format('D MMM');
+            },
+
+            refreshEvent: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var count = 0;
+                var duration = 0;
+
+                if (self.date) {
+                    var date = moment(self.date).format('YYYY-MM-DD');
+
+                    for (var i = 0; i < self.events.length; i++) {
+                        if (moment(self.events[i].date).format('YYYY-MM-DD') == date) {
+
+                            count++;
+                            duration+=self.events[i].duration;
+                        }
+                    }
+
+                    self.eventCount = count;
+                    self.eventDuration = duration;
+
+                    // Calculating the load index
+
+                    self.load = self.calculateLoadIndex();
+                }
+            },
+
+            /**
+             * Load index calculator.
+             */
+
+            calculateLoadIndex: function() {
+                return 0.79;
+            },
+
+            /**
+             * Setting the style of the load.
+             *
+             * @param   {Number}    load        load between 0 and 1
+             * @return  {String}    style       style of the load
+             */
+
+            setLoadStyle: function(load) {
+
+                // Calculating the color
+
+                var g = parseInt(255 * (1 - load), 10);
+
+                // Setting the style
+
+                return 'background:     rgb(255, ' + g + ', ' + g + ')';
+            },
+
+            setLoadForeColor: function(load) {
+                var g = parseInt(255 * load, 10);
+                return 'color: rgb(' + g + ', ' + g + ', ' + g + ')';
+            },
+
+            setLineStyle: function(load) {
+                var g = parseInt(255 * load, 10);
+                return 'border-bottom:  rgb(' + g + ', ' + g + ', ' + g + ') solid 1px';
+            }             
+        });
+    </script>
+</dom-module>

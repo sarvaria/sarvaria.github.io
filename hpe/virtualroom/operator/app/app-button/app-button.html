@@ -1,0 +1,222 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+HPE button.
+-->
+
+<dom-module id="app-button">
+
+    <!-- Style of the component -->
+
+    <style>
+        .button_rounded {
+            border-bottom-left-radius:  2px;
+            border-bottom-right-radius: 2px;
+            border-top-left-radius:     2px;
+            border-top-right-radius:    2px;
+        }
+        
+        .button_group_left {
+            border-bottom-left-radius:  2px;
+            border-bottom-right-radius: 0px;
+            border-top-left-radius:     2px;
+            border-top-right-radius:    0px;
+        }
+        
+        .button_group_center {
+            border-bottom-left-radius:  0px;
+            border-bottom-right-radius: 0px;
+            border-top-left-radius:     0px;
+            border-top-right-radius:    0px;
+        }
+        
+        .button_group_right {
+            border-bottom-left-radius:  0px;
+            border-bottom-right-radius: 2px;
+            border-top-left-radius:     0px;
+            border-top-right-radius:    2px;
+        }
+            
+        .button {
+            color:                      #ffffff;
+            text-decoration:            none;
+        }
+
+        .normalsize {
+            font-size:                  16px;
+            height:                     36px;
+        }
+        
+        .smallsize {
+            font-size:                  14px;
+            height:                     26px;
+        }
+        
+        .normal {
+            background:                 #01a982;
+            cursor:                     pointer;
+        }
+
+        .primary {
+            background:                 #f04953;
+            cursor:                     pointer;
+        }
+
+        .disabled {
+            background:                 #ccc;
+            cursor:                     default;
+        }
+
+        .normal:hover {
+            opacity: 0.8;
+        }
+        
+        .primary:hover {
+            opacity: 0.9;
+        }
+    </style>
+    
+    <!-- Content of the component -->
+
+    <template>
+        <div class$="{{setClass(small, primary, disabled, group)}}" style$="{{setStyle(margintop, marginbottom, marginleft, marginright, width)}}" title="{{tooltip}}" on-click="clicked">
+            <span>{{caption}}</span>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-button',
+            
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                disabled:       { type: Boolean, value: false, notify: true, readyOnly: false },
+                small:          { type: Boolean, value: false, notify: true, readyOnly: false },
+                caption:        { type: String, notify: true, readyOnly: false },
+                tooltip:        { type: String, notify: true, readyOnly: false },
+                group:          { type: String, value: null, notify: true, readyOnly: false },
+                width:          { type: Number, value: 120, notify: true, readyOnly: false },
+                primary:        { type: Boolean, value: false, notify: true, readyOnly: false },
+                margintop:      { type: Number, value: 0, notify: true, readyOnly: false },
+                marginbottom:   { type: Number, value: 0, notify: true, readyOnly: false },
+                marginleft:     { type: Number, value: 0, notify: true, readyOnly: false },
+                marginright:    { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Sets the classes of the button.
+             * 
+             * @param   {Boolean}   small           is it a small button
+             * @param   {Boolean}   primary         is it a primary button
+             * @param   {Boolean}   disabled        is the button disabled
+             * @param   {String}    group           group position
+             * @return  {String}    class           classes of the button
+             */
+
+            setClass: function(small, primary, disabled, group) {
+
+                // Setting the classes of the button
+
+                var classes = 'button horizontal vertical center center-justified ';
+
+                if (small) {
+                    classes += 'smallsize ';
+                } else {
+                    classes += 'normalsize ';
+                }
+                
+                if (group) {
+                    classes += 'button_group_' + group + ' ';
+                } else {
+                    classes += 'button_rounded ';
+                }
+
+                if (disabled) {
+                    classes += 'disabled';
+                } else if (primary) {
+                    classes += 'primary';
+                } else {
+                    classes += 'normal';
+                }
+
+                // Return the classes
+
+                return classes;
+            },
+            
+            /**
+             * Sets the style of the button.
+             * 
+             * @param   {Number}    margintop       top margin size
+             * @param   {Number}    marginbottom    bottom margin size
+             * @param   {Number}    marginleft      left margin size
+             * @param   {Number}    marginright     right margin size
+             * @param   {Number}    width           width of the button
+             * @return  {String}    style           style of the button
+             */
+
+            setStyle: function(margintop, marginbottom, marginleft, marginright, width) {
+
+                // Setting the style of the button
+
+                var style = 'margin: ' + margintop + 'px ' +
+                                         marginright + 'px ' +
+                                         marginbottom + 'px ' +
+                                         marginleft + 'px;';
+
+                // Sets the width of the button
+
+                if (width) {
+                    style += 'width: ' + width + 'px;';
+                }
+
+                // Returns the style of the button
+
+                return style;
+            },            
+            
+            /**
+             * Event that fires when the user clicks to the button.
+             */
+
+            clicked: function() {
+
+                // Reference to the current object
+                
+                var self = this;
+
+                // Fires the push event in case when the button is not disabled
+
+                if (!self.disabled) {
+
+                    // Fires the push event
+
+                    self.fire('push');
+                }
+            }
+        });
+    </script>
+</dom-module>

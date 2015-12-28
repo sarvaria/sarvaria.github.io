@@ -120,7 +120,7 @@ Main module of the application.
         <!-- Video -->
 
         <div class="horizontal center-justified ocr">
-            <app-video id="video" width="{{width}}" height="{{height}}" orientation="{{orientation}}" error="{{error}}" result="{{result}}"></app-video>
+            <app-video id="video" width="{{width}}" height="{{videoHeight}}" orientation="{{orientation}}" error="{{error}}" result="{{result}}"></app-video>
         </div>
 
         <!-- Control -->
@@ -156,6 +156,14 @@ Main module of the application.
             },
 
             /**
+             * Observers.
+             */
+             
+            observers: [
+                'redraw(width, height)'
+            ],
+            
+            /**
              * Polymer READY event.
              */
             
@@ -164,6 +172,15 @@ Main module of the application.
                 // Reference to the current object
 
                 var self = this;
+            },
+            
+            redraw: function(width, height) {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                self.videoHeight = height * 0.3;
             },
             
             /**

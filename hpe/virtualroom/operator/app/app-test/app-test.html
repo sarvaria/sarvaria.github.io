@@ -1,0 +1,88 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<link rel="import" href="../app-spinner/app-spinner.html">
+<link rel="import" href="../app-button/app-button.html">
+<link rel="import" href="../app-operator/app-operator.html">
+<link rel="import" href="../app-calllog/app-calllog.html">
+<link rel="import" href="../app-ringmode/app-ringmode.html">
+<link rel="import" href="../app-clientinfo/app-clientinfo.html">
+
+<!--
+Description:
+
+Widget tester.
+-->
+
+<dom-module id="app-test">
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="vertical">
+            <app-spinner></app-spinner>
+            <div class="horizontal">
+                <app-button width="60" group="left" caption="Left"></app-button>
+                <app-button width="60" group="center" caption="Center"></app-button>
+                <app-button width="60" group="right" caption="Right"></app-button>
+            </div>
+            <div class="horizontal">
+                <app-button small width="60" group="left" caption="Left"></app-button>
+                <app-button small width="60" group="center" caption="Center"></app-button>
+                <app-button small width="60" group="right" caption="Right"></app-button>
+            </div>
+            
+            <app-button width="120" caption="Ok" disabled margintop="8" marginbottom="32"></app-button>
+            
+            <app-operator name="Somogyiné Piri Szilvia" load="0.2" nextcall></app-operator>
+            
+            <app-calllog style="margin-top: 40px" width="600" height="400" date="{{date}}" calls="{{calls}}"></app-calllog>
+            
+            <app-ringmode style="margin-top: 40px"></app-ringmode>
+            
+            <app-clientinfo style="margin-top: 40px" width="600" height="240"></app-clientinfo>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-test',
+            
+            ready: function() {
+                var self = this;
+                
+                var date = new Date();
+                date = new Date();
+                date.setHours(0);
+                date.setMinutes(0);
+                date.setSeconds(0);
+                
+                self.date = date;
+                
+                self.calls = [
+                    { id: 11, date: moment(new Date()).add(-1, 'hours').toDate(), duration: 134, operator: {id: 1, name: 'Somogyiné Piri Szilvia'} },
+                    { id: 12, date: moment(new Date()).add(-30, 'minutes').toDate(), duration: 18, operator: {id: 1, name: 'Somogyiné Piri Szilvia'} },
+                    { id: 13, date: moment(new Date()).add(-20, 'minutes').toDate(), duration: 569, operator: {id: 2, name: 'Hajbáné Szemes Rita'} },
+                    { id: 14, date: moment(new Date()).add(-10, 'minutes').toDate(), duration: 72, operator: {id: 2, name: 'Hajbáné Szemes Rita'} }
+                ];
+            }
+        });
+    </script>
+</dom-module>

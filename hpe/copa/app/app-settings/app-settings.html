@@ -1,0 +1,213 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+
+<!--
+Description:
+
+Application settings.
+-->
+
+<dom-module id="app-settings">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+
+        .settingsdialog {
+            background: #fafafa;
+            overflow: hidden;
+        }
+
+        paper-toggle-button.red {
+            --paper-toggle-button-checked-bar-color:  #f15a25;
+            --paper-toggle-button-checked-button-color:  #f15a25;
+            --paper-toggle-button-checked-ink-color: #f15a25;
+      }
+
+        .cancelbutton {
+        }
+
+        .savebutton {
+        }
+
+        .label {
+            font-size: 14px;
+            color: #8b8b8b;
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
+        .slider {
+            position: relative;
+            top: 2px;
+            left: -10px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <paper-dialog id="settingsdialog" class="settingsdialog" style$="{{setDialogStyle(width, height)}}">
+            <table>
+                <tr>
+                    <td><div class="label">Hide red:</div></td>
+                    <td><paper-toggle-button class="red" checked="{{settings.hidered}}"></paper-toggle-button></td>
+                </tr>
+                <tr>
+                    <td><div class="label">Hide based on duration:</div></td>
+                    <td><paper-slider id="duration" pin snaps max="240" step="30" class="slider" on-immediate-value-change="durationChange"></paper-slider></td>
+                </tr>
+                <tr>
+                    <td><div class="label">Show weekends:</div></td>
+                    <td><paper-toggle-button checked="{{settings.weekends}}"></paper-toggle-button></td>
+                </tr>
+                <tr>
+                    <td style="align: top"><div class="label" style="position: relative; top: -22px;">Order engineer cards by:</div></td>
+                    <td>
+                        <paper-radio-group selected="e">
+                                <paper-radio-button name="e" style="position: relative; left: -12px;">Engineer name</paper-radio-button>
+                                <paper-radio-button name="l" style="position: relative; left: -12px;top: -12px">Load</paper-radio-button>
+                        </paper-radio-group>
+                    </td>
+                </tr>
+                <tr>
+                    <td><div class="label" style="position: relative; top: -12px;">Condensed:</div></td>
+                    <td><paper-toggle-button style="position: relative; top: -12px;" checked="{{settings.condensed}}"></paper-toggle-button></td>
+                </tr>
+            </table>
+
+            <!-- Buttons -->
+
+            <div class="horizontal buttons" style="position: relative; top: -18px;">
+                <div class="flex"></div>
+                <div>
+                <paper-button on-click="reset">
+                        <iron-icon icon="icons:clear"></iron-icon>
+                        <span>Reset</span>
+                    </paper-button>
+                </div>
+            </div>
+
+        </paper-dialog>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-settings',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                settings:         { type: Object, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.width = 440;
+                self.height = 280;
+            },
+
+            setDialogStyle: function(width, height) {
+                return 'width: ' + width + 'px; height: ' + height + 'px;display: none;';
+            },
+
+            open: function(event, eventindex) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.$.settingsdialog.open();
+                self.setDuration();
+            },
+
+            close: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.$.settingsdialog.close();
+            },
+
+            reset: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.set('settings.hidered', false);
+                self.set('settings.hidebasedonduration', 0);
+                self.set('settings.weekends', true);
+                self.set('settings.condensed', false);
+            },
+
+            setDuration: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.$.duration.value = self.settings.hidebasedonduration;
+            },
+
+            durationChange: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.set('settings.hidebasedonduration', self.$.duration.immediateValue);
+            }
+        });
+    </script>
+</dom-module>

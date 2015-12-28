@@ -1,0 +1,200 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<link rel="import" href="../app-login/app-login.html">
+<link rel="import" href="../app-commonmenu/app-commonmenu.html">
+<link rel="import" href="../app-header/app-header.html">
+<link rel="import" href="../app-footer/app-footer.html">
+<link rel="import" href="../app-spinner/app-spinner.html">
+
+<!--
+Description:
+
+Main module of the application.
+-->
+
+<dom-module id="app-main">
+
+    <!-- Style of the component -->
+
+    <style>
+        .main {
+        }
+
+        .header {
+            width:          100%;
+        }
+
+        .scene {
+            background:     #ffffff;
+            height: 800px;
+            padding: 16px;
+        }
+
+        .scenebody {
+            margin: 16px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <app-login id="loginservice" user="{{user}}"></app-login>
+
+        <div class="horizontal center-justified" style="width: 100%">
+            <div style="width: 1000px">
+            <app-commonmenu></app-commonmenu>
+            <app-header user="{{user}}"></app-header>
+            <div class="scene">
+                
+            </div>
+    
+            <app-footer></app-footer>
+            </div>
+        </div>
+        <!--<div class="main" style$="{{setStyle(mainsize.*)}}">
+            <div class="vertical">
+                <div class="header" style="position: relative">
+                    <div class="horizontal center" style="margin: 16px;">
+                        <img src="images/hpelogo.png" width="162" height="100">
+                        <div class="flex"></div>
+                        <div style="white-space: nowrap;padding-right: 16px;color: white;font-size: 20px">{{user.cn}}</div>
+                        <app-spinner size="24"></app-spinner>
+                    </div>
+                    <div style="position: absolute; left: 0px; top: 0px;padding:        16px;width: 100%;font-size: 48px;color: white;font-weight: bold" class="horizontal center-justified">Virtual Room</div>
+                </div>
+                <div class="scene" style$="{{setSceneStyle(mainsize.*)}}">
+                    <div class="scenebody">b</div>
+                </div>
+            </div>
+        </div>-->
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-main',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                width:           { type: Number, value: 0, notify: true, readyOnly: false },
+                height:          { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Observers.
+             */
+
+            observers: [
+                'resize(width, height)'
+            ],
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Initialization
+
+                self.user = null;
+                self.user = {"givenName":"Andras","mobile":"+36 20 213 1242","postalCode":"9777","uid":"andras.sarvari@hpe.com","mail":["andras.sarvari@hp.com","andras.sarvari@hpe.com"],"cn":"Sarvari Andras","telephoneNumber":"+36 1 483 5598","alternateTelephoneNumber":"+36 94 571 112","street":"Rabahidveg Tancsics M. u. 2-4","manager":"uid=jozsef.frigy@hpe.com,ou=people,o=hp.com","ntUserDomainId":"EMEA:sarvari","employeeNumber":"80113331","l":"Rabahidveg","sn":"Sarvari","c":"HU","hpStatus":"Active","managerEmployeeNumber":"80113196","role":["ELME","HRMS","PIA","PIA_ADMIN","STORE","SUPERVISOR","VARES"]};
+            },
+
+            initialization: function(user) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.initialized = (user !== undefined && user !== null);
+            },
+
+            isInitialized: function(user) {
+                return (user !== undefined && user !== null);
+            },
+
+            /**
+             * Resize event that occures when the browser has been resized.
+             *
+             * @param   {Number}    width   width of the browser
+             * @param   {Number}    height  height of the browser
+             */
+
+            resize: function(width, height) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Setting the main are size
+
+                self.mainsize = {
+                    width:      width - 2,
+                    height:     height - 2
+                };
+            },
+
+            /**
+             * Sets the style of the main area.
+             *
+             * @param   {Object}    mainsize    size information of the main
+             *                                  area
+             * @return  {String}    style       style of the main area
+             */
+
+            setStyle: function(mainsize) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Style of the main area
+
+                return sprintf(
+                    'width: %dpx; height: %dpx;%s',
+                    self.mainsize.width,
+                    self.mainsize.height
+                );
+            },
+
+            setSceneStyle: function(mainsize) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Style of the main area
+
+                return sprintf(
+                    'width: %dpx; height: %dpx;%s',
+                    self.mainsize.width,
+                    self.mainsize.height - 100
+                );
+            }            
+        });
+    </script>
+</dom-module>

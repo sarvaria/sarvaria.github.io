@@ -1,0 +1,349 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+
+<!--
+Description:
+
+Event maintenance dialog.
+-->
+
+<dom-module id="app-eventmaintenance">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+        
+        .flex {
+            @apply(--layout-flex);
+        }
+
+        .eventdialog {
+            background: #fafafa;
+            overflow-x: hidden;
+        }
+
+        .buttons {
+            position: relative;
+            top: 16px;
+            font-size:                          14px;
+            color:                              #404040;
+            margin: 16px 0px 0px 0px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .cancelbutton {
+            color: #ff0000;
+        }
+
+        .savebutton {
+            color: #00ff00;
+        }
+
+        .flexibility {
+            cursor:                             pointer;
+            color:                              #ffffff;
+            padding:                            4px;
+            height:                             40px;
+            transition:                         all 0.2s;
+            -moz-transition:                    all 0.2s;
+            -webkit-transition:                 all 0.2s;
+            -o-transition:                      all 0.2s;
+            -webkit-transition-timing-function: cubic-bezier(0.275, 0.100, 0.000, 0.995);
+            transition-timing-function:         cubic-bezier(0.275, 0.100, 0.000, 0.995);
+        }
+
+        .duration {
+            position: relative;
+            left: -14px;
+            width: 678px;
+        }
+
+        .formlabel {
+            font-size:                          13px;
+            color:                              #8b8b8b;
+            width:                              120px;
+        }
+
+        select {
+            background-color:                   #ffffff;
+            border-color:                       rgb(204, 204, 204);
+            border-style:                       solid;
+            border-width:                       2px;
+            outline-color:                      rgb(0, 125, 186);
+            outline-style:                      none;
+            outline-width:                      0px;
+            text-decoration:                    none;
+            cursor:                             pointer;
+            color:                              rgb(0, 125, 186);
+            font-family:                        HPSimplified, Arial;
+            font-size:                          14px;
+            line-height:                        32px;
+            height:                             32px;
+            border-image-outset:                0px;
+            border-image-repeat:                stretch;
+            border-image-slice:                 100%;
+            border-image-source:                none;
+            border-image-width:                 1;
+        }
+
+        select:hover {
+            border-color:                       #000000 !important;  
+        }
+
+        select option {
+            background-color:                   #ffffff;
+            font-family:                        HPSimplified, Arial;
+            font-size:                          13px;
+            color:                              #000000;
+            height:                             18px;
+            line-height:                        18px;
+            list-style-type:                    none;
+            border-top-color:                   rgb(204, 204, 204);
+            border-top-style:                   solid;
+            border-top-width:                   1px;
+            padding:                            0px 8px 0px 8px;
+            white-space:                        nowrap;
+        }
+
+        .description {
+        }
+
+        .entry {
+            margin-top: 8px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <paper-dialog id="eventdialog" class="eventdialog" style$="{{setDialogStyle(width, height)}}" modal>
+
+            <h2>{{getTitle(event.engineer.name, event.date, event.duration)}}</h2>
+
+            <div class="horizontal center-justified flexcontainer">
+                <div data-flexibility="aa" class="horizontal center flexibility" style$="{{setFlexStyle('aa', event.flexibility, width)}}" on-click="selectFlexibility">Any person, any time</div>
+                <div data-flexibility="as" class="horizontal center flexibility" style$="{{setFlexStyle('as', event.flexibility, width)}}" on-click="selectFlexibility">Any person, specific time</div>
+                <div data-flexibility="sa" class="horizontal center flexibility" style$="{{setFlexStyle('sa', event.flexibility, width)}}" on-click="selectFlexibility">Specific person, any time</div>
+                <div data-flexibility="ss" class="horizontal center flexibility" style$="{{setFlexStyle('ss', event.flexibility, width)}}" on-click="selectFlexibility">Specific person, specific time</div>
+            </div>
+
+            <!-- Duration -->
+
+            <div class="vertical">
+                <span class="formlabel">{{setDurationLabel(event.duration)}}</span>
+                <paper-slider pin snaps min="30" max="240" step="30" value="{{event.duration}}" class="duration"></paper-slider>
+            </div>
+
+            <div style="position: relative; top: -16px">
+
+                <!-- Customer -->
+
+                <div class="horizontal center entry">
+                    <div class="formlabel">Customer:</div>
+                    <select value="{{cid::change}}">
+                        <option template repeat="{{c in customer}}" value="{{c.id}}" selected?="{{cid == c.id}}">{{c.name}}</option>
+                    </select>
+                </div>
+
+                <!-- Process -->
+
+                <div class="horizontal center entry">
+                    <div class="formlabel">Process:</div>
+                    <select value="{{cid::change}}">
+                        <option template repeat="{{c in customer}}" _value="{{c.id}}" selected?="{{cid == c.id}}">{{c.name}}</option>
+                    </select>
+                </div>
+
+                <!-- Workload type -->
+
+                <div class="horizontal center entry">
+                    <div class="formlabel">Workload type:</div>
+                    <div>
+                        <select value="{{cid::change}}">
+                            <option template repeat="{{c in customer}}" _value="{{c.id}}" selected?="{{cid == c.id}}">{{c.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Title -->
+
+                <paper-input label="Title" value="{{event.name}}"></paper-input>
+
+                <!-- Description -->
+
+                <div class="description">
+                    <paper-textarea label="Description" max-rows="4" rows="4" value="{{event.description}}"></paper-textarea>
+                </div>
+
+                <!-- Buttons -->
+
+                <div class="horizontal buttons">
+                    <div>
+                        <paper-button class="cancelbutton" on-click="cancel">
+                            <iron-icon icon="icons:clear"></iron-icon>
+                            <span>Cancel</span>
+                        </paper-button>
+                    </div>
+                    <div class="flex"></div>
+                    <div>
+                        <paper-button class="savebutton" autofocus on-click="save">
+                            <iron-icon icon="icons:check"></iron-icon>
+                            <span>Save</span>
+                        </paper-button>
+                    </div>
+                </div>
+            </div>
+        </paper-dialog>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-eventmaintenance',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                events:                 { type: Array, value: [], notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.width = 700;
+                self.height = 600;
+            },
+
+            setDialogStyle: function(width, height) {
+                return 'width: ' + width + 'px; height: ' + height + 'px;display: none;';
+            },
+
+            setFlexStyle: function(flex, flexibility, width) {
+                var color = {
+                    ss:     '#f15a25',
+                    aa:     '#8cc63e',
+                    as:     '#f9b13b',
+                    sa:     '#00a4bf'
+                };
+
+                return 'background-color: ' + color[flex] + '; width: ' + (flexibility == flex ? (width / 2 + 26) : (width / 2 / 3)) + 'px; font-size: ' + (flexibility == flex ? 17 : 9) + 'px;';
+            },
+
+            setDurationLabel: function(duration) {
+                return 'Duration [' + duration + ' min, but maximum {{plan.maxduration}} min to avoid overlapping]:';
+            },
+
+            open: function(event, eventindex) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.eventindex = eventindex;
+                self.event = JSON.parse(JSON.stringify(event));
+                self.$.eventdialog.open();
+            },
+
+            save: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.set('events.' + self.eventindex + '.duration', self.event.duration);
+
+                // Closing the dialog
+
+                self.$.eventdialog.close();
+            },
+
+            cancel: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.$.eventdialog.close();
+            },
+
+            getTitle: function(name, date, duration) {
+                return name + ', ' + moment(date).format('dddd (DD/MM) HH:mm') + '-' + moment(date).add(duration, 'minutes').format('HH:mm');
+            },
+
+            /**
+             * Event that runs when user selects a flexibility.
+             * 
+             * @param   {Object}    event   click event
+             * @param   {Object}    opt     event options
+             * @param   {Object}    sender  object that sent the event
+             */
+
+            selectFlexibility: function(event, opt, sender) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Getting the flexibility id
+
+                var node = event.target;
+
+                while (!node.getAttribute('data-flexibility')) {
+                    node = node.parentElement;
+                }
+
+                var flexibility = node.getAttribute('data-flexibility');
+
+                self.set('event.flexibility', flexibility);
+            }            
+        });
+    </script>
+</dom-module>

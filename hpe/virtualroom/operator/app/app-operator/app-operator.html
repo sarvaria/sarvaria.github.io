@@ -1,0 +1,163 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+Operator component.
+-->
+
+<dom-module id="app-operator">
+
+    <!-- Style of the component -->
+
+    <style>
+    @-webkit-keyframes pulse {
+  from {
+    -webkit-transform: scale(1.0);
+      transform: scale(1.0);
+    opacity: 1;
+  }
+  50% {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+  to { 
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+    opacity: 1;
+  }
+}
+
+        .card {
+            border: #01a982 solid 2px;
+            border-radius: 4px;
+            width: 120px;
+            height: 200px;
+        }
+        
+        .photo {
+            border: #ffffff solid 4px;
+        }
+        
+        .loadindicator {
+            width:          10px;
+            height:         38px;
+        }        
+        
+        .content {
+            position: relative;
+        }
+        
+        .phone {
+            -webkit-animation-name:             pulse; 
+    -webkit-animation-duration:         0.75s; 
+    -webkit-animation-iteration-count:  infinite; 
+        }
+
+        .star {
+            -webkit-animation-name:             pulse; 
+    -webkit-animation-duration:         2s; 
+    -webkit-animation-iteration-count:  infinite; 
+        }
+    </style>
+    
+    <!-- Content of the component -->
+
+    <template>
+        <div style="position: relative">
+        <div class="card vertical" style$="{{setCardStyle(disabled)}}">
+            
+            <!-- Load indicator -->
+
+                <img class="photo" src="images/lzhy0g.jpg" width="112" height="152">
+                <div style="position: relative;border-top: #01a982 solid 2px;">
+                    <div class="horizontal">
+                        <div class="loadindicator" style$="{{setLoadStyle(load)}}"></div>
+                        <div class="flex"></div>
+                        <div class="info vertical" style="border-left: #01a982 solid 1px">
+                            <div class="horizontal vertical center center-justified" style="width: 20px;height: 19px;font-size: 12px;border-bottom: #01a982 solid 1px;position: relative;top: 2px">160</div>
+                            <div class="horizontal vertical center center-justified" style="width: 20px;height: 19px;font-size: 12px;position: relative;top: 2px">5</div>
+                        </div>
+                    </div>
+                    <div class="horizontal center" style="height: 38px;position: absolute;padding: 0px 24px 0px 14px;left: 0px;top: 2px;text-align:center;font-size: 12px;font-weight: bold">{{name}}</div>
+                </div>
+        </div>
+        <div class="horizontal" style="position: absolute;top: 0px;left: 0px;width: 120px">
+            <div class="flex"></div>
+            <template is="dom-if" if="{{incall}}">
+                <img class="phone" src="images\phone.png" width="32" height="32" style="margin: 8px 4px 0px 0px;">
+            </template>
+        </div>
+        <div class="horizontal" style="position: absolute;top: 0px;left: 0px;width: 120px">
+            <div class="flex"></div>
+            <template is="dom-if" if="{{nextcall}}">
+                <img class="star" src="images\star.svg" width="32" height="32" style="margin: 8px 4px 0px 0px;">
+            </template>
+        </div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-operator',
+            
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                name:               { type: String, notify: true, readyOnly: false },
+                load:               { type: Number, value: 0, notify: true, readyOnly: false },
+                disabled:           { type: Boolean, value: false, notify: true, readyOnly: false },
+                incall:             { type: Boolean, value: false, notify: true, readyOnly: false },
+                nextcall:           { type: Boolean, value: false, notify: true, readyOnly: false }
+            },
+            
+            setCardStyle: function(disabled) {
+                return disabled ? '-webkit-filter: grayscale(99%);' : '';
+            },
+            
+            /**
+             * Setting the style of the load.
+             *
+             * @param   {Number}    load        load between 0 and 1
+             * @return  {String}    style       style of the load
+             */
+
+            setLoadStyle: function(load) {
+
+                // Calculating the color
+
+                var g = parseInt(255 * (1 - load), 10);
+
+                // Setting the style
+
+                var color = 'rgb(255, ' + g + ', ' + g + ')';
+                return 'background: ' + color;
+            },
+            
+            setPhotoStyle: function(nextcall) {
+                return sprintf('border: %s dashed 4px;', nextcall ? '#01a982' : '#ffffff');
+            }
+        });
+    </script>
+</dom-module>

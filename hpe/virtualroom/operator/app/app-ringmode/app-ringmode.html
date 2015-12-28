@@ -1,0 +1,158 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+Ring mode selector component.
+-->
+
+<dom-module id="app-ringmode">
+
+    <!-- Style of the component -->
+
+    <style>
+        .ringmode {
+            background:     #ffffff;
+            width:             200px;
+            height:             32px;
+            font-size:         16px;
+            padding:         0px 8px 0px 8px;
+            cursor:         pointer;
+            position:         relative;
+        }
+        
+        .selected {
+            height: 100%;
+        }
+        
+        .selectable {
+            background:     #ffffff;
+            position: absolute;
+            left: 0px;
+            top: 32px;
+            height: 96px;
+            width: 216px;
+        }
+        
+        .item {
+            font-size:         16px;
+            height: 32px;
+            padding:         0px 8px 0px 8px;
+            border-bottom: #ededed solid 1px;
+            color: #b6b6b6;
+        }
+
+        .item:hover {
+            background:     #eee;
+        }
+    </style>
+    
+    <!-- Content of the component -->
+
+    <template>
+        <div class="ringmode">
+            <div class="selected horizontal center" on-click="toggleOpen">
+                <div>{{mode}}</div>
+                <div class="flex"></div>
+                <img src="images/down_arrow.svg" width="8" height="4">
+            </div>
+            <template is="dom-if" if="{{open}}">
+                <div class="selectable vertical">
+                    <template id="itemtemplate" is="dom-repeat" items="{{modes}}" as="m">
+                        <div data-id$="{{m.id}}" class="item horizontal center" on-click="selectItem">{{m.name}}</div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-ringmode',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                mode:            { type: String, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                document.body.addEventListener('click', function() {
+                    self.open = false;
+                });
+                
+                self.mode = 'Ring to all';
+                self.open = false;
+                
+                self.modes = [
+                    { id: 'ALL', name: 'To all' },
+                    { id: 'LOAD', name: 'Less load' },
+                    { id: 'OPERATOR', name: 'Specified operator' }
+                ];
+            },
+            
+            toggleOpen: function(e) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.open = !self.open;
+
+                e.stopPropagation();
+            },
+            
+            selectItem: function(event) {
+                
+                // Reference to the current object
+
+                var self = this;
+
+                var node = event.target;
+
+                while (!node.getAttribute('data-id')) {
+                    node = node.parentElement;
+                }
+
+                var id = node.getAttribute('data-id');
+                
+                for (var i = 0; i < self.modes.length; i++) {
+                    if (self.modes[i].id == id) {
+                        self.mode = self.modes[i].name;
+                        self.open = false;
+                        break;
+                    }
+                }
+            }
+        });
+    </script>
+</dom-module>

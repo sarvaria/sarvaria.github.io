@@ -1,0 +1,151 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<link rel="import" href="../app-spinner/app-spinner.html">
+
+<!--
+Description:
+
+Header of the application.
+-->
+
+<dom-module id="app-header">
+
+    <!-- Style of the component -->
+
+    <style>
+        .header {
+            margin: 8px 0px 8px 0px;
+            background: #ffffff;
+            position: relative;
+        }
+        
+        .logo {
+            margin: 0px 16px 0px 16px;
+        }
+        
+        .login {
+            padding-right: 16px;
+        }
+
+        .spinner {
+            padding-right: 16px;
+        }
+        
+        .user {
+            padding-right: 8px;
+        }
+        
+        .appname {
+            position: absolute; left: 0px; top: 0px;height: 100%;width: 100%;font-size: 64px;color: #000000;
+        }
+
+        .company {
+            font-size:       18px;
+            position: relative;
+            top: 12px;
+        }
+
+        .apptitle {
+            font-size:       48px;
+            font-weight:     bold;
+        }
+        
+        .logout {
+            position: absolute; left: 0px; top: 0px;height: 100%;width: 100%;font-size: 16px;color: #01a982;
+        }
+        
+        .date {
+            position: absolute; left: 0px; top: 0px;height: 100%;width: 100%;
+            font-size: 16px;
+            padding-right: 32px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="header horizontal center">
+            <img class="logo" src="images/hpelogo.png" width="162" height="100">
+            
+            <div class="vertical" style="padding-left: 16px">
+                <div class="company">Hewlett Packard Enterprise - Business Process Services</div>
+                <div class="apptitle">Virtual Room</div>
+            </div>
+            
+            <div class="flex"></div>
+            <!--<app-spinner class="spinner" size="24"></app-spinner>-->
+            <div class="horizontal">
+            <img class="user" src="images/user.svg" width="24" height="24">
+            <div class="login" style="white-space: nowrap;padding-right: 16px;color: #000000;font-size: 20px">{{user.cn}}</div>
+            </div>
+            <!--<div class="appname horizontal vertical center center-justified" style$="{{setTitleStyle(width)}}">Virtual Room</div>-->
+            <div class="logout horizontal">
+                <div class="flex"></div>
+                <div style="padding-right: 16px;position: relative;top:72px;cursor: pointer">
+                    <div class="horizontal center-justified" style="width: 120px">
+                        <img src="images/en.svg" width="32" height="16" style="padding-right: 8px">
+                        <img src="images/hu.svg" width="32" height="16" style="padding-right: 8px">
+                        <div>Logout</div>
+                    </div>
+                </div>
+            </div>
+            <div class="date vertical">
+                <div class="horizontal center-justified" style="width: 120px">8. december 2015</div>
+                <div class="horizontal center-justified" style="width: 120px">
+                    <img src="images/en.svg" width="32" height="16" style="padding-right: 8px">
+                    <img src="images/hu.svg" width="32" height="16">
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-header',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                width:           { type: Number, value: 0, notify: true, readyOnly: false },
+                user:            { type: Object, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+            },
+            
+            setTitleStyle: function(width) {
+                console.log(width);
+                //return 'width: ' + (width - 32) + 'px';
+            }
+        });
+    </script>
+</dom-module>

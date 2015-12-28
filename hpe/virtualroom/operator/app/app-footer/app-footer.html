@@ -1,0 +1,136 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+Footer of the application.
+-->
+
+<dom-module id="app-footer">
+
+    <!-- Style of the component -->
+
+    <style>
+        .footer {
+            margin: 8px 0px 8px 0px;
+            background: #ffffff;
+            height: 82px;
+            padding-right: 16px;
+        }
+        
+        .separator{color:#000;font-size:15px;padding:0 4px;}
+        
+        .logo {
+            margin: 0px 16px 0px 16px;
+        }
+        
+        .login {
+            padding-right: 16px;
+        }
+
+        .spinner {
+            padding-right: 16px;
+        }
+        
+        .user {
+            padding-right: 8px;
+        }
+        
+        .appname {
+            position: absolute; left: 0px; top: 0px;height: 100%;width: 100%;font-size: 64px;color: #000000;
+        }
+
+        .logout {
+            position: absolute; left: 0px; top: 0px;height: 100%;width: 100%;font-size: 16px;color: #01a982;
+        }
+        
+        .date {
+            font-size: 16px;
+            padding-right: 32px;
+            position: relative;
+            top: 8px;
+        }
+        
+        .link {
+            cursor: pointer;
+            font-size: 16px;color: #01a982;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="footer horizontal center">
+            <div class="vertical" style="width: 100%">
+                <div class="horizontal">
+                    <div class="flex"></div>
+                    <div class="link">ADATVÉDELMI NYILATKOZAT</div>
+                    <span class="separator">|</span>
+                    <div class="link">HASZNÁLATI FELTÉTELEK</div>
+                    <span class="separator">|</span>
+                    <div class="link">GYIK</div>
+                    <span class="separator">|</span>
+                    <div class="link">TÁMOGATÁS</div>
+                    <span class="separator">|</span>
+                    <div style="padding-left: 8px">HPE Bizalmas</div>
+                </div>
+                <div class="horizontal" style="padding-top: 4px">
+                    <div class="flex"></div>
+                    <div>© 2015 Hewlett-Packard Magyarorszám Kft. Business Process Services</div>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-footer',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                width:           { type: Number, value: 0, notify: true, readyOnly: false },
+                user:            { type: Object, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+            },
+            
+            setTitleStyle: function(width) {
+                console.log(width);
+                //return 'width: ' + (width - 32) + 'px';
+            }
+        });
+    </script>
+</dom-module>

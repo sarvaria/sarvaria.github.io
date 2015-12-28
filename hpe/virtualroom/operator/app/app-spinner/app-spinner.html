@@ -1,0 +1,163 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+Spinner animation.
+-->
+
+<dom-module id="app-spinner">
+
+    <!-- Style of the component -->
+
+    <style>
+        .spinner {
+            -webkit-animation:          rotator 1.4s linear infinite;
+            animation:                  rotator 1.4s linear infinite;
+        }
+
+        @-webkit-keyframes rotator {
+            0% {
+                -webkit-transform:      rotate(0deg);
+                transform:              rotate(0deg);
+            }
+            100% {
+                -webkit-transform:      rotate(270deg);
+                transform:              rotate(270deg);
+            }
+        }
+
+        @keyframes rotator {
+            0% {
+                -webkit-transform:      rotate(0deg);
+                transform:              rotate(0deg);
+            }
+            100% {
+                -webkit-transform:      rotate(270deg);
+                transform:              rotate(270deg);
+            }
+        }
+
+        .path {
+            stroke-dasharray:           187;
+            stroke-dashoffset:          0;
+            -webkit-transform-origin:   center;
+            -ms-transform-origin:       center;
+            transform-origin:           center;
+            -webkit-animation:          dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+            animation:                  dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+        }
+
+        @-webkit-keyframes colors {
+            0% {
+                stroke:                 #01a982;
+            }
+            100% {
+                stroke:                 #01a982;
+            }
+        }
+
+        @keyframes colors {
+            0% {
+                stroke:                 #01a982;
+            }
+            100% {
+                stroke:                 #01a982;
+            }
+        }
+
+        @-webkit-keyframes dash {
+            0% {
+                stroke-dashoffset:  187;
+            }
+            50% {
+                stroke-dashoffset:  46.75;
+                -webkit-transform:  rotate(135deg);
+                transform:          rotate(135deg);
+            }
+            100% {
+                stroke-dashoffset:  187;
+                -webkit-transform:  rotate(450deg);
+                transform:          rotate(450deg);
+            }
+        }
+
+        @keyframes dash {
+            0% {
+                stroke-dashoffset:  187;
+            }
+            50% {
+                stroke-dashoffset:  46.75;
+                -webkit-transform:  rotate(135deg);
+                transform:          rotate(135deg);
+            }
+            100% {
+                stroke-dashoffset:  187;
+                -webkit-transform:  rotate(450deg);
+                transform:          rotate(450deg);
+            }
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <svg xmlns="http://www.w3.org/2000/svg" class="spinner" width$="{{setSize(size)}}" height$="{{setSize(size)}}" viewBox="0 0 66 66">
+            <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+        </svg>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-spinner',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                size:            { type: Number, value: 24, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+            },
+
+            /**
+             * Sets the size of the spinner.
+             *
+             * @param   {Number}    size            size of the spinner
+             * @return  {Number}    width/height    size of the spinner in px
+             */
+
+            setSize: function(size) {
+                return size + 'px';
+            }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,139 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+Windows authentication NTLM login module.
+-->
+
+<dom-module id="app-login">
+
+    <!-- Content of the component -->
+
+    <template></template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-login',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                ssos:            { type: String, notify: true, readyOnly: false },
+                user:            { type: Object, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Login the current user
+
+                self.login();
+            },
+
+            /**
+             * Executes the specified JSONP WEB service call and callbacks the
+             * specified function.
+             *
+             * @param   {String}    service     name of the WEB service
+             * @param   {Function}  callback    callback function that contains
+             *                                  result as the first parameter
+             */
+
+            serviceCall: function(service, callback) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Setting temporary function name
+
+                var fnName = 'servicecallback_' + new Date().getTime();
+
+                // Define temporary callback function for JSONP call
+
+                window[fnName] = function(result) {
+
+                    // Callbacking
+
+                    if (callback) {
+                        callback(result);
+                    }
+
+                    // Clearing callback function
+
+                    delete window[fnName];
+                };
+
+                // Executing the JSONP WEB service call
+
+                var script = document.createElement('script');
+                script.setAttribute('src', sprintf(
+                    '%s/%s?jsonp&callback=%s',
+                    self.ssos,
+                    service,
+                    fnName
+                ));
+
+                Polymer.dom(self.root).appendChild(script);
+            },
+
+            /**
+             * Logins the current user.
+             */
+
+            login: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Invoking 'whoami' business web service
+
+                self.serviceCall('whoami', function(user) {
+
+                    // Getting information about the user
+
+                    if (user) {
+                        self.user = user;
+                    } else {
+
+                        // If there is no authenticated login yet, invoking 
+                        // 'loginNTLM' business web service.
+
+                        self.serviceCall('loginNTLM', function(user) {
+                            self.user = user || null;
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</dom-module>

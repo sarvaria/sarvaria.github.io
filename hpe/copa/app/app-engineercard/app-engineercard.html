@@ -1,0 +1,264 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+
+<!--
+Description:
+
+Engineer card.
+-->
+
+<dom-module id="app-engineercard">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+        
+        .flex {
+            @apply(--layout-flex);
+        }
+
+        .card {
+            height:         36px;
+            width:          146px;
+        }
+
+        .loadindicator {
+            
+        }
+        
+        .load {
+            height:         34px;
+            width:          34px;
+            margin-left:    2px;
+            margin-right:   8px;
+        }
+
+        .eventcnt {
+            color:          #ffffff;
+            font-size:      14px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .eventdur {
+            color:          #ffffff;
+            font-size:      14px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .engineername {
+            font-size:      14px;
+            font-weight:    bold;
+            color:          #ffffff;
+            border:         #e0e0e0 solid 1px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div data-id$="{{engineer.id}}" class="card horizontal center" style$="{{setCardStyle(disabled)}}" on-click="cardSelected">
+            <paper-tooltip>{{engineer.name}}</paper-tooltip>
+
+            <!-- Load indicator -->
+
+            <div class="loadindicator" style$="{{setIndicatorStyle(disabled)}}"></div>
+            
+            <!-- Load index -->
+
+            <div class="horizontal vertical center center-justified load">
+                
+                <div class="vertical center">
+                    <div class="horizontal center-justified eventcnt">{{eventCount}}</div>
+                    <div class="horizontal center-justified eventdur">{{eventDuration}}</div>
+                </div>
+            </div>
+
+            <!-- Engineer name -->
+
+            <div class="engineername">{{shortName(engineer.name)}}</div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-engineercard',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                engineer:           { type: Object, value: 0, notify: true, readyOnly: false },
+                disabled:           { type: Boolean, value: false, notify: true, readyOnly: false },
+                events:             { type: Array, value: [], notify: true, readyOnly: false }
+            },
+
+            observers: [
+                'refreshEvent(events.*)'
+            ],
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+            },
+
+            setLoadBgColor: function(load) {
+                var g = parseInt(255 * load, 10);
+                return 'color: rgb(' + g + ', ' + g + ', ' + g + ')';
+            },
+
+            shortName: function(name) {
+                if (name) {
+                    var pos = name.lastIndexOf(' ');
+
+                    if (pos >= 0) {
+                        return name.substring(0, pos + 1) + name.substring(pos + 1, pos + 2).toUpperCase();
+                    }
+                }
+
+                return '';
+            },
+
+            refreshEvent: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                var count = 0;
+                var duration = 0;
+
+                for (var i = 0; i < self.events.length; i++) {
+                    if (self.events[i].engineerid == self.engineer.id) {
+                        count++;
+                        duration+=self.events[i].duration;
+                    }
+                }
+
+                self.eventCount = count;
+                self.eventDuration = duration;
+
+                // Calculating the load index
+
+                self.load = self.calculateLoadIndex();
+            },
+
+            /**
+             * Setting the style of the card.
+             *
+             * @param   {Boolean}   disabled    card is the disabled or not
+             * @return  {String}    style       style of the card
+             */
+
+            setCardStyle: function(disabled) {
+                return disabled ? 'background: #f04953;cursor: default;color: #000000;' : 'cursor: pointer;color: #fffeff;';
+            },
+
+            setIndicatorStyle: function(disabled) {
+                return 'background: #f04953';
+            },
+
+            /**
+             * Event that runs when a card has been selected
+             *
+             * @param   {Object}    event   event
+             */
+
+            cardSelected: function(event) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Is the card disabled?
+
+                if (!self.disabled) {
+
+                    // Getting the node
+
+                    var node = event.target;
+
+                    while (!node.getAttribute('data-id')) {
+                        node = node.parentElement;
+                    }
+
+                    // Getting the engineer id
+
+                    var engineerID = node.getAttribute('data-id');
+
+                    // Firing cardselected event
+
+                    self.fire('cardselected', engineerID);
+                }
+            },
+
+            /**
+             * Load index calculator.
+             */
+
+            calculateLoadIndex: function() {
+                return 0.79;
+            },
+
+            /**
+             * Setting the style of the load.
+             *
+             * @param   {Number}    load        load between 0 and 1
+             * @return  {String}    style       style of the load
+             */
+
+            setLoadStyle: function(load) {
+
+                // Calculating the color
+
+                var g = parseInt(255 * (1 - load), 10);
+
+                // Setting the style
+
+                return 'background:     rgb(255, ' + g + ', ' + g + ')';
+            }
+        });
+    </script>
+</dom-module>

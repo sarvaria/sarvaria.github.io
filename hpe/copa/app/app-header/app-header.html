@@ -1,0 +1,452 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+
+<!--
+Description:
+
+Header of the application.
+-->
+
+<dom-module id="app-header">
+
+    <!-- Style of the component -->
+
+    <style>
+        .horizontal {
+            @apply(--layout-horizontal);
+        }
+
+        .vertical {
+            @apply(--layout-verical);
+        }
+
+        .center {
+            @apply(--layout-center);
+        }
+
+        .center-justified {
+            @apply(--layout-center-justified);
+        }
+        
+        .flex {
+            @apply(--layout-flex);
+        }
+
+        paper-spinner.white {
+            --paper-spinner-layer-1-color: #ffffff;
+            --paper-spinner-layer-2-color: #ffffff;
+            --paper-spinner-layer-3-color: #ffffff;
+            --paper-spinner-layer-4-color: #ffffff;
+        }
+
+        .header {
+            background-color:           #00a982;
+            height:                     50px;
+        }
+
+        .logininfo {
+            padding-right:              50px;
+        }
+
+        .login {
+            padding-right:              8px;
+            color:                      #ffffff;
+            font-weight:                bold;
+            font-size:                  14px;
+        }
+
+        .wait {
+            padding-left:               2px;
+        }
+
+        .capability {
+            padding-left:               32px;
+            cursor:                     pointer;
+        }
+
+        .capabilityselect {
+            cursor:                     pointer;
+            width:                      200px;
+            height:                     24px;
+            background:                 transparent;
+            -webkit-appearance:         none;
+            outline: none;
+            border:                     #ffffff solid 1px;
+            color:                      #ffffff;
+            background-color:           transparent;
+        }
+
+        .subcapability {
+            padding-left:               8px;
+            cursor:                     pointer;
+        }
+
+        .subcapabilityselect {
+            cursor:                     pointer;
+            width:                      200px;
+            height:                     24px;
+            background:                 transparent;
+            -webkit-appearance:         none;
+            outline: none;
+            border:                     #ffffff solid 1px;
+            color:                      #ffffff;
+            background-color:           transparent;
+        }
+
+        select option {
+            background:                 #ffffff;
+            color:                      #000000;
+            cursor:                     pointer;
+        }
+
+        .week {
+            padding-left:               80px;
+        }
+
+        .weekselect {
+            cursor:                     pointer;
+            width:                      150px;
+            height:                     24px;
+            background:                 transparent;
+            -webkit-appearance:         none;
+            outline: none;
+            border:                     #ffffff solid 1px;
+            color:                      #ffffff;
+            background-color:           transparent;
+        }
+
+        .arrow {
+            margin:                     0px 8px 0px 8px;
+            cursor:                     pointer;
+        }
+
+        .copadnld {
+            padding-right:              8px;
+            color:                      #ffffff;
+            cursor:                     pointer;
+        }
+
+        .settings {
+            padding-left:               8px;
+            color:                      #ffffff;
+            cursor:                     pointer;
+        }
+
+        .datepos {
+        }
+
+        .datecontainer {
+            position:                   absolute;
+            z-index:                    10000;
+        } 
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="horizontal center header">
+
+            <!-- Week selector -->
+
+            <input type="text" id="datepicker" value="" hidden>
+            <div id="container" class="datecontainer datepos"></div>
+
+            <div class="horizontal center week">
+                <img src="images/left_arrow.png" width="6" height="11" class="arrow" style$="{{leftArrowStyle(week)}}" on-click="stepBack">
+                <select class="weekselect" value="{{week::change}}">
+                    <template is="dom-repeat" items="{{weeks}}" as="w">
+                        <option value="{{w.id}}">{{w.name}}</option>
+                    </template>
+                </select>
+                <img src="images/right_arrow.png" width="6" height="11" class="arrow" style$="{{rightArrowStyle(week)}}" on-click="stepForward">
+            </div>
+
+            <!-- Capability selector -->
+
+            <div class="horizontal center capability">
+                <select id="cap" class="capabilityselect" value="{{capability::change}}">
+                    <template is="dom-repeat" items="{{capabilities}}" as="cap">
+                        <option value="{{cap.id}}">{{cap.name}}</option>
+                    </template>
+                </select>
+            </div>
+
+            <!-- Subcapability selector -->
+
+            <div class="horizontal center subcapability">
+                <select class="subcapabilityselect" value="{{subcapability::change}}">
+                    <template is="dom-repeat" items="{{subcapabilities}}" filter="isSelectedCapability" as="scap" observe="show">
+                        <option value="{{scap.id}}">{{scap.name}}</option>
+                    </template>
+                </select>
+            </div>
+
+            <!-- Settings icon -->
+
+            <div class="settings">
+                <iron-icon icon="icons:settings" on-click="settings"></iron-icon>
+                <paper-tooltip>Settings</paper-tooltip>
+            </div>
+
+            <!-- COPA downloader link -->
+
+            <div class="flex"></div>
+            <div class="copadnld">
+                <iron-icon icon="icons:get-app"></iron-icon>
+            </div>
+
+            <!-- Login information -->
+
+            <div class="horizontal center logininfo">
+                <span class="login">{{login.name}}</span>
+                <img src="images/user.png" width="30" height="30">
+                <paper-spinner class="wait white" style$="{{setWaitStyle(wait)}}" active></paper-spinner>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-header',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                login:           { type: Object, notify: true, readyOnly: false },
+                date:            { type: Date, notify: true, readyOnly: false, observer: 'dateChanged' },
+                capabilities:    { type: Array, notify: true, readyOnly: false },
+                capability:      { type: Number, notify: true, readyOnly: false, observer: 'capabilityChanged' },
+                subcapabilities: { type: Array, notify: true, readyOnly: false },
+                subcapability:   { type: Number, notify: true, readyOnly: false },
+                wait:            { type: Boolean, value: false, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Observers.
+             */
+
+            observers: [
+                'weekChanged(week)'
+            ],
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Initializing the weeks
+
+                var year = new Date().getFullYear();
+                var date = moment(year + '-01-01', 'YYYY-MM-DD');
+                date = date.add(-1 * (date.weekday() - 1), 'days');
+                var weeks = [];
+
+                while (true) {
+                    if (date.year() > year) {
+                        break;
+                    }
+
+                    weeks.push( { 
+                        id:     date.week(),
+                        date:   new Date(date.toDate()),
+                        name:   sprintf('CW %d - %d %s', date.week(), date.date(), date.format('MMMM'))
+                    });
+
+                    date = date.add(7, 'days');
+                }
+
+                self.weeks = weeks;
+            },
+
+            /**
+             * Event that runs when the selected week has been changed.
+             *
+             * @param   {Number}    newValue    new week number
+             */
+
+            weekChanged: function(newValue) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Setting the date based on the selceted week. The date will be
+                // the first day (monday) of the selected week.
+
+                for (var i = 0; i < self.weeks.length; i++) {
+                    if (self.weeks[i].id == newValue) {
+                        self.date = self.weeks[i].date;
+                        break;
+                    }
+                }
+            },
+
+            /**
+             * Event that runs when the selected date has been changed.
+             *
+             * @param   {Number}    newValue    new date
+             */
+
+            dateChanged: function(newValue) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Setting the week based on the selceted date. The date must be
+                // the first day (monday) of a week.
+
+                for (var i = 0; i < self.weeks.length; i++) {
+                    if (moment(newValue).isSame(self.weeks[i].date)) {
+                        self.week = self.weeks[i].id;
+                        break;
+                    }
+                }
+            },
+
+            /**
+             * Sets the style of the spinner.
+             *
+             * @param   {Boolean}   wait    spinner must be shown or not
+             * @return  {String}    style   style of the spinner
+             */
+
+            setWaitStyle: function(wait) {
+                return wait ? '' : 'opacity: 0';
+            },
+
+            /**
+             * Filter function that returns true if the specified subcapability
+             * is member of the selected capability.
+             *
+             * @param   {Object}    subcapability   subcapability that has to
+             *                                      observe
+             * @return  {Boolean}   iselected       is it a capability member
+             */
+
+            isSelectedCapability: function(subcapability) {
+                return subcapability.show;
+            },
+
+            /**
+             * Event that runs when the capability has been changed. If filters
+             * the subcapabilities based on the selected capability.
+             */
+
+            capabilityChanged: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Filtering subcapabilities
+
+                if (self.subcapabilities) {
+                    for (var i = 0; i < self.subcapabilities.length; i++) {
+                        self.set('subcapabilities.' + i + '.show', self.subcapabilities[i].parentid == self.capability);
+                    }
+                }
+            },
+
+            /**
+             * Steps the week back with one week.
+             */
+
+            stepBack: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Step back one week
+
+                self.week--;
+            },
+
+            /**
+             * Steps the week forward with one week.
+             */
+
+            stepForward: function() {
+              
+                // Reference to the current object
+
+                var self = this;
+
+                // Step forward one week
+
+                self.week++;
+                self.picker.show();
+            },
+
+            /**
+             * Sets the style of the left arrow.
+             *
+             * @param   {Number}    week    week nr
+             * @return  {String}    style   style of the left arrow
+             */
+
+            leftArrowStyle: function(week) {
+
+                // Setting the visibility
+
+                return week <= 1 ? 'visibility: hidden' : '';
+            },
+
+            /**
+             * Sets the style of the right arrow.
+             *
+             * @param   {Number}    week    week nr
+             * @return  {String}    style   style of the right arrow
+             */
+
+            rightArrowStyle: function(week) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Setting the visibility
+
+                return week >= self.weeks.length ? 'visibility: hidden' : '';
+            },
+
+            settings: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self.fire('open-settings');
+            }
+        });
+    </script>
+</dom-module>

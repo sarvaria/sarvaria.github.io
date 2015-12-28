@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="hu">
+	<head>
+
+        <!-- Meta informations about the site -->
+
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <!-- Title and icon of the site -->
+
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        <title>Widget Test</title>
+        
+        <!-- Initializing webcomponents, polymer and the utilities -->
+        
+        <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="../bower_components/polymer/polymer.html">
+        <script src="../js/util.js"></script>
+        
+        <!-- Adding Roboto font support -->
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        
+        <style>
+
+            /**
+             * HTML and BODY designing.
+             */
+
+            html, body {
+                -webkit-background-clip:    border-box;
+                -webkit-background-origin:  padding-box;
+                -webkit-background-size:    auto;
+                
+                background-color:           #f6f6f6;
+                background-attachment:      scroll;
+                background-clip:            border-box;
+                background-image:           none;
+                background-origin:          padding-box;
+                background-size:            auto;
+                
+                color:                      #000000;
+                display:                    block;
+                
+                font-family:                'Roboto', sans-serif;
+                font-size:                  18px;
+                margin:                     0;
+                padding:                    0;
+                height:                     100%;
+            }
+            
+            /**
+             * Layout attributes definition.
+             */
+
+            .horizontal {
+                display:                        -ms-flexbox;
+                display:                        -webkit-flex;
+                display:                        flex;
+
+                -ms-flex-direction:             row;
+                -webkit-flex-direction:         row;
+                flex-direction:                 row;
+            }
+
+            .vertical {
+                display:                        -ms-flexbox;
+                display:                        -webkit-flex;
+                display:                        flex;
+
+                -ms-flex-direction:             column;
+                -webkit-flex-direction:         column;
+                flex-direction:                 column;
+            }
+
+            .flex {
+                -ms-flex:                       1 1 0.000000001px;
+                -webkit-flex:                   1;
+                flex:                           1;
+                -webkit-flex-basis:             0.000000001px;
+                flex-basis:                     0.000000001px;
+            }
+
+            .center {
+                -ms-flex-align:                 center;
+                -webkit-align-items:            center;
+                align-items:                    center;
+            }
+
+            .end {
+                -ms-flex-align:                 end;
+                -webkit-align-items:            flex-end;
+                align-items:                    flex-end;
+            }
+
+            .center-justified {
+                -ms-flex-pack:                  center;
+                -webkit-justify-content:        center;
+                justify-content:                center;
+            }
+
+            .wrap {
+                -ms-flex-wrap:                  wrap;
+                -webkit-flex-wrap:              wrap;
+                flex-wrap:                      wrap;
+            }
+            
+            fit: {
+                position:                       absolute;
+                top:                            0;
+                right:                          0;
+                bottom:                         0;
+                left:                           0;
+            }
+        </style>
+    </head>
+
+    <body unresolved>
+        <link rel="import" href="app-test/app-test.html">
+
+        <app-test></app-test>        
+    </body>
+</html>

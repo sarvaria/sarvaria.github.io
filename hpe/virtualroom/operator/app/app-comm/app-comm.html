@@ -1,0 +1,407 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@hpe.com>
+-->
+
+<link rel="import" href="../../lib/polymer/polymer.html">
+
+<!--
+Description:
+
+Websocket communication module.
+-->
+
+<dom-module id="app-comm">
+
+    <!-- Content of the component -->
+
+    <template>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        Polymer({
+            is:                     'app-comm',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                url:             { type: String, notify: true, readyOnly: false, observer: '_reconnect' },
+                sender:          { type: String, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Define constanses
+                
+                self.REGISTERCONN_COMMAND = 'REGC';
+                self.SENDVIDEO_COMMAND = 'SVID';
+                self.SENDAUDIO_COMMAND = 'SAUD';
+                self.SUCCESS = 'SUCCESS';
+                self.FAIL = 'FAIL';
+
+                // Generating common connection ID
+
+                self.connectionID = self._generateID();
+            },
+
+            /**
+             * Generates a random 32 characters length ID and returns it.
+             *
+             * @return  {String}    generated ID
+             */
+
+            _generateID: function() {
+
+                // Preparing
+
+                var id = '';
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+                // Generating the ID
+
+                for(var i = 0; i < 32; i++) {
+                    id += possible.charAt(Math.floor(Math.random() * possible.length));
+                }
+
+                // Returns the ID
+
+                return id;
+            },
+
+            /**
+             * Sends the specified command over the web socket with the
+             * specified data.
+             *
+             * @param   {Object}                           websocket   websocket
+             * @param   {String}                           cmd         command
+             * @param   {String/ArrayBuffer/Uint8Array}    data        data that
+             *                                                         has to
+             *                                                         send
+             */
+
+            _sendCommand: function(websocket, cmd, data) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Determining the length of the data that has to send
+
+                var send = function() {
+                    var size;
+                    var i;
+                    var cdata;
+
+                    if (data) {
+
+                        // Is string?
+
+                        if (typeof(data) === 'string') {
+                            size = data.length;
+
+                            if (data) {
+                                cdata = new Uint8Array(data.length);
+
+                                for (i = 0; i < data.length; i++) {
+                                    cdata[i] = data.charCodeAt(i);
+                                }
+
+                                cdata = cdata.buffer;
+                            }
+
+                        // Is Uint8Array?
+
+                        } else if (typeof(data) === 'object' && data.buffer) {
+                            size = data.buffer.byteLength;
+                            cdata = data.buffer;
+
+                        // Is ArrayBuffer?
+
+                        } else if (typeof(data) === 'object') {
+                            size = data.byteLength;
+                            cdata = data;
+
+                        // Invalid data type
+
+                        } else {
+                            throw new Error('Invalid data type');
+                        }
+                    }
+
+                    // Preparing
+
+                    var binary = new Uint8Array(24);
+
+                    // Adding command to the binary buffer
+
+                    for (i = 0; i < cmd.length; i++) {
+                        binary[i] = cmd.charCodeAt(i);
+                    }
+
+                    // Adding sender to the binary buffer
+
+                    var sender;
+
+                    if (self.sender) {
+                        sender = self.sender.trim() + 
+                                 Array(21 - self.sender.length).join(' ');
+                    } else {
+                        sender = Array(21).join(' ');
+                    }
+
+                    for (i = 0; i < sender.length; i++) {
+                        binary[4 + i] = sender.charCodeAt(i);
+                    }
+
+                    // Adding data to the binary buffer
+
+                    var d;
+
+                    if (cdata) {
+                        d = new Uint8Array(binary.byteLength + cdata.byteLength);
+                        d.set(new Uint8Array(binary), 0);
+                        d.set(new Uint8Array(cdata), binary.byteLength);
+                    } else {
+                        d = binary;
+                    }
+
+                    // Sending the data over the web socket
+
+                    websocket.send(d.buffer);
+                };
+
+                // Have the socket opened yet?
+
+                var timer;
+
+                if (!websocket.socketOpen) {
+
+                    // Socket is closed. Reconnecting...
+                    
+                    websocket = self._connect(self.url, websocket.id);
+
+                    timer = setInterval(function() {
+
+                        // Sending data if the socket have opened and
+                        // registered yet
+
+                        if (websocket.socketOpen && websocket.registered) {
+                            clearInterval(timer);
+                            send();
+                        }
+                    }, 100);
+                } else if (!websocket.registered && cmd != self.REGISTERCONN_COMMAND) {
+                    self._sendCommand(self.websocket[websocket.id], self.REGISTERCONN_COMMAND, JSON.stringify({ type: websocket.id, id: self.connectionID }));
+
+                    timer = setInterval(function() {
+
+                        // Sending data if the socket have registereds yet
+
+                        if (websocket.registered) {
+                            clearInterval(timer);
+                            send();
+                        }
+                    }, 100);
+                } else {
+
+                    // Sending data
+
+                    send();
+                }
+            },
+
+            /**
+             * Creates new websocket connections to the communication server by
+             * using the specified URL. If the "id" parameter is specified it
+             * creates a new connection for the specified type of connection
+             * only.
+             *
+             * @param   {String}    url     websocket URL
+             * @param   {String}    id      connection type (MESSAGE/VIDEO/AUDIO)
+             */
+
+            _connect: function(url, id) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Creating new websockets, initialize these and registering the
+                // event handlers.
+
+                var socketHandler = function(id) {
+                    var websocket = new WebSocket(url);
+                    websocket.binaryType = 'arraybuffer';
+                    websocket.id = id;
+                    websocket.commonID = self.connectionID;
+
+                    // When the connection created
+
+                    websocket.onopen = function() {
+                        websocket.socketOpen = true;
+                        websocket.registered = false;
+
+                        self.fire('connection-estabilished', id);
+                    };
+
+                    // When the connection closed
+
+                    websocket.onclose = function() {
+                        websocket.socketOpen = false;
+                        websocket.registered = false;
+
+                        self.fire('connection-closed', id);
+                    };
+
+                    // When the connection can not be estabilish
+
+                    websocket.onerror = function() {
+                        self.fire('connection-error', id);
+                    };
+
+                    // When a message received from the server
+
+                    websocket.onmessage = function(event) {
+                        if (event.data.byteLength >= 24) {
+                            var command = String.fromCharCode.apply(null, new Uint8Array(event.data.slice(0, 4)));
+                            var sender = String.fromCharCode.apply(null, new Uint8Array(event.data.slice(4, 24))).trim();
+
+                            if (command == self.REGISTERCONN_COMMAND && String.fromCharCode.apply(null, new Uint8Array(event.data.slice(24))) == self.SUCCESS) {
+                                websocket.registered = true;
+                            } else {
+                                self.fire('message', {
+                                    socketid:   id,
+                                    command:    command,
+                                    sender:     sender,
+                                    data:       event.data.slice(24)
+                                });
+                            }
+                        }
+                    };
+
+                    // Returns the new websocket
+
+                    return websocket;
+                };
+
+                // Initializing the specified websocket by ID
+
+                var timer;
+
+                if (id) {
+                    var websocket = socketHandler(id);
+                    self.websocket[websocket.id] = websocket;
+
+                    timer = setInterval(function() {
+                        if (self.websocket[websocket.id].socketOpen) {
+                            clearInterval(timer);
+
+                            self._sendCommand(self.websocket[websocket.id], self.REGISTERCONN_COMMAND, JSON.stringify({ type: websocket.id, id: self.connectionID }));
+                        }
+                    }, 100);
+
+                    // Returns the new websocket
+
+                    return websocket;
+                } else {
+
+                    // Initializing websockets
+
+                    self.websocket = {
+                        MESSAGE:    socketHandler('MESSAGE'),
+                        VIDEO:      socketHandler('VIDEO'),
+                        AUDIO:      socketHandler('AUDIO')
+                    };
+
+                    // Registering the websocket types
+
+                    timer = setInterval(function() {
+                        if (self.websocket.MESSAGE.socketOpen && self.websocket.VIDEO.socketOpen && self.websocket.AUDIO.socketOpen) {
+                            clearInterval(timer);
+
+                            self._sendCommand(self.websocket.MESSAGE, self.REGISTERCONN_COMMAND, JSON.stringify({ type: self.websocket.MESSAGE.id, id: self.connectionID }));
+                            self._sendCommand(self.websocket.VIDEO, self.REGISTERCONN_COMMAND, JSON.stringify({ type: self.websocket.VIDEO.id, id: self.connectionID }));
+                            self._sendCommand(self.websocket.AUDIO, self.REGISTERCONN_COMMAND, JSON.stringify({ type: self.websocket.AUDIO.id, id: self.connectionID }));
+                        }
+                    }, 100);
+                }
+            },
+
+            /**
+             * Reconnects all of the connections.
+             *
+             * @param   {String}    newValue    new websocket URL
+             */
+
+            _reconnect: function(newValue) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Connecting to communication server
+
+                self._connect(newValue);
+            },
+
+            /**
+             * Sends the specified command over the web socket with the
+             * specified data.
+             *
+             * @param   {String}                           cmd     command
+             * @param   {String/ArrayBuffer/Uint8Array}    data    data that has
+             *                                                     to send
+             */
+
+            sendMessage: function(cmd, data) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self._sendCommand(self.websocket.MESSAGE, cmd, data);
+            },
+
+            sendVideo: function(video) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self._sendCommand(self.websocket.VIDEO, self.SENDVIDEO_COMMAND, video);
+            },
+
+            sendAudio: function(audio) {
+
+                // Reference to the current object
+
+                var self = this;
+
+                self._sendCommand(self.websocket.AUDIO, self.SENDAUDIO_COMMAND, audio);
+            }
+        });
+    </script>
+</dom-module>
