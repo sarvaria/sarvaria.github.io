@@ -1,0 +1,1170 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../../bower_components/paper-spinner/paper-spinner.html">
+
+<!--
+Description:
+
+Document viewer.
+-->
+
+<dom-module id="app-doc">
+
+    <!-- Style of the component -->
+
+    <style>
+        .doc {
+            position:             relative;
+            border:               #00B388 solid 1px;
+            margin:               0px 0px 0px 0px;
+        }
+        
+        #viewer {
+            position:             relative;
+            background:           #E9E9E9;
+        }
+        
+        #canvas {
+            margin:               0px 0px 0px 0px;
+            padding:              0px 0px 0px 0px;
+        }
+        
+        .controlicon {
+            --iron-icon-height:   32px;
+            --iron-icon-width:    32px;
+        }
+        
+        .icon {
+            --iron-icon-height:   32px;
+            --iron-icon-width:    32px;
+            position:             relative;
+            left:                 4px;
+        }
+        
+        paper-icon-button {
+            transition:           all 0.2s;
+            -webkit-transition:   all 0.2s;
+            -moz-transition:      all 0.2s;
+            -o-transition:        all 0.2s;
+        }
+    
+        paper-icon-button:hover {
+            color:                #00B388;
+        }        
+        
+        .toolbar {
+            position:             relative;
+            left:                 -8px;
+            top:                  8px;
+        }
+        
+        .controlbar {
+            height:               32px;
+        }
+        
+        .filename {
+            font-size:            16px;
+            color:                #000000;
+        }
+        
+        .navigator {
+            position:             relative;
+            left:                 16px;
+            z-index:              1000;
+        }
+        
+        .page {
+            font-size:            14px;
+            color:                #000000;
+        }
+        
+        .infobar {
+            height:               16px;
+        }
+        
+        .infolabel {
+            position:             relative;
+            top:                  -1px;            
+            font-size:            8px;
+            color:                #000000;
+            white-space:          nowrap;
+        }
+        
+        .infovalue {
+            position:             relative;
+            top:                  -2px;
+            font-size:            10px;
+            font-weight:          bold;
+            color:                #000000;
+            white-space:          nowrap;
+        }
+
+        .infospace {
+            width:                8px;
+        }
+        
+        .progress {
+            position:             absolute;
+            top:                  0px;
+            left:                 0px;
+            width:                100%;
+            height:               100%;
+            background:           #000000;
+            opacity:              0.6;
+            z-index:              10000;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="doc vertical" style$="{{setStyle(width, height)}}">
+            <div class="horizontal">
+                <div class="vertical">
+                    
+                    <!-- Infobar -->
+                    
+                    <div class="infobar horizontal center">
+                        <div class="infolabel">ZOOM:&nbsp;</div><div class="infovalue"><span>x</span>{{zoom}}</div>
+                        <div class="flex"></div>
+                        <div class="infolabel">RESOLUTION:&nbsp;</div>
+                        <div class="infovalue">{{getResolution(img.naturalWidth, img.naturalHeight, img, imageLoaded)}}</div>
+                        <div class="infospace"></div>
+                        <div class="infolabel">SIZE:&nbsp;</div>
+                        <div class="infovalue">{{size}}</div>
+                        <div class="infospace"></div>
+                        <div class="infolabel">IMAGE:&nbsp;</div>
+                        <div class="infovalue">{{imagetype}}</div>
+                        <div class="infospace"></div>
+                        <div class="infolabel">FOLDER:&nbsp;</div>
+                        <div class="infovalue">{{toUpper(folder)}}</div>
+                    </div>
+                    
+                    <!-- Document viewer -->
+                    
+                    <!--<div id="viewer" class="horizontal center-justified center" style$="{{setViewerStyle(viewersize.*)}}">-->
+                        <canvas id="canvas" width="{{viewersize.width}}" height="{{viewersize.height}}" on-mousewheel="mousewheel" on-mousedown="mousedown" on-mouseup="mouseup" on-mousemove="mousemove" on-mouseleave="mouseup"></canvas>
+                    <!--</div>-->
+                    
+                    <!-- Controlbar -->
+                    
+                    <div class="controlbar horizontal center">
+                        <div class="filename">{{file}}</div>
+                        <div class="flex"></div>
+                        <div class="navigator">
+                            <paper-icon-button class="controlicon" icon="av:skip-previous" title="First page" disabled$="{{isFirstPage(page)}}" on-click="firstPage"></paper-icon-button>
+                            <paper-icon-button class="controlicon" icon="image:navigate-before" title="Previous page" disabled$="{{isFirstPage(page)}}" on-click="previousPage"></paper-icon-button>
+                            <span class="page"><span>{{page}}</span>&nbsp;/&nbsp;<span>{{pagecount}}</span></span>
+                            <paper-icon-button class="controlicon" icon="image:navigate-next" title="Next page" disabled$="{{isLastPage(page, pagecount)}}" on-click="nextPage"></paper-icon-button>
+                            <paper-icon-button class="controlicon" icon="av:skip-next" title="Last page" disabled$="{{isLastPage(page, pagecount)}}" on-click="lastPage"></paper-icon-button>
+                        </div>
+                    </div>                    
+                </div>
+                
+                <!-- Toolbar -->
+                
+                <div class="toolbar vertical center">
+                    <paper-icon-button class="icon" icon$="{{setFolderIcon(showtree)}}" title="Toggle folders" on-click="showFolders"></paper-icon-button>
+                    <paper-icon-button class="icon" icon="icons:zoom-in" title="Zoom in" disabled$="{{!isZoomIn(zoom)}}" on-click="zoomin"></paper-icon-button>
+                    <paper-icon-button class="icon" icon="icons:zoom-out" title="Zoom out" disabled$="{{!isZoomOut(zoom)}}" on-click="zoomout"></paper-icon-button>
+                    <paper-icon-button class="icon" icon="icons:fullscreen" title="Fit to viewer" on-click="reset"></paper-icon-button>
+                </div>
+            </div>
+            
+            <!-- Progress -->
+            
+            <div class="progress horizontal center-justified center" style$="{{showProgress(imageLoaded, pagesLoaded)}}">
+                <paper-spinner style$="{{setSpinnerStyle(width)}}" active></paper-spinner>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-doc',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                folder:            { type: String, notify: true, readyOnly: false },
+                file:              { type: String, notify: true, readyOnly: false },
+                size:              { type: String, value: 'A4', notify: true, readyOnly: false },
+                imagetype:         { type: String, value: 'TIF', notify: true, readyOnly: false },
+                width:             { type: Number, value: 0, notify: true, readyOnly: false },
+                height:            { type: Number, value: 0, notify: true, readyOnly: false },
+                showtree:          { type: Boolean, value: false, notify: true, readyOnly: false },
+                form:              { type: Object, notify: true, readyOnly: false },
+                viewersize:        { type: Object, computed: 'setViewerSize(width, height)', notify: true, readyOnly: false },
+                papersize:         { type: Object, computed: 'setPaperSize(size, viewersize.*)', notify: true, readyOnly: false },
+                fileurl:           { type: String, computed: 'getFileURL(folder, file, page)', notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Observers.
+             */
+            
+            observers: [
+                'loadImage(fileurl)',
+                'getPages(folder, file)',
+                'drawImage(zoom, form)'
+            ],
+            
+            /**
+             * Constanses.
+             */
+            
+            SIDE_GAP:               8,
+            CONTROL_SIZE:           24,
+            TOOL_SIZE:              16,
+            MIN_ZOOM:               1,
+            MAX_ZOOM:               10,
+            INFOBAR_HEIGHT:         16,
+            
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                // Initializing
+                
+                self.imageLoaded = false;
+                self.paper = { x: 0, y: 0, width: 0, height: 0 };
+                self.zoom = 1;
+                self.page = 1;
+                self.pagecount = 1;
+                self.context = self.$.canvas.getContext('2d');
+            },
+            
+            /**
+             * Setting the size of the document viewer.
+             * 
+             * @param   {String}    size    size of the document viewer
+             * @param   {Number}    width   width of the document viewer
+             * @param   {Number}    height  height of the document viewer
+             */
+             
+            setViewerSize: function(width, height) {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                // Setting the size of the document viewer
+                
+                return {
+                    width:      width - self.CONTROL_SIZE - (self.SIDE_GAP * 2),
+                    height:     height - self.TOOL_SIZE - (self.SIDE_GAP * 2) - self.INFOBAR_HEIGHT
+                };
+            },
+            
+            /**
+             * Setting the size of the paper in the document viewer.
+             * 
+             * @param   {String}    size    size of the paper
+             * @param   {Number}    width   width of the paper
+             * @param   {Number}    height  height of the paper
+             */
+             
+            setPaperSize: function(size) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Preparing
+
+                var w = self.viewersize.width - 8;
+                var h = self.viewersize.height - 16;
+                
+                // A4
+                
+                if (size == 'A4') {
+                    var w1 = w;
+                    var h1 = h;
+                    var w2 = parseInt((h1 / Math.sqrt(2)), 10);
+                    var h2 = parseInt(w1 * Math.sqrt(2), 10);
+                    
+                    if (h2 <= h) {
+                        return { width: w1, height: h2 };
+                    } else {
+                        return { width: w2, height: h1 };
+                    }
+                
+                // Unknown paper size. The height will be same as the width.
+                
+                } else {
+                    return { width:  w, height: h };
+                }
+            },
+            
+            /**
+             * Gets the resolution of the loaded image.
+             * 
+             * @return  {String}    resolution  resolution of the image
+             */
+             
+            getResolution: function(width, height) {
+                return width + ' x ' + height;
+            },
+            
+            /**
+             * Sets the style of the component.
+             * 
+             * @param   {Number}    width       width of the component
+             * @param   {Number}    height      height of the component
+             * @return  {String}    style       style of the component
+             */
+             
+            setStyle: function(width, height) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Setting the style of the component
+                
+                return  'width: '   + width + 'px;' +
+                        'height: '  + height + 'px;' +
+                        'padding: ' + self.SIDE_GAP + 'px ' + 
+                                      '0px ' + 
+                                      self.SIDE_GAP + 'px ' + 
+                                      self.SIDE_GAP + 'px;';
+            },
+
+            /**
+             * Sets the style of the document viewer.
+             * 
+             * @return  {String}    style       style of the document viewer
+             */
+             /*
+            setViewerStyle: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Setting the style of the document viewer
+
+                return 'width: ' + self.viewersize.width + 'px;' +
+                       'height: ' + self.viewersize.height + 'px';
+            },*/
+
+            /**
+             * Sets the full URL of the image file based on the folder, file
+             * and page.
+             * 
+             * @param   {String}    folder  folder that stores the image file
+             * @param   {String}    file    file that has to load
+             * @param   {Number}    page    page in the image that has to show
+             * @return  {String}    fileurl full URL of the image file
+             */
+             
+            getFileURL: function(folder, file, page) {
+                return  folder + '/' + file + '_' + 
+                        '00'.substring(0, 2 - ('' + page).length) + 
+                        page + '.jpg';
+            },
+            
+            /**
+             * Loads the specified image and shows it on the canvas.
+             * 
+             * @param   {String}    fileurl full URL of the image file
+             */
+             
+            loadImage: function(fileurl) {
+           
+                // Reference to the current object
+
+                var self = this;
+    
+                // Loading the image
+
+                self.imageLoaded = false;
+                self.img = document.createElement('img');
+                self.img.setAttribute('src', self.fileurl);
+                self.img.addEventListener('load', function() {
+                    self.reset();
+                    self.imageLoaded = true;
+                });
+            },
+            
+            /**
+             * Gets the pages of the specified image.
+             */
+             
+            getPages: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Page loader function
+                
+                var getPage = function(page) {
+                    
+                    // Preparing
+                    
+                    var img = document.createElement('img');
+                    img.setAttribute('src', self.getFileURL(self.folder, self.file, page));
+                    
+                    // Page does exists
+                    
+                    img.addEventListener('load', function() {
+                        getPage(page + 1);
+                    });
+                    
+                    // There is no more page for the image
+                    
+                    img.addEventListener('error', function() {
+                        self.pagecount = page - 1;
+                        self.pagesLoaded = true;
+                    });
+                };
+                
+                // Loading pages
+                
+                self.pagesLoaded = false;
+                getPage(1);
+            },
+            
+            /**
+             * Draws the image in the document viewer.
+             */
+             
+            drawImage: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+
+                // Checking context availibility
+                
+                if (self.context && self.form) {
+                    
+                    // Preparing
+                    
+                    self.context.save();
+                    
+                    // Drawing image
+                    
+                    self.context.fillStyle = '#E9E9E9';
+                    self.context.fillRect(0, 0, self.$.canvas.width, self.$.canvas.height);
+                    //self.context.clearRect(0, 0, self.$.canvas.width, self.$.canvas.height);
+                    //self.context.transform(1, 0, 0, 1, self.imageCoord.x + self.mouseCoord.moveX, self.imageCoord.y + self.mouseCoord.moveY);
+
+                    self.paper.width = self.papersize.width * self.zoom;
+                    self.paper.height = self.papersize.height * self.zoom;
+
+                    if (self.$.canvas.width < self.paper.width) {
+                        self.paper.x = parseInt((self.paper.width - self.$.canvas.width) / -2, 10);
+                    } else {
+                        self.paper.x = parseInt((self.$.canvas.width - self.paper.width) / 2, 10);
+                    }
+                    
+                    if (self.mouseCoord.moveX !== undefined) {
+                        self.paper.x += (self.imageCoord.x + self.mouseCoord.moveX);    
+                    }
+                    
+                    if (self.$.canvas.height < self.paper.height) {
+                        self.paper.y = parseInt((self.paper.height - self.$.canvas.height) / -2, 10);
+                    } else {
+                        self.paper.y = parseInt((self.$.canvas.height - self.paper.height) / 2, 10);
+                    }
+
+                    if (self.mouseCoord.moveY !== undefined) {
+                        self.paper.y += (self.imageCoord.y + self.mouseCoord.moveY);    
+                    }
+                    
+                    self.context.drawImage(
+                        self.resizeImage(self.paper.width, self.paper.height),
+                        self.paper.x,
+                        self.paper.y,
+                        self.paper.width,
+                        self.paper.height
+                    );
+                    
+                    /*
+                    self.context.drawImage(
+                        self.resizeImage(self.$.canvas.width * self.zoom, self.$.canvas.height * self.zoom),
+                        0,
+                        0,
+                        self.$.canvas.width * self.zoom,
+                        self.$.canvas.height * self.zoom
+                    );*/
+                    
+                    // Drawing paper edges
+                    
+                    self.context.beginPath();
+                    //self.context.rect(0, 0, self.$.canvas.width * self.zoom, self.$.canvas.height * self.zoom);
+                    self.context.rect(self.paper.x, self.paper.y, self.paper.width, self.paper.height);
+                    self.context.lineWidth = 1;
+                    self.context.strokeStyle = '#000000';
+                    self.context.stroke();
+          
+                    // Drawing fields
+                    
+                    var rate = {
+                        x:  self.$.canvas.width / self.img.naturalWidth,
+                        y:  self.$.canvas.height / self.img.naturalHeight
+                    };
+                        
+                    self.context.beginPath();
+                    self.context.rect(
+                        self.form.field[0].position.x * rate.x * self.zoom,
+                        self.form.field[0].position.y * rate.y * self.zoom,
+                        self.form.field[0].position.width * rate.x * self.zoom,
+                        self.form.field[0].position.height * rate.y * self.zoom
+                    );
+                    self.context.lineWidth = 1;
+                    self.context.strokeStyle = '#F04953';
+                    self.context.stroke();
+
+                    // Drawing marker
+                    
+                    if  (self.mark) {
+                        self.context.beginPath();
+                        self.context.rect(
+                            self.mark.x * rate.x * self.zoom,
+                            self.mark.y * rate.y * self.zoom,
+                            self.mark.width * rate.x * self.zoom,
+                            self.mark.height * rate.y * self.zoom
+                        );
+                        self.context.lineWidth = 1;
+                        self.context.strokeStyle = '#F04953';
+                        self.context.stroke();
+                    }
+
+                    // Finishing
+                    
+                    self.context.restore();
+                }
+            },
+            
+            /**
+             * Resizes the image to the specified width and height. It uses
+             * antialising feature.
+             * 
+             * @param   {Number}    tw      new width of the image
+             * @param   {Number}    th      new height of the image
+             * @param   {Object}    field   field that has OCR (optional)
+             */
+             
+            resizeImage: function(tw, th, field) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Initializing
+
+                var steps;
+                var oc = document.createElement('canvas');
+                var ctx = oc.getContext('2d');
+                var fc = document.createElement('canvas');
+                var w = self.img.width;
+                var h = self.img.height;
+            
+                // Preparing
+                
+                oc.width = w;
+                oc.height = h;
+                fc.width = tw;
+                fc.height = th;
+            
+                // Determining the number of steps for the antialising
+                
+                if ((w / tw) > (h / th)) {
+                    steps = Math.ceil(Math.log(w / tw) / Math.log(2));
+                } else {
+                    steps = Math.ceil(Math.log(h / th) / Math.log(2));
+                }
+
+                // We did it if there is only one step
+                
+                if (steps <= 1) {
+                    ctx = fc.getContext('2d');
+                    ctx.drawImage(self.img, 0, 0, tw, th);
+                    
+                    // Preparing the OCR of the field
+    
+                    if (field) {
+                        var image = ctx.getImageData(
+                            self.form.field[0].position.x * self.form.field[0].zoom,
+                            self.form.field[0].position.y * self.form.field[0].zoom,
+                            self.form.field[0].position.width * self.form.field[0].zoom,
+                            self.form.field[0].position.height * self.form.field[0].zoom
+                        );
+                        
+                        var ocrCanvas = document.createElement('canvas');
+                        ocrCanvas.setAttribute('width', self.form.field[0].position.width * self.form.field[0].zoom);
+                        ocrCanvas.setAttribute('height', self.form.field[0].position.height * self.form.field[0].zoom);
+                        ocrCanvas.getContext('2d').putImageData(image, 0, 0);
+
+                        // Returns the OCR canvas
+                        
+                        return ocrCanvas;
+                    }
+                    
+                    // Returns the created canvas
+                    
+                    return fc;
+                }
+            
+                // Antialiasing the image
+                
+                ctx.drawImage(self.img, 0, 0);
+                steps--;
+                
+                while(steps > 0) {
+                    w *= 0.5;
+                    h *= 0.5;
+                    ctx.drawImage(oc, 0, 0, w * 2, h * 2, 0, 0, w, h);
+                    steps--;
+                }
+            
+                // Draws the new antialiased image to the canvas
+                
+                ctx = fc.getContext('2d'),
+                ctx.drawImage(oc, 0, 0, w, h, 0, 0, tw, th);
+                
+                // Returns the created canvas
+
+                return fc;
+            },
+            
+            mousewheel: function(event) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                var e = window.event || event; // old IE support
+	            var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+	
+	            if (delta > 0) {
+	                self.zoomin();
+	            } else {
+	                self.zoomout();
+	            }
+            },
+            
+            /**
+             * Event that fires when the user presses the left mouse button.
+             * 
+             * @param   {Object}    event   mouse event
+             */
+             
+            mousedown: function(event) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Registering the mouse coordinates where the mouse has began
+                
+                if (event.which == 1) {
+                    self.isMoved = true;
+                    self.mouseCoord = { centerX: event.offsetX, centerY: event.offsetY };
+                } else if (event.which == 3) {
+                    var rate = {
+                        x:  self.$.canvas.width / self.img.naturalWidth,
+                        y:  self.$.canvas.height / self.img.naturalHeight
+                    };
+                    
+                    console.log(self.$.canvas.width, event.offsetX);
+                    self.isMark = true;
+                    self.mark = {
+                        locked: false,
+                        x:      event.offsetX * self.zoom,
+                        y:      event.offsetY * self.zoom
+                    };
+                }
+            },
+       
+            /**
+             * Event that fires when the user releases the left mouse button.
+             * 
+             * @param   {Object}    event   mouse event
+             */
+             
+            mouseup: function(event) {
+                
+                // Reference to the current object
+
+                var self = this;
+
+                // Saving the last position of the image transformation
+                
+                if (event.which == 1) {
+                    self.imageCoord = {
+                        x: self.imageCoord.x + self.mouseCoord.moveX,
+                        y: self.imageCoord.y + self.mouseCoord.moveY
+                    };
+                    self.isMoved = false;
+                } else if (event.which == 3) {
+                    if (event.offsetX < self.mark.x) {
+                        self.mark.width = self.mark.x - event.offsetX;
+                        self.mark.x = event.offsetX;
+                    } else {
+                        self.mark.width = event.offsetX - self.mark.x;
+                    }
+                    
+                    if (event.offsetY < self.mark.y) {
+                        self.mark.height = self.mark.y - event.offsetY;
+                        self.mark.y = event.offsetY;
+                    } else {
+                        self.mark.height = event.offsetY - self.mark.y;
+                    }
+                    
+                    self.mark.locked = true;
+                    self.isMark = false;
+                }
+            },
+            
+            /**
+             * Event that fires when the user moves the mouse and press the
+             * left button as well. In this case the image will follow the
+             * mouse cursor in the document viewer.
+             * 
+             * @param   {Object}    event   mouse event
+             */
+             
+            mousemove: function(event) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Checking that the left mouse button was pressed and drawing
+                // image relative to the mouse cursor position move.
+                
+                self.getMouseCoord(event);
+                
+                if (self.isMoved) {
+                    self.mouseCoord.moveX = event.offsetX - self.mouseCoord.centerX;
+                    self.mouseCoord.moveY = event.offsetY - self.mouseCoord.centerY;
+                    //var moveX = event.offsetX - self.mouseCoord.centerX;
+                    //self.paper.x += moveX;
+                    //console.log(self.mouseCoord.moveX);
+                    //self.mouseCoord.centerX = event.offsetX;
+                    //self.paper.x += moveX;
+                    //console.log(self.paper.x);
+                    self.drawImage();
+                } else if (self.isMark) {
+                    if (event.offsetX < self.mark.x) {
+                        self.mark.width = self.mark.x - event.offsetX;
+                        self.mark.x = event.offsetX;
+                    } else {
+                        self.mark.width = event.offsetX - self.mark.x;
+                    }
+                    
+                    if (event.offsetY < self.mark.y) {
+                        self.mark.height = self.mark.y - event.offsetY;
+                        self.mark.y = event.offsetY;
+                    } else {
+                        self.mark.height = event.offsetY - self.mark.y;
+                    }
+                    
+                    self.drawImage();
+                }
+            },
+            
+            getMouseCoord: function(event) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                var coord = { x: 0, y: 0 };
+                
+                    //console.log(self.paper.x, self.imageCoord.x, self.mouseCoord.moveX);
+                if ((self.paper.x > 0 && event.offsetX < self.paper.x) ||
+                (self.paper.y > 0 && event.offsetY < self.paper.y) ||
+                ((self.paper.x + self.paper.width) < self.$.canvas.width && event.offsetX > (self.paper.x + self.paper.width)) ||
+                ((self.paper.y + self.paper.height) < self.$.canvas.height && event.offsetY > (self.paper.y + self.paper.height))) {
+                    return coord;
+                } else {
+                    var p = { x: 0, y : 0 };
+                    
+                    if (self.paper.x > 0 && self.paper.width < self.$.canvas.width) {
+                        p.x = (event.offsetX - self.paper.x) / self.paper.width;
+                    }
+
+                    if (self.paper.y > 0 && self.paper.height < self.$.canvas.height) {
+                        p.y = (event.offsetY - self.paper.y) / self.paper.height;
+                    }
+                    
+                    if (self.paper.x <= 0) {
+                        p.x = (self.paper.x - event.offsetX) / self.paper.width * -1;
+                    }
+                    
+                    if (self.paper.y <= 0) {
+                        p.y = (self.paper.y - event.offsetY) / self.paper.height * -1;
+                    }
+                    
+                    console.log(p);
+
+                    if (self.paper.x > 0) {
+                        coord.x = event.offsetX - self.paper.x;
+                    } else {
+                        coord.x = Math.abs(self.paper.x) + event.offsetX;
+                    }
+                }
+                
+                //console.log(coord);
+            },
+            
+            drawMark: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                if  (self.mark) {
+                    self.context.beginPath();
+                    self.context.rect(
+                        self.mark.x,
+                        self.mark.y,
+                        self.mark.width,
+                        self.mark.height
+                    );
+                    self.context.lineWidth = 1;
+                    self.context.strokeStyle = '#F04953';
+                    self.context.stroke();
+                }
+            },
+            
+            /**
+             * Zoom in the image.
+             */
+             
+            zoomin: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Zoom in
+                
+                if (self.zoom < self.MAX_ZOOM) {
+                    self.zoom++;                
+                }
+            },
+
+            /**
+             * Zoom out the image.
+             */
+             
+            zoomout: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Zoom out
+                
+                if (self.zoom > self.MIN_ZOOM) {
+                    self.zoom--;
+                }
+            },
+            
+            /**
+             * Resets the document viewer.
+             */
+             
+            reset: function() {
+
+                // Reference to the current object
+
+                var self = this;
+
+                // Reseting the document viewer
+                
+                self.imageCoord = { x: 0, y: 0 };
+                self.mouseCoord = { centerX: 0, centerY: 0, moveX: 0, moveY: 0 };
+                self.zoom = 1;
+                
+                // Drawing the image
+                
+                self.drawImage();
+            },
+            
+            /**
+             * Does the zoom-in function available?
+             * 
+             * @param   {Number}    zoom        zoom value
+             * @return  {Boolean}   available   zoom-in available or not
+             */
+             
+            isZoomIn: function(zoom) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Returns that the zoom-in function available or not
+                
+                return zoom < self.MAX_ZOOM;
+            },
+            
+            /**
+             * Does the zoom-out function available?
+             * 
+             * @param   {Number}    zoom        zoom value
+             * @return  {Boolean}   available   zoom-out available or not
+             */
+             
+            isZoomOut: function(zoom) {
+                
+                // Reference to the current object
+
+                var self = this;
+
+                // Returns that the zoom-out function available or not
+                
+                return zoom > self.MIN_ZOOM;
+            },
+            
+            /**
+             * Converts the specified text to uppercase.
+             * 
+             * @param   {String}    text        text that has to convert
+             * @return  {String}    uppertext   text in uppercase format
+             */
+             
+            toUpper: function(text) {
+                return text.toUpperCase();
+            },
+            
+            /**
+             * Is the current page the first page?
+             * 
+             * @param   {Number}    page        current page
+             * @return  {Boolean}   firstpage   current page is the first page
+             *                                  or not
+             */
+             
+            isFirstPage: function(page) {
+                return page == 1;
+            },
+
+            /**
+             * Is the current page the last page?
+             * 
+             * @param   {Number}    page        current page
+             * @param   {Number}    pagecount   number of pages
+             * @return  {Boolean}   lastpage    current page is the last page
+             *                                  or not
+             */
+             
+            isLastPage: function(page, pagecount) {
+                return page == pagecount;
+            },
+            
+            /**
+             * Go to next page.
+             */
+             
+            nextPage: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Go to next page
+                
+                self.page++;
+            },
+            
+            /**
+             * Go to previous page.
+             */
+             
+            previousPage: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Go to previous page
+                
+                self.page--;
+            },
+            
+            /**
+             * Go to last page.
+             */
+             
+            lastPage: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Go to last page
+                
+                self.page = self.pagecount;
+            },
+            
+            /**
+             * Go to first page.
+             */
+             
+            firstPage: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Go to first page
+                
+                self.page = 1;
+            },
+            
+            /**
+             * Sets the style of the spinner.
+             * 
+             * @param   {Number}    width       width of the component
+             * @return  {String}    style       style of the spinner
+             */
+             
+            setSpinnerStyle: function(width) {
+                
+                // Getting the size of the spinner
+                
+                var size = parseInt(width / 2, 10);
+                
+                // Setting the style of the spinner
+                
+                return 'width: ' + size + 'px; height: ' + size + 'px';
+            },
+            
+            /**
+             * Sets the style of the progress screen.
+             * 
+             * @param   {Boolean}   imageLoaded image loaded flag
+             * @param   {Boolean}   pagesLoaded pages loaded flag
+             * @return  {String}    style       style of the progress screen
+             */
+             
+            showProgress: function(imageLoaded, pagesLoaded) {
+                return imageLoaded && pagesLoaded ? 'display: none;' : '';
+            },
+            
+            /**
+             * Redraws the document viewer.
+             */
+             
+            redraw: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Redrawing the document viewer
+                
+                self.reset();
+            },
+            
+            /**
+             * Sets the icon for the folder button.
+             * 
+             * @param   {Boolean}   showtree    folder tree is visible or not
+             * @return  {String}    icon        icon name for the button
+             */
+             
+            setFolderIcon: function(showtree) {
+                return showtree ? 'icons:folder' : 'icons:folder-open';
+            },
+            
+            /**
+             * Shows the folder tree.
+             */
+             
+            showFolders: function() {
+               
+                // Reference to the current object
+
+                var self = this;
+                
+                // Toggles the folder tree
+                
+                self.showtree = !self.showtree;
+            },
+            
+            getFieldCanvas: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                var canvas = self.resizeImage(self.img.naturalWidth * self.form.field[0].zoom, self.img.naturalHeight * self.form.field[0].zoom, self.form.field[0]);
+
+                OCRAD(canvas, {  }, function(text){
+				    console.log(text);
+                });
+            },
+            
+            focusToField: function(id) {
+            
+                // Reference to the current object
+
+                var self = this;
+                
+                for (var i = 0; i < self.form.field.length; i++) {
+                    if (self.form.field[i].id == id) {
+                        self.zoom = 10;
+                        var rate = {
+                            x:  self.$.canvas.width / self.img.naturalWidth,
+                            y:  self.$.canvas.height / self.img.naturalHeight
+                        };
+                        var center = {
+                            x:  parseInt(self.form.field[i].position.x + (self.form.field[i].position.width / 2), 10),
+                            y:  parseInt(self.form.field[i].position.y + (self.form.field[i].position.height / 2), 10)
+                        };
+console.log(center, rate, center.x * rate.x, center.y * rate.y);
+                        //self.imageCoord.x = -1 * parseInt(center.x * rate.x, 10);
+                        self.imageCoord.x = -3156;
+                        //self.imageCoord.y = -1 * parseInt(center.y * rate.y, 10);
+                        self.imageCoord.y = -2113;
+                        self.mouseCoord.moveX = 0;
+                        self.mouseCoord.moveY = 0;
+                        self.drawImage();
+                        
+                        break;
+                    }
+                }
+            }
+        });
+    </script>
+</dom-module>

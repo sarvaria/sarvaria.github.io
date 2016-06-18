@@ -1,0 +1,123 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2016 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
+
+<!--
+Description:
+
+Date field.
+-->
+
+<dom-module id="app-datefield">
+
+    <!-- Style of the component -->
+
+    <style>
+        .field {
+        }
+        
+        .year {
+            width:         40px;
+        --paper-input-container-color: red;
+        --paper-input-container-focus-color: blue;
+        --paper-input-container-invalid-color: green;
+        --paper-input-container-input-color: #00B388;
+        }
+        
+        .month {
+            width:         20px;
+        }
+        
+        .day {
+            width:         20px;
+        }
+        
+        .separator {
+            padding:       0px 8px 11px 8px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="field horizontal">
+            <paper-input class="year" label="{{getLabel(label)}}" maxlength="4" numeric="true"></paper-input>
+            <div class="separator vertical"><div class="flex"></div><div>{{separator}}</div></div>
+            <paper-input class="month" maxlength="2" numeric="true"></paper-input>
+            <div class="separator vertical"><div class="flex"></div><div>{{separator}}</div></div>
+            <paper-input class="day" maxlength="2" numeric="true"></paper-input>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-datefield',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                label:             { type: String, notify: true, readyOnly: false },
+                separator:         { type: String, value: '.', notify: true, readyOnly: false },
+                order:             { type: String, value: 'YMD', notify: true, readyOnly: false },
+                year:              { type: Number, notify: true, readyOnly: false },
+                month:             { type: Number, notify: true, readyOnly: false },
+                day:               { type: Number, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+            },
+            
+            /**
+             * Gets the label of the field.
+             * 
+             * @param   {String}    label   label of the field
+             */
+             
+            getLabel: function(label) {
+                return label + ':';
+            },
+            
+            getDate: function() {
+                
+            },
+            
+            setDate: function() {
+                
+            }
+        });
+    </script>
+</dom-module>

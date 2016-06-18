@@ -7,22 +7,31 @@
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="title" content="OCRit"/>
+        <meta name="keywords" content="OCRit,OCR,Optical,Character,Recognition,Sarvari Andras"/>
+        <meta name="description" content="OCRit"/>
+        <meta name="application-name" content="OCRit"/>
+        <meta name="application-url" content="ocrit"/>
 
-        <!-- Title and icon of the site -->
+        <!-- Loading libraries and CSS -->
 
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-        <title>Widget Test</title>
-        
-        <!-- Initializing webcomponents, polymer and the utilities -->
-        
-        <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-        <link rel="import" href="../bower_components/polymer/polymer.html">
-        <script src="../js/util.js"></script>
-        
+        <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="../../bower_components/polymer/polymer.html">
+
+        <script src="js/ocrad.min.js"></script>
+        <script src="../../js/sprintf.min.js"></script>
+        <script src="../../js/moment.min.js"></script>
+        <script src="../../js/util.js"></script>
+
         <!-- Adding Roboto font support -->
 
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-        
+
+        <!-- Icon and title of the site -->
+
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        <title>OCR it</title>
+
         <style>
 
             /**
@@ -30,25 +39,25 @@
              */
 
             html, body {
-                -webkit-background-clip:    border-box;
-                -webkit-background-origin:  padding-box;
-                -webkit-background-size:    auto;
+                -webkit-background-clip:        border-box;
+                -webkit-background-origin:      padding-box;
+                -webkit-background-size:        auto;
+
+                background-color:               #ffffff;
+                background-repeat:              no-repeat;
+                background-attachment:          scroll;
+                background-clip:                border-box;
+                background-origin:              padding-box;
+                background-size:                cover;
                 
-                background-color:           #f6f6f6;
-                background-attachment:      scroll;
-                background-clip:            border-box;
-                background-image:           none;
-                background-origin:          padding-box;
-                background-size:            auto;
+                color:                          #000000;
+                display:                        block;
                 
-                color:                      #000000;
-                display:                    block;
-                
-                font-family:                'Roboto', sans-serif;
-                font-size:                  18px;
-                margin:                     0;
-                padding:                    0;
-                height:                     100%;
+                font-family:                    'Roboto', sans-serif;
+                font-size:                      14px;
+                margin:                         0px 0px 0px 0px;
+                padding:                        0px 0px 0px 0px;
+                overflow:                       hidden;
             }
             
             /**
@@ -113,13 +122,36 @@
                 right:                          0;
                 bottom:                         0;
                 left:                           0;
-            }
+            }            
         </style>
     </head>
 
-    <body unresolved>
-        <link rel="import" href="app-test/app-test.html">
+    <body unresolved oncontextmenu="return false" onresize="resize()">
 
-        <app-test></app-test>        
+        <!-- Importing templates -->
+
+        <link rel="import" href="app/app-main/app-main.html">
+
+        <!-- Main entry point of the application -->
+
+        <app-main id="main"></app-main>
+
+        <script>
+            function resize() {
+
+                // Getting the main module and 
+        
+                var main = document.getElementById('main');
+        
+                // Setting the width and height of the main module
+        
+                main.setAttribute('width', window.innerWidth);
+                main.setAttribute('height', window.innerHeight);
+            }
+
+            (function () {
+                resize();
+            })();
+        </script>
     </body>
 </html>

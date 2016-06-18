@@ -44,7 +44,7 @@ self.addEventListener('message', function(event) {
     
     if (options.action == 'load') {
         var status = db.loadCarParks();
-        
+
         // Returns the result
 
         self.postMessage({

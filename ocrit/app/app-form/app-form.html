@@ -1,0 +1,195 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../app-datefield/app-datefield.html">
+
+<!--
+Description:
+
+Document form.
+-->
+
+<dom-module id="app-form">
+
+    <!-- Style of the component -->
+
+    <style>
+        .form {
+            position:             relative;
+            border:               #00B388 solid 1px;
+            margin:               0px 0px 0px 0px;
+        }
+        
+        .infobar {
+            height:               16px;
+        }
+        
+        .infolabel {
+            position:             relative;
+            top:                  -1px;            
+            font-size:            8px;
+            color:                #000000;
+            white-space:          nowrap;
+        }
+        
+        .infovalue {
+            position:             relative;
+            top:                  -2px;
+            font-size:            10px;
+            font-weight:          bold;
+            color:                #000000;
+            white-space:          nowrap;
+        }
+
+        .infospace {
+            width:                8px;
+        }
+        
+        paper-icon-button {
+            transition:           all 0.2s;
+            -webkit-transition:   all 0.2s;
+            -moz-transition:      all 0.2s;
+            -o-transition:        all 0.2s;
+        }
+    
+        paper-icon-button:hover {
+            color:                #00B388;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="form vertical" style$="{{setStyle(height)}}">
+            
+            <!-- Infobar -->
+            
+            <div class="infobar horizontal center">
+                <div class="infolabel">FORM:&nbsp;</div><div class="infovalue">{{form.name}}</div>
+                <div class="flex"></div>
+                <paper-icon-button class="icon" icon="icons:find-replace" title="OCR form" on-click="ocrform"></paper-icon-button>
+                <paper-icon-button class="icon" icon="icons:done" title="Save" on-click="save"></paper-icon-button>
+            </div>
+            
+            <!-- Form -->
+            
+            <div id="fields" class="fields vertical">
+                <app-datefield label="Date" separator="/"></app-datefield>
+                <paper-input id="fld1" label="Dátum:" style="width: 120px" maxlength="10" pattern="^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$" error-message="Invalid input"></paper-input>
+                <paper-input label="Megnevezés:" style="width: 240px"></paper-input>
+                <paper-input label="Darab:"type="number" style="width: 80px"></paper-input>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-form',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                height:            { type: Number, value: 0, notify: true, readyOnly: false },
+                form:              { type: Object, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Observers.
+             */
+            
+            observers: [
+            ],
+            
+            /**
+             * Constanses.
+             */
+            
+            SIDE_GAP:               8,
+            
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                // Initializing
+            },
+            
+            /**
+             * Sets the style of the component.
+             * 
+             * @param   {Number}    height      height of the component
+             * @return  {String}    style       style of the component
+             */
+             
+            setStyle: function(height) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Setting the style of the component
+                
+                return  'height: '  + height + 'px;' +
+                        'padding: ' + self.SIDE_GAP + 'px ' + 
+                                      '0px ' + 
+                                      self.SIDE_GAP + 'px ' + 
+                                      self.SIDE_GAP + 'px;';
+            },
+            
+            /**
+             * OCRs the full image file and fills the fields of the form with
+             * the values.
+             */
+             
+            ocrform: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                self.fire('ocr', 'fld1');
+            },
+            
+            save: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                self.fire('focustofield', 'fld1');
+            }
+        });
+    </script>
+</dom-module>

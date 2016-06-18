@@ -1,0 +1,134 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<!--
+Description:
+
+Benchmark tester by using prime searching algorithm.
+-->
+
+<dom-module id="app-benchmark">
+
+    <!-- Content of the component -->
+
+    <template></template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-benchmark',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                value:             { type: Number, value: 0, notify: true, readyOnly: false },
+                timeout:           { type: Number, value: 3, notify: true, readyOnly: false }
+            },
+
+            /**
+             * Starts the benchmark test.
+             */
+             
+            start: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                // Initializing
+                
+                var primes = [ 1 ];
+                var prime;
+                var from = 2;
+                var start = new Date().getTime();
+                var finish = start + (self.timeout * 1000);
+                
+                // Starting the benchmark
+
+                while (true) {
+                    
+                    // Getting the next prime
+                    
+                    prime = self.getPrimeNumber(from);
+                    
+                    // Calculating the next interval
+                    
+                    if (prime > 0) {
+                        primes.push(prime);
+                        from = prime + 1;
+                    } else {
+                        from += 1000;
+                    }
+                    
+                    // Checking the time
+                    
+                    if (new Date().getTime() >= finish) {
+                        break;
+                    }
+    
+                    // Storing the number of primes
+                    
+                    self.value = primes.length;
+                }
+            },
+            
+            /**
+             * Gets the next prime number from the specified value. The searching
+             * interval will be the from + 1000.
+             * 
+             * @param   {Number}    from    from where the searching will begin
+             * @return  {Number}    prime   next prime or 0 if it does not found
+             */
+             
+            getPrimeNumber: function(from) {
+                
+                // Searching the next prime
+                
+                var found;
+
+                for (var i = from; i < from + 1000; i++) {
+                    found = true;
+                    
+                    // Division check
+                    
+                    for (var j = 2; j < i; j++) {
+                        if (i % j === 0) {
+                            found = false;
+                            break;
+                        }
+                    }
+                    
+                    // Was any prime found?
+                    
+                    if (found) {
+                        return i;
+                    }
+                }
+                
+                // Prime does not found in this interval
+                
+                return 0;
+            }
+        });
+    </script>
+</dom-module>

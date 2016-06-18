@@ -1,0 +1,229 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
+
+<!--
+Description:
+
+Folder tree.
+-->
+
+<dom-module id="app-folder">
+
+    <!-- Style of the component -->
+
+    <style>
+        .folder {
+            padding:              8px 0px 8px 0px;
+            border:               #00B388 solid 1px;
+            width:                100%;
+            height:               100%;
+        }
+        
+        .infobar {
+            padding:              0px 0px 0px 8px;
+            height:               24px;
+        }
+        
+        .infolabel {
+            position:             relative;
+            top:                  -1px;            
+            font-size:            8px;
+            color:                #000000;
+            white-space:          nowrap;
+        }
+        
+        .infovalue {
+            position:             relative;
+            top:                  -2px;
+            font-size:            10px;
+            font-weight:          bold;
+            color:                #000000;
+            white-space:          nowrap;
+        }
+
+        .infospace {
+            width:                8px;
+        }
+        
+        .fld {
+            padding:              8px 0px 0px 0px;
+            margin:               0px 0px 0px 0px;
+        }
+        
+        .refresh {
+            position:             relative;
+            left:                 8px;
+        }
+        ul {
+            margin:               0px 0px 0px 0px;
+            padding:              0px 0px 0px 0px;
+            list-style-type:      none;
+            white-space:          nowrap;
+            font-size:            12px;
+        }
+        
+        li {
+            margin:               0px 0px 0px 0px;
+            padding:              0px 0px 0px 8px;
+            list-style-type:      none;
+            white-space:          nowrap;
+            font-size:            12px;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="folder vertical" style$="{{setStyle(height)}}">
+            
+            <!-- Infobar -->
+            
+            <div class="infobar horizontal center">
+                <div class="infolabel">FILES:</div>
+                <div class="flex"></div>
+                <paper-icon-button class="refresh" icon="icons:refresh" title="Refresh tree" on-click="refresh"></paper-icon-button>
+                <paper-icon-button class="close" icon="icons:close" title="Close tree" on-click="close"></paper-icon-button>
+            </div>
+            
+            <!-- Folder tree -->
+            
+            <ul class="fld">
+                <li>Folder I
+                    <ul>
+                        <li>Folder II</li>
+                        <li>Folder III
+                            <ul>
+                                <li>File F</li>
+                                <li>File G</li>
+                            </ul>
+                        </li>
+                        <li>Folder IV</li>
+                        <li>Folder V</li>
+                    </ul>
+                </li>
+                <li>File A</li>
+                <li>File B</li>
+                <li>File C</li>
+            </ul>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer*/
+    
+        Polymer({
+            is:                     'app-folder',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                height:            { type: Number, value: 0, notify: true, readyOnly: false },
+                showtree:          { type: Boolean, value: false, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Observers.
+             */
+            
+            observers: [
+            ],
+            
+            /**
+             * Constanses.
+             */
+            
+            SIDE_GAP:               4,
+            
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                // Refreshing the folder tree
+
+                self.refresh();
+            },
+            
+            /**
+             * Sets the style of the component.
+             * 
+             * @param   {Number}    height      height of the component
+             * @return  {String}    style       style of the component
+             */
+             
+            setStyle: function(height) {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                // Setting the style of the component
+                
+                return  'height: '  + height + 'px;' +
+                        'padding: ' + self.SIDE_GAP + 'px ' + 
+                                      self.SIDE_GAP + 'px ' +
+                                      self.SIDE_GAP + 'px ' + 
+                                      '0px;';
+            },
+            
+            /**
+             * Closes the folder tree.
+             */
+             
+            close: function() {
+            
+                // Reference to the current object
+
+                var self = this;
+                
+                // Closing the folder tree
+                
+                self.showtree = false;
+            },
+            
+            /**
+             * Refresh the folder tree.
+             */
+             
+            refresh: function() {
+               
+                // Reference to the current object
+
+                var self = this;
+                
+                // Refreshing the folder tree
+
+            }
+        });
+    </script>
+</dom-module>

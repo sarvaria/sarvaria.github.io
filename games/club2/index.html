@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="hu">
+	<head>
+
+        <!-- Meta informations about the site -->
+
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="title" content="Club2%"/>
+        <meta name="keywords" content="Club2%,Club,2%,Game,Sarvari Andras"/>
+        <meta name="description" content="Club 2% game"/>
+        <meta name="application-name" content="Club 2% game"/>
+        <meta name="application-url" content="club2"/>
+
+        <!-- Loading libraries and CSS -->
+
+        <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="../../bower_components/polymer/polymer.html">
+
+        <script src="../../js/sprintf.min.js"></script>
+
+        <!-- Adding Roboto font support -->
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+        <!-- Icon and title of the site -->
+
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        <title>Club 2%</title>
+
+        <style>
+
+            /**
+             * HTML and BODY designing.
+             */
+
+            html, body {
+                -webkit-background-clip:    border-box;
+                -webkit-background-origin:  padding-box;
+                -webkit-background-size:    auto;
+
+                background-color:           #ffffff;
+                background-image:           url(images/wood.png);
+                background-repeat:          no-repeat;
+                background-attachment:      scroll;
+                background-clip:            border-box;
+                background-origin:          padding-box;
+                background-size:            cover;
+                
+                color:                      #000000;
+                display:                    block;
+                
+                font-family:                'Roboto', sans-serif;
+                font-size:                  18px;
+                margin:                     0px 0px 0px 0px;
+                padding:                    0px 0px 0px 0px;
+                overflow:                   hidden;
+            }
+        </style>
+    </head>
+
+    <body unresolved oncontextmenu="return false" onresize="resize()">
+
+        <!-- Importing templates -->
+
+        <link rel="import" href="app/app-main/app-main.html">
+
+        <!-- Main entry point of the application -->
+
+        <app-main id="main"></app-main>
+
+        <script>
+            function resize() {
+
+                // Getting the main module and 
+        
+                var main = document.getElementById('main');
+        
+                // Setting the width and height of the main module
+        
+                main.setAttribute('width', window.innerWidth);
+                main.setAttribute('height', window.innerHeight);
+            }
+
+            (function () {
+                resize();
+            })();
+        </script>
+    </body>
+</html>

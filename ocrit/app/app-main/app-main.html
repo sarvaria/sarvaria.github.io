@@ -1,0 +1,182 @@
+<!--
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright (C) 2015 Andras Sarvari <andras.sarvari@sarvaria.net>
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../app-folder/app-folder.html">
+<link rel="import" href="../app-doc/app-doc.html">
+<link rel="import" href="../app-form/app-form.html">
+
+<!--
+Description:
+
+Main module of the application.
+-->
+
+<dom-module id="app-main">
+
+    <!-- Style of the component -->
+
+    <style>
+        .main {
+            padding:                            16px 16px 16px 16px;
+        }
+        
+        .folder {
+            transition:                         all 0.5s;
+            -webkit-transition:                 all 0.5s;
+            -moz-transition:                    all 0.5s;
+            -o-transition:                      all 0.5s;
+            -webkit-transition-timing-function: cubic-bezier(0.275, 0.100, 0.000, 0.995);
+            -moz-transition-timing-function:    cubic-bezier(0.275, 0.100, 0.000, 0.995);
+            -o-transition-timing-function:      cubic-bezier(0.275, 0.100, 0.000, 0.995);
+            transition-timing-function:         cubic-bezier(0.275, 0.100, 0.000, 0.995);
+        }
+        
+        .docviewer {
+            margin-right:                       16px;
+        }
+        
+        .docform {
+            width:                              100%;
+            height:                             100%;
+        }
+    </style>
+
+    <!-- Content of the component -->
+
+    <template>
+        <div class="main horizontal" style$="{{setStyle(width, height)}}">
+            <app-folder id="folder" class="folder" style$="{{setFolderStyle(showtree)}}" height="{{folderheight}}" showtree="{{showtree}}"></app-folder>
+            <app-doc id="docviewer" class="docviewer" folder="test" file="00000075" width="{{viewerwidth}}" height="{{viewerheight}}" showtree="{{showtree}}" form="{{form}}"></app-doc>
+            <app-form id="docform" class="docform" height="{{viewerheight}}" form="{{form}}" on-ocr="ocr" on-focustofield="focustofield"></app-form>
+        </div>
+    </template>
+    
+    <!-- Script for the component -->
+
+    <script>
+        /*global Polymer sprintf*/
+        
+        Polymer({
+            is:                     'app-main',
+
+            /**
+             * Attributes.
+             */
+
+            properties: {
+                width:           { type: Number, value: 0, notify: true, readyOnly: false },
+                height:          { type: Number, value: 0, notify: true, readyOnly: false }
+            },
+            
+            /**
+             * Observers.
+             */
+             
+            observers: [
+                'redraw(width, height)'
+            ],
+
+            /**
+             * Polymer READY event.
+             */
+            
+            ready: function() {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                // Initializing
+                
+                self.showtree = false;
+                self.form = {
+                    name: 'URLAP1',
+                    field: [
+                        //{ id: 'fld3', name: 'Név', page: 1, zoom: 3, position: { x: 2241, y: 1587, width: 115, height: 39 } },
+                        { id: 'fld3', name: 'Név', page: 1, zoom: 3, position: { x: 1256, y: 457, width: 168, height: 32 } },
+                        { id: 'fld2', name: 'Név', page: 1, zoom: 3, position: { x: 1317, y: 504, width: 419, height: 61 } },
+                        { id: 'fld1', name: 'Dátum', page: 1, zoom: 3, position: { x: 444, y: 521, width: 163, height: 39 } }
+                    ]
+                };                
+            },
+
+            /**
+             * Sets the style of the main area.
+             *
+             * @param   {Number}    width       width of the browser
+             * @param   {Number}    height      height of the browser
+             * @return  {String}    style       style of the main area
+             */
+
+            setStyle: function(width, height) {
+                return sprintf('width: %dpx; height: %dpx', width - 32, height - 32);
+            },
+            
+            /**
+             * Redraws the component.
+             * 
+             * @param   {Number}    width   width of the component
+             * @param   {Number}    height  height of the component
+             */
+             
+            redraw: function(width, height) {
+
+                // Reference to the current object
+
+                var self = this;
+                
+                // Redrawing document viewer
+
+                self.viewerwidth = parseInt(width / 2, 10);
+                self.viewerheight = height - 52;
+                self.folderheight = height - 44;
+                
+                self.$.docviewer.redraw();
+            },
+            
+            /**
+             * Sets the style of the folder tree.
+             * 
+             * @param   {Boolean}   showtree    shows or hides the folder tree
+             * @return  {String}    style       stye of the folder tree
+             */
+
+            setFolderStyle: function(showtree) {
+                return showtree ? 'width: 200px;margin-right: 20px' : 'width: 0px;opacity: 0;';
+            },
+            
+            ocr: function() {
+                
+                // Reference to the current object
+
+                var self = this;
+                
+                self.$.docviewer.getFieldCanvas();
+            },
+            
+            focustofield: function(event) {
+                
+                // Reference to the current object
+
+                var self = this;
+
+                self.$.docviewer.focusToField('fld3');                
+            }
+        });
+    </script>
+</dom-module>
