@@ -5,10 +5,13 @@
         <script src="//js.live.net/v5.0/wl.js"></script>
     </head>
     <body>
-        <p>Signin</p>
-        <button onclick="WL.login({scope:['WL.signin', 'WL.emails']});">Signin</button>
+        <!--<button onclick="WL.login({scope:['WL.signin', 'WL.emails']});">Signin</button>-->
 
         <script>
+		(function () {
+			WL.login({scope:['WL.signin', 'WL.emails']});
+		})();
+		
         WL.Event.subscribe("auth.login", onLogin);
             WL.init({
 		client_id:'0a484fa7-e2d4-45be-a3f2-7d42bcac399f',
