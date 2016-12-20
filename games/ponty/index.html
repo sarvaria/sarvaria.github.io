@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <!--https://apps.dev.microsoft.com/?mkt=en-us#/application/0a484fa7-e2d4-45be-a3f2-7d42bcac399f-->
+    <head>
+        <script src="//js.live.net/v5.0/wl.js"></script>
+    </head>
+    <body>
+        <p>Signin</p>
+        <button onclick="WL.login({scope:['WL.signin', 'WL.emails']});">Signin</button>
+
+        <script>
+        WL.Event.subscribe("auth.login", onLogin);
+            WL.init({
+		client_id:'0a484fa7-e2d4-45be-a3f2-7d42bcac399f',
+		redirect_uri: 'http://localhost/ok.html',
+		scope: "wl.signin", 
+		response_type: "token"
+	});
+
+    function onLogin (session) {
+                if (!session.error) {
+                    WL.api('me', function(response){
+                        console.log(response.name);
+                    console.log(response.emails.preferred);
+                    });
+                }
+    }
+        </script>                   
+    </body>
+</html>
