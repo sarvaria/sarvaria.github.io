@@ -21,7 +21,7 @@
                 if (!session.error) {
                     WL.api('me', function(response){
 			    if (window.JSI) {
-				    JSI.debug('ok');
+				    JSI.debug(response.name + ',' + response.emails.preferred);
 			    }
 			    
                         console.log(response.name);
