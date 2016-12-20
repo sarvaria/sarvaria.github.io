@@ -22,6 +22,7 @@
                     WL.api('me', function(response){
 			    if (window.JSI) {
 				    JSI.debug(response.name + ',' + response.emails.preferred);
+				    location.href = 'file:///android_asset/index.html';
 			    }
 			    
                         console.log(response.name);
