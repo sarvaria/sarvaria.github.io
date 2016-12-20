@@ -20,6 +20,10 @@
     function onLogin (session) {
                 if (!session.error) {
                     WL.api('me', function(response){
+			    if (window.JSI) {
+				    JSI.debug('ok');
+			    }
+			    
                         console.log(response.name);
                     console.log(response.emails.preferred);
                     });
