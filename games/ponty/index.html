@@ -5,6 +5,41 @@
         <script src="//js.live.net/v5.0/wl.js"></script>
     </head>
     <body>
+	            <style>
+
+            /**
+             * Viewport definitions.
+             */
+            
+            @-ms-viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }          @viewport { width: 100vw ; min-zoom: 100% zoom: 100% ; }
+            @-ms-viewport { user-zoom: fixed ; min-zoom: 100% ; }                   @viewport { user-zoom: fixed ; min-zoom: 100% ; }
+
+            /**
+             * HTML and BODY designing.
+             */
+            
+            html {
+                padding:                        0px;
+                margin:                         0px;
+            }
+
+            body {
+                -webkit-touch-callout:          none;
+                -webkit-text-size-adjust:       none;
+                -webkit-user-select:            none;
+                -moz-user-select:               none;
+                -webkit-highlight:              none;
+                -webkit-tap-highlight-color:    rgba(0,0,0,0) ;
+                -webkit-tap-highlight-color:    transparent;
+                user-select:                    none;
+                padding:                        0px;
+                margin:                         0px;
+                background:                     #ffffff;
+                color:                          #000000;
+                overflow:                       hidden;
+                font-family:                    Roboto, Arial;
+            }
+	    </style>
         <!--<button onclick="WL.login({scope:['WL.signin', 'WL.emails']});">Signin</button>-->
 
         <script>
