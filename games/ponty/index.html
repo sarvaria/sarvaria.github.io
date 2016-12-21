@@ -61,6 +61,7 @@
         
 
     function onLogin (session) {
+	    alert(1);
                 if (!session.error) {
                     WL.api('me', function(response){
 			    if (window.JSI) {
