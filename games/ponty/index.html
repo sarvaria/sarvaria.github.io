@@ -44,16 +44,18 @@
 
         <script>
 		(function () {
-			WL.login({scope:['WL.signin', 'WL.emails']});
-		})();
-		
-        WL.Event.subscribe("auth.login", onLogin);
             WL.init({
 		client_id:'0a484fa7-e2d4-45be-a3f2-7d42bcac399f',
 		redirect_uri: 'https://portal.sarvaria.net/games/ponty/callback.html',
 		scope: "wl.signin", 
 		response_type: "token"
 	});
+
+			WL.Event.subscribe("auth.login", onLogin);
+			WL.login({scope:['WL.signin', 'WL.emails']});
+		})();
+		
+        
 
     function onLogin (session) {
                 if (!session.error) {
