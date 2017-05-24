@@ -61,8 +61,11 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                 FB.getLoginStatus(function(response) {
 
                     if (response.status === 'connected') {
-                        console.log('Remek');
                         FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
+                            window.nsWebViewInterface.emit(
+                    'login',
+                    'alma'
+);
                               console.log(response);
                             //console.log(response.email, response.name, response.id); 
                             });
