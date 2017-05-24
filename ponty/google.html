@@ -133,9 +133,29 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              */
              
             (function () {
-                   loadScript('https://apis.google.com/js/platform.js').then(function() {
-                       console.log('ok');
-                   });
+                
+                // Loading GOOGLE platform script
+                
+               loadScript('https://apis.google.com/js/platform.js').then(function() {
+                   
+                   // Initializing the api
+                    
+	                gapi.load('auth2', function() {
+                        var auth2 = gapi.auth2.init({
+                            client_id: '973322045688-411ofisqaqd9hn0jjvj8d8joufck5d6f.apps.googleusercontent.com',
+                        });
+                        
+                        // Login with GOOGLE account
+                        
+                        auth2.signIn().then(function() {
+                            
+                            // Getting the login informations
+                            
+                            var profile = auth2.currentUser.get().getBasicProfile();
+                            console.log(profile);
+                        });
+                    });
+               });
             })();
         </script>
     </body>
