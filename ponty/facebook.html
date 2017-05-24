@@ -41,7 +41,59 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              */
              
             (function () {
-                alert(1);
+                
+                // FB callbacker
+                
+            window.fbAsyncInit = function() {
+
+                // Initializing
+
+                FB.init({
+                    appId      : '1142500479197289',
+                    xfbml      : true,
+                    version    : 'v2.8'
+                });
+
+                FB.AppEvents.logPageView();
+
+                // Checking login status
+
+                FB.getLoginStatus(function(response) {
+
+                    if (response.status === 'connected') {
+                        console.log('Remek');
+                        FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
+                              console.log(response);
+                            //console.log(response.email, response.name, response.id); 
+                            });
+                    } else {
+                    // Login with FACEBOOK account
+
+                    FB.login(function(response){
+                        if (response.authResponse) {
+
+                            // Getting the login informations
+
+                            FB.api('/me', {fields: 'name,email'}, function(response) {
+
+                            console.log(response.email, response.name); 
+                            });
+                        }
+                    }, {scope: 'public_profile,email'});
+                    }
+                });
+                };
+
+                // Loading Facebook SDK
+
+                (function(d, s, id){
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));                
+
             })();
         </script>
     </body>
