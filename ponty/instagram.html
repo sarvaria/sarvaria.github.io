@@ -109,7 +109,18 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                 });
             }
         
-            function cb(user) {
+            function cb(response) {
+                let user = {
+                    email:      response.data.id,
+                    uid:        response.data.id,
+                    username:   response.data.username,
+                    fullname:   response.data.full_name,
+                    firstname:  response.data.full_name,
+                    lastname:   response.data.full_name,
+                    provider:   'INSTAGRAM',
+                    lang:       null,
+                    customerid: null
+                };
                 console.log(user);
             }
             
