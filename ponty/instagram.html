@@ -42,6 +42,78 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <script>
 
             /**
+             * Loads the specified scripts by URL synchroniusly and callbacks after the
+             * loading.
+             * 
+             * @param     {String/Array}    scripts      script URLs that has to load
+             * @return    {Promise}         promise      promise object
+             */
+
+            function loadScript(scripts) {
+
+                // Creating promise for the script loading
+
+                return new Promise((resolve, reject) => {
+
+                    // Define the script loader
+
+                    let loader = function(script, callback) {
+
+                        // Checking script
+
+                        if (Object.prototype.toString.call(script) !== '[object Array]') {
+                            script = [script];
+                        }
+
+                        // Creating script element
+
+                        var scriptElement = document.createElement('script');
+
+                        // Load event
+
+                        scriptElement.onload = function() {
+
+                            // Removing the script tag from header after the load
+
+                            document.getElementsByTagName('head')[0].removeChild(scriptElement);
+
+                            // Is there any script that has to load?
+
+                            if (script.length > 1) {
+                                script.splice(0, 1);
+                                loader(script, callback);
+                            } else {
+
+                                // Callbacking after the loading
+
+                                if (callback) {
+                                    callback();
+                                }
+                            }
+                        };
+
+                        // Adding script to the header and loading it
+
+                        scriptElement.src = script[0];
+                        document.getElementsByTagName('head')[0].appendChild(scriptElement);
+                    }
+
+                    // Loading scripts
+
+                    loader(scripts, function() {
+
+                        // Loading finished
+
+                        resolve();
+                    })
+                });
+            },
+        
+            function cb(user) {
+                console.log(user);
+            }
+            
+            /**
              * Auto starter.
              */
              
@@ -53,7 +125,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                        
                        if (pos >= 0) {
                            let accessToken = url.substring(pos + 14);
-                           console.log(accessToken);
+                           loadScript('https://api.instagram.com/v1/users/self/?access_token=' + accessToken + '&callback=cb');
                        }
                    } else {
                     const CLIENT_ID = '21640a5dcfcf4d41923a6ab88d4195e8';
