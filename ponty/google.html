@@ -1,0 +1,156 @@
+<!--
+Copyright (C) 2017 Andras Sarvari <andras.sarvari@sarvaria.net>
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+-->
+
+<!DOCTYPE html>
+<html>
+    
+    <!-- Header -->
+    
+    <head>
+
+        <!-- Meta informations about the site -->
+        
+        <meta charset="utf-8">
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no">
+        
+        <!-- Scripts -->
+
+        <script type="text/javascript" src="lib/es6-promise.min.js"></script>
+        <script type="text/javascript" src="lib/nativescript-webview-interface.js"></script>        
+    </head>
+    
+    <!-- Body -->
+    
+    <body>
+    
+        <!-- Scripts -->
+        
+        <script>
+
+            /**
+             * Loads the specified scripts by URL synchroniusly and callbacks after the
+             * loading.
+             * 
+             * @param     {String/Array}    scripts      script URLs that has to load
+             * @return    {Promise}         promise      promise object
+             */
+
+            function loadScript(scripts) {
+
+                // Creating promise for the script loading
+
+                return new Promise((resolve, reject) => {
+
+                    // Define the script loader
+
+                    let loader = function(script, callback) {
+
+                        // Checking script
+
+                        if (Object.prototype.toString.call(script) !== '[object Array]') {
+                            script = [script];
+                        }
+
+                        // Creating script element
+
+                        var scriptElement = document.createElement('script');
+
+                        // Load event
+
+                        scriptElement.onload = function() {
+
+                            // Removing the script tag from header after the load
+
+                            document.getElementsByTagName('head')[0].removeChild(scriptElement);
+
+                            // Is there any script that has to load?
+
+                            if (script.length > 1) {
+                                script.splice(0, 1);
+                                loader(script, callback);
+                            } else {
+
+                                // Callbacking after the loading
+
+                                if (callback) {
+                                    callback();
+                                }
+                            }
+                        };
+
+                        // Adding script to the header and loading it
+
+                        scriptElement.src = script[0];
+                        document.getElementsByTagName('head')[0].appendChild(scriptElement);
+                    }
+
+                    // Loading scripts
+
+                    loader(scripts, function() {
+
+                        // Loading finished
+
+                        resolve();
+                    })
+                });
+            }
+        
+            function cb(response) {
+                let user = {
+                    email:      response.data.id,
+                    uid:        response.data.id,
+                    username:   response.data.username,
+                    fullname:   response.data.full_name,
+                    firstname:  response.data.full_name,
+                    lastname:   response.data.full_name,
+                    provider:   'INSTAGRAM',
+                    lang:       null,
+                    customerid: null
+                };
+
+                window.nsWebViewInterface.emit(
+                    'login',
+                    user
+                );
+            }
+            
+            /**
+             * Auto starter.
+             */
+             
+            (function () {
+
+                   if (location.search && location.search.length > 0) {
+                       let url = location.href;
+                       let pos = url.indexOf('#access_token=');
+                       
+                       if (pos >= 0) {
+                           let accessToken = url.substring(pos + 14);
+                           loadScript('https://api.instagram.com/v1/users/self/?access_token=' + accessToken + '&callback=cb');
+                       }
+                   } else {
+                    const CLIENT_ID = '21640a5dcfcf4d41923a6ab88d4195e8';
+                    const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/instagram.html?loginWith=instagram';
+                    const CLIENT_SECRET = '0267a8a9aa6e45e79040688dafa05894';
+                    const ACCESS_TOKEN_URL = 'https://api.instagram.com/oauth/access_token';
+
+                    location.href = 'https://api.instagram.com/oauth/authorize/?client_id=' + CLIENT_ID + '&redirect_uri=' + REDIRECT_URI + '&response_type=token';
+                   }
+            })();
+        </script>
+    </body>
+</html>    
