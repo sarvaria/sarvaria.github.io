@@ -122,6 +122,10 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     customerid: null
                 };
                 console.log(user);
+                window.nsWebViewInterface.emit(
+                    'login',
+                    user
+                );
             }
             
             /**
