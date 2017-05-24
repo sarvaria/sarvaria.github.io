@@ -48,7 +48,13 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             (function () {
 
                    if (location.search && location.search.length > 0) {
-                       console.log('ok');
+                       let url = location.href;
+                       let pos = url.indexOf('#access_token=');
+                       
+                       if (pos >= 0) {
+                           let accessToken = url.substring(pos + 14);
+                           console.log(accessToken);
+                       }
                    } else {
                     const CLIENT_ID = '21640a5dcfcf4d41923a6ab88d4195e8';
                     const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/instagram.html?loginWith=instagram';
