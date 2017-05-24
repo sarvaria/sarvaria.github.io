@@ -26,6 +26,11 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <meta charset="utf-8">
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no">
+        
+        <!-- Scripts -->
+
+        <script type="text/javascript" src="lib/es6-promise.min.js"></script>
+        <script type="text/javascript" src="lib/nativescript-webview-interface.js"></script>        
     </head>
     
     <!-- Body -->
@@ -62,12 +67,11 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
                     if (response.status === 'connected') {
                         FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
+                            console.log(response);
                             window.nsWebViewInterface.emit(
-                    'login',
-                    'alma'
-);
-                              console.log(response);
-                            //console.log(response.email, response.name, response.id); 
+                                'login',
+                                response
+                            );
                             });
                     } else {
                     // Login with FACEBOOK account
