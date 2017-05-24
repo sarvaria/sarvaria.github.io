@@ -67,39 +67,41 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
                     if (response.status === 'connected') {
                         FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
-                            console.log(response);
                             window.nsWebViewInterface.emit(
                                 'login',
                                 response
                             );
-                            });
+                        });
                     } else {
-                    // Login with FACEBOOK account
+                        
+                        // Login with FACEBOOK account
 
-                    FB.login(function(response){
-                        if (response.authResponse) {
+                        FB.login(function(response) {
+                            if (response.authResponse) {
 
-                            // Getting the login informations
+                                // Getting the login informations
 
-                            FB.api('/me', {fields: 'name,email'}, function(response) {
-
-                            console.log(response.email, response.name); 
-                            });
-                        }
-                    }, {scope: 'public_profile,email'});
+                                FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
+                                    window.nsWebViewInterface.emit(
+                                        'login',
+                                        response
+                                    );
+                                });
+                            }
+                        }, {scope: 'public_profile,email'});
                     }
                 });
-                };
+            };
 
-                // Loading Facebook SDK
+            // Loading Facebook SDK
 
-                (function(d, s, id){
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) {return;}
-                js = d.createElement(s); js.id = id;
-                js.src = "https://connect.facebook.net/en_US/sdk.js";
-                fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));                
+            (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));                
 
             })();
         </script>
