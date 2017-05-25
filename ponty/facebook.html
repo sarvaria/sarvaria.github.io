@@ -47,64 +47,68 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              
             (function () {
                 
-                // FB callbacker
+                let url = location.href;
+                let pos = url.indexOf('#access_token=');
                 
-            window.fbAsyncInit = function() {
+                if (pos >= 0) {
+                    https://graph.facebook.com/v2.8/me?access_token=EAAQPGR834GkBAKcZBABHe8AjNBZBpF2gySdtwm96qz2vvS7LeNvBhk1UDQsNcOSosprhDE5vFRjZAEsYbN0PSJcj6jQ2RGWL0wzvSBkaopmxnvPbRCQmlIIB3SanwurcxSWZBYzFYWr8N5GgDaaqdKTwI8IjAqZAPtkNUT5A1ZCbxxNjFxbd0dIH5ytyRjiCDmoQtOqauMaAZDZD&callback=alma&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey
+                } else {
 
-                // Initializing
+                    // FB callbacker
 
-                FB.init({
-                    appId      : '1142500479197289',
-                    xfbml      : true,
-                    version    : 'v2.8'
-                });
+                    window.fbAsyncInit = function() {
 
-                FB.AppEvents.logPageView();
+                        // Initializing
 
-                // Checking login status
-
-                FB.getLoginStatus(function(response) {
-console.log('--------');
-                    console.log(response.status);
-                    if (response.status === 'connected') {
-                        FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
-                            console.log(JSON.stringify(response));
-                            window.nsWebViewInterface.emit(
-                                'login',
-                                response
-                            );
+                        FB.init({
+                            appId      : '1142500479197289',
+                            xfbml      : true,
+                            version    : 'v2.8'
                         });
-                    } else {
-                        
-                        // Login with FACEBOOK account
 
-                        FB.login(function(response) {
-                            if (response.authResponse) {
+                        FB.AppEvents.logPageView();
 
-                                // Getting the login informations
+                        // Checking login status
 
+                        FB.getLoginStatus(function(response) {
+                            if (response.status === 'connected') {
                                 FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
                                     window.nsWebViewInterface.emit(
                                         'login',
                                         response
                                     );
                                 });
+                            } else {
+
+                                // Login with FACEBOOK account
+
+                                FB.login(function(response) {
+                                    if (response.authResponse) {
+
+                                        // Getting the login informations
+
+                                        FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
+                                            window.nsWebViewInterface.emit(
+                                                'login',
+                                                response
+                                            );
+                                        });
+                                    }
+                                }, {scope: 'public_profile,email'});
                             }
-                        }, {scope: 'public_profile,email'});
-                    }
-                });
-            };
+                        });
+                    };
 
-            // Loading Facebook SDK
+                    // Loading Facebook SDK
 
-            (function(d, s, id){
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement(s); js.id = id;
-            js.src = "https://connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));                
-
+                    (function(d, s, id){
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) {return;}
+                    js = d.createElement(s); js.id = id;
+                    js.src = "https://connect.facebook.net/en_US/sdk.js";
+                    fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));                
+                }
             })();
         </script>
     </body>
