@@ -47,6 +47,93 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              */
             
             /**
+             * Loads the specified scripts by URL synchroniusly and callbacks after the
+             * loading.
+             * 
+             * @param     {String/Array}    scripts      script URLs that has to load
+             * @return    {Promise}         promise      promise object
+             */
+            
+            function loadScript(scripts) {
+                
+                // Creating promise for the script loading
+                
+                return new Promise((resolve, reject) => {
+                    
+                    // Define the script loader
+                    
+                    let loader = function(script, callback) {
+                        
+                        // Checking script
+                        
+                        if (Object.prototype.toString.call(script) !== '[object Array]') {
+                            script = [script];
+                        }
+                        
+                        // Creating script element
+                        
+                        var scriptElement = document.createElement('script');
+                        
+                        // Load event
+                        
+                        scriptElement.onload = function() {
+                            
+                            // Removing the script tag from header after the load
+                            
+                            document.getElementsByTagName('head')[0].removeChild(scriptElement);
+                            
+                            // Is there any script that has to load?
+                            
+                            if (script.length > 1) {
+                                script.splice(0, 1);
+                                loader(script, callback);
+                            } else {
+                                
+                                // Callbacking after the loading
+                                
+                                if (callback) {
+                                    callback();
+                                }
+                            }
+                        };
+                        
+                        // Adding script to the header and loading it
+                        
+                        scriptElement.src = script[0];
+                        document.getElementsByTagName('head')[0].appendChild(scriptElement);
+                    }
+                    
+                    // Loading scripts
+                    
+                    loader(scripts, function() {
+                        
+                        // Loading finished
+                        
+                        resolve();
+                    })
+                });
+            }
+        
+            function cb(response) {
+                console.log(response);
+/*                let user = {
+                    email:      response.data.id,
+                    uid:        response.data.id,
+                    username:   response.data.username,
+                    fullname:   response.data.full_name,
+                    firstname:  response.data.full_name,
+                    lastname:   response.data.full_name,
+                    provider:   'INSTAGRAM',
+                    lang:       null,
+                    customerid: null
+                };
+                window.nsWebViewInterface.emit(
+                    'login',
+                    user
+                );*/
+            }
+            
+            /**
              * Auto starter.
              */
              
@@ -57,7 +144,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                 
                 if (pos >= 0) {
                     let accessToken = url.substring(pos + 14);
-                    https://graph.facebook.com/v2.8/me?access_token=EAAQPGR834GkBAKcZBABHe8AjNBZBpF2gySdtwm96qz2vvS7LeNvBhk1UDQsNcOSosprhDE5vFRjZAEsYbN0PSJcj6jQ2RGWL0wzvSBkaopmxnvPbRCQmlIIB3SanwurcxSWZBYzFYWr8N5GgDaaqdKTwI8IjAqZAPtkNUT5A1ZCbxxNjFxbd0dIH5ytyRjiCDmoQtOqauMaAZDZD&callback=alma&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey
+                    loadScript('https://graph.facebook.com/v2.8/me?access_token=' + accessToken + '&callback=cb&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey');
+                    //https://graph.facebook.com/v2.8/me?access_token=EAAQPGR834GkBAKcZBABHe8AjNBZBpF2gySdtwm96qz2vvS7LeNvBhk1UDQsNcOSosprhDE5vFRjZAEsYbN0PSJcj6jQ2RGWL0wzvSBkaopmxnvPbRCQmlIIB3SanwurcxSWZBYzFYWr8N5GgDaaqdKTwI8IjAqZAPtkNUT5A1ZCbxxNjFxbd0dIH5ytyRjiCDmoQtOqauMaAZDZD&callback=alma&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey
                 } else {
 
                     // FB callbacker
