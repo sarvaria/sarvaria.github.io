@@ -116,21 +116,21 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         
             function cb(response) {
                 console.log(response);
-/*                let user = {
-                    email:      response.data.id,
-                    uid:        response.data.id,
-                    username:   response.data.username,
-                    fullname:   response.data.full_name,
-                    firstname:  response.data.full_name,
-                    lastname:   response.data.full_name,
-                    provider:   'INSTAGRAM',
+                let user = {
+                    email:      response.email,
+                    uid:        response.id,
+                    username:   response.id,
+                    fullname:   response.name,
+                    firstname:  response.first_name,
+                    lastname:   response.last_name,
+                    provider:   'FACEBOOK',
                     lang:       null,
                     customerid: null
                 };
                 window.nsWebViewInterface.emit(
                     'login',
                     user
-                );*/
+                );
             }
             
             /**
