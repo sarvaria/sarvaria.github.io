@@ -142,6 +142,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                        if (pos >= 0) {
                            let accessToken = url.substring(pos + 14);
 			   accessToken = accessToken.substring(0, accessToken.indexOf('&'));
+			       console.log(accessToken);
                            loadScript('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken + '&callback=cb');
                        }
                    } else {
