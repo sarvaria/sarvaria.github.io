@@ -110,7 +110,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             }
         
             function cb(response) {
-                let user = {
+		    console.log(response);
+                /*let user = {
                     email:      response.data.id,
                     uid:        response.data.id,
                     username:   response.data.username,
@@ -120,7 +121,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     provider:   'INSTAGRAM',
                     lang:       null,
                     customerid: null
-                };
+                };*/
 
                 window.nsWebViewInterface.emit(
                     'login',
@@ -133,29 +134,21 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              */
              
             (function () {
-                
-                // Loading GOOGLE platform script
-                
-               loadScript('https://apis.google.com/js/platform.js').then(function() {
-                   
-                   // Initializing the api
-                    
-	                gapi.load('auth2', function() {
-                        var auth2 = gapi.auth2.init({
-                            client_id: '973322045688-411ofisqaqd9hn0jjvj8d8joufck5d6f.apps.googleusercontent.com',
-                        });
-                        
-                        // Login with GOOGLE account
-                        
-                        auth2.signIn().then(function() {
-                            
-                            // Getting the login informations
-                            
-                            var profile = auth2.currentUser.get().getBasicProfile();
-                            console.log(profile);
-                        });
-                    });
-               });
+
+                   if (location.search && location.search.length > 0) {
+                       let url = location.href;
+                       let pos = url.indexOf('#access_token=');
+                       
+                       if (pos >= 0) {
+                           let accessToken = url.substring(pos + 14);
+                           loadScript('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken + '&callback=cb');
+                       }
+                   } else {
+                    const CLIENT_ID = '150473711183-et1kubl6pre41mn7jom221g656ttfkng.apps.googleusercontent.com';
+                    const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/google.html';
+
+                    location.href = 'https://accounts.google.com/o/oauth2/auth?client_id=' + CLIENT_ID + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login&immediate=false&response_type=token&redirect_uri=' + REDIRECT_URI;
+                   }
             })();
         </script>
     </body>
