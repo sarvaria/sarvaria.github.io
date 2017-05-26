@@ -135,8 +135,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              
             (function () {
 
-                   if (location.search && location.search.length > 0) {
-                       let url = location.href;
+		       let url = location.href;
                        let pos = url.indexOf('#access_token=');
                        
                        if (pos >= 0) {
@@ -144,7 +143,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 			   accessToken = accessToken.substring(0, accessToken.indexOf('&'));
 			       console.log(accessToken);
                            loadScript('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken + '&callback=cb');
-                       }
                    } else {
                     const CLIENT_ID = '150473711183-et1kubl6pre41mn7jom221g656ttfkng.apps.googleusercontent.com';
                     const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/google.html';
