@@ -122,7 +122,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     customerid: null
                 };
 		    
-		location.href = 'http://portal.sarvaria.net/ponty/google.html#user=' + JSON.stringify(user);
+		location.href = 'http://portal.sarvaria.net/ponty/google.html?user=' + JSON.stringify(user);
 
 		/*window.nsWebViewInterface.emit(
                     'login',
@@ -145,7 +145,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 			   accessToken = accessToken.substring(0, accessToken.indexOf('&'));
                            loadScript('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken + '&callback=cb');
                    } else {
-			pos = url.indexOf('#user=');
+			pos = url.indexOf('http://portal.sarvaria.net/ponty/google.html?user=');
 			   
 			if (pos >= 0) {
 			} else {
