@@ -121,8 +121,10 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     lang:       null,
                     customerid: null
                 };
-alert(JSON.stringify(user));
-                /*window.nsWebViewInterface.emit(
+		    
+		location.href = 'http://portal.sarvaria.net/ponty/google.html#user=' + JSON.stringify(user);
+
+		/*window.nsWebViewInterface.emit(
                     'login',
                     user
                 );*/
@@ -143,10 +145,15 @@ alert(JSON.stringify(user));
 			   accessToken = accessToken.substring(0, accessToken.indexOf('&'));
                            loadScript('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken + '&callback=cb');
                    } else {
-                    const CLIENT_ID = '150473711183-et1kubl6pre41mn7jom221g656ttfkng.apps.googleusercontent.com';
-                    const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/google.html';
+			pos = url.indexOf('#user=');
+			   
+			if (pos >= 0) {
+			} else {
+			    const CLIENT_ID = '150473711183-et1kubl6pre41mn7jom221g656ttfkng.apps.googleusercontent.com';
+			    const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/google.html';
 
-                    location.href = 'https://accounts.google.com/o/oauth2/auth?client_id=' + CLIENT_ID + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&immediate=false&response_type=token&redirect_uri=' + REDIRECT_URI;
+			    location.href = 'https://accounts.google.com/o/oauth2/auth?client_id=' + CLIENT_ID + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&immediate=false&response_type=token&redirect_uri=' + REDIRECT_URI;
+			}
                    }
             })();
 	//	});
