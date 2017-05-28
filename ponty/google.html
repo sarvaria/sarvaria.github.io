@@ -26,11 +26,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <meta charset="utf-8">
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no">
-        
-        <!-- Scripts 
-
-        <script type="text/javascript" src="lib/es6-promise.min.js"></script>
-        <script type="text/javascript" src="lib/nativescript-webview-interface.js"></script>        -->
     </head>
     
     <!-- Body -->
@@ -122,43 +117,28 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     customerid: null
                 };
 		    
-		location.href = 'http://portal.sarvaria.net/ponty/google.html?user=' + JSON.stringify(user);
-
-		/*window.nsWebViewInterface.emit(
-                    'login',
-                    user
-                );*/
+		location.href = 'http://portal.sarvaria.net/ponty/login.html?user=' + JSON.stringify(user);
             }
             
             /**
              * Auto starter.
              */
          
-	//	document.addEventListener('deviceready', function() {
-	//		alert('rendben');
             (function () {
-		       let url = location.href;
-                       let pos = url.indexOf('#access_token=');
-                       
-                       if (pos >= 0) {
-                           let accessToken = url.substring(pos + 14);
-			   accessToken = accessToken.substring(0, accessToken.indexOf('&'));
-                           loadScript('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken + '&callback=cb');
-                   } else {
-			pos = url.indexOf('http://portal.sarvaria.net/ponty/google.html?user=');
-			   
-			if (pos >= 0) {
-			} else {
-			    const CLIENT_ID = '150473711183-et1kubl6pre41mn7jom221g656ttfkng.apps.googleusercontent.com';
-			    const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/google.html';
+	           let url = location.href;
+	           let pos = url.indexOf('#access_token=');
 
-			    location.href = 'https://accounts.google.com/o/oauth2/auth?client_id=' + CLIENT_ID + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&immediate=false&response_type=token&redirect_uri=' + REDIRECT_URI;
-			}
+	       	   if (pos >= 0) {
+		       let accessToken = url.substring(pos + 14);
+		       accessToken = accessToken.substring(0, accessToken.indexOf('&'));
+		       loadScript('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken + '&callback=cb');
+                   } else {
+		       const CLIENT_ID = '150473711183-et1kubl6pre41mn7jom221g656ttfkng.apps.googleusercontent.com';
+		       const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/google.html';
+
+		       location.href = 'https://accounts.google.com/o/oauth2/auth?client_id=' + CLIENT_ID + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&immediate=false&response_type=token&redirect_uri=' + REDIRECT_URI;
                    }
             })();
-	//	});
         </script>
-
-	    <!--<script type="text/javascript" src="cordova.js"></script>-->
      </body>
 </html>    
