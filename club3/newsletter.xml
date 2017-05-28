@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+   
+<Module>
+  <ModulePrefs title="newsletter" /> 
+  <Content type="html">
+     <![CDATA[ 
+       <style>
+        .newsletter {
+          border: 			solid;
+          border-width: 	1px;
+          padding: 			8px;
+          display: 			inline-block;
+          height:           72px;
+        }
+
+        .email {
+        	width: 			330px;
+        	margin-bottom: 	8px;
+        }
+
+        button {
+        	width: 			100px;
+        }
+
+        .wait {
+        	font-family: 	'Arial';
+        	font-size: 		11px;
+        	font-weight: 	bold;
+        	color: 			#9a9450;
+            padding-top:    4px;
+        }
+
+        .msg {
+        	font-family: 	'Arial';
+        	font-size: 		11px;
+        	font-weight: 	bold;
+        }
+
+        #msgcont {
+            padding-top:    4px;
+        }
+
+  .newslettertitle {
+    color: #000000;
+    font-family:  Georgia,Times New Roman,Times,serif;
+         font-size:   14px;
+         font-weight:  bold;
+  }
+      </style>
+      
+        <div class="newslettertitle">Hírlevél</div>
+      <div class="newsletter">
+        <input id="email" class="email" type="email" placeholder="[email cím]" size="100">
+        <br>
+        <div id="buttons">
+	        <button title="Feliratkozás a hírvlevélre" onclick="subscribe(true)">Feliratkozás</button>
+	        <button title="Leiratkozás a hírvlevélről" onclick="subscribe(false)">Leiratkozás</button>
+	    </div>
+	    <div id="waiting" style="display: none"><span class="wait">Kérem várjon...</span></div>
+        <div id="msgcont" style="display: none"><span class="msg" id="msg"></span></div>
+      </div>
+
+      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+      <script>
+            var serviceurl = 'https://script.google.com/macros/s/AKfycbyJqM6CyUgwz1kYoa_E7znOtMvTAfGVGS2NjXzVWbtIEOi6AgA/exec?mode=';
+
+            function showMsg(msg, error) {
+
+                if (error) {
+                    document.getElementById('msg').style.color = '#890000';
+                } else {
+                    document.getElementById('msg').style.color = '#9a9450';
+                }
+
+                document.getElementById('msg').innerHTML = msg;
+                document.getElementById('msgcont').style.display = 'block';
+
+                setTimeout(function() {
+                    document.getElementById('msg').innerHTML = '';
+                    document.getElementById('msgcont').style.display = 'none';
+                }, 2000);
+            }
+
+			function checkemail() {
+      			var email = document.getElementById('email').value;
+
+      			if (email && email.indexOf('@') >= 0 && email.indexOf('.') >= 0) {
+      				return true;
+      			} else {
+      				return false;
+      			}
+      		}
+
+      		function subscribe(mode) {
+      			var email = document.getElementById('email').value;
+
+      			if (checkemail()) {
+      				document.getElementById('buttons').style.display = 'none';
+      				document.getElementById('waiting').style.display = 'block';
+
+      				var url = serviceurl + (mode ? 'add' : 'remove') + '&email=' + email + '&callback=?';
+
+      				$.ajax({
+      					url: 		url,
+      					dataType: 	'jsonp',
+      					success: function(e) {
+							document.getElementById('buttons').style.display = 'block';
+							document.getElementById('waiting').style.display = 'none';
+
+      						if (e.status == 'OK') {
+								document.getElementById('email').value = '';
+
+								if (mode) {
+									showMsg('A feliratkozás sikeresen megtörtént (' + email + '). Köszönjük.');
+								} else {
+									showMsg('A hírlevélről sikeresen leiratkozott. Email: ' + email);
+								}
+      						} else if (e.status == 'AVAILABLE') {
+								showMsg('Erről az email címről már történt feliratkozás. Email: ' + email, true);
+      						} else if (e.status == 'NOTFOUND') {
+      							showMsg('Ez az email cím nem volt feliratkozva a hírlevélre. Email: ' + email, true);
+      						}
+      					}
+      				});
+      			} else {
+      				showMsg('Hibás email cím!', true);
+      			}
+      		}
+      </script>
+     ]]>
+  </Content> 
+</Module>
