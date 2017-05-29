@@ -26,11 +26,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <meta charset="utf-8">
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no">
-        
-        <!-- Scripts -->
-
-        <script type="text/javascript" src="lib/es6-promise.min.js"></script>
-        <script type="text/javascript" src="lib/nativescript-webview-interface.js"></script>        
     </head>
     
     <!-- Body -->
@@ -122,10 +117,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     customerid: null
                 };
 
-                window.nsWebViewInterface.emit(
-                    'login',
-                    user
-                );
+                location.href = 'http://portal.sarvaria.net/ponty/login.html?user=' + JSON.stringify(user);
             }
             
             /**
@@ -133,22 +125,17 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              */
              
             (function () {
-
-                   if (location.search && location.search.length > 0) {
-                       let url = location.href;
-                       let pos = url.indexOf('#access_token=');
+                   let url = location.href;
+                   let pos = url.indexOf('#access_token=');
                        
-                       if (pos >= 0) {
-                           let accessToken = url.substring(pos + 14);
-                           loadScript('https://api.instagram.com/v1/users/self/?access_token=' + accessToken + '&callback=cb');
-                       }
+                   if (pos >= 0) {
+                       let accessToken = url.substring(pos + 14);
+                       loadScript('https://api.instagram.com/v1/users/self/?access_token=' + accessToken + '&callback=cb');
                    } else {
-                    const CLIENT_ID = '21640a5dcfcf4d41923a6ab88d4195e8';
-                    const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/instagram.html?loginWith=instagram';
-                    const CLIENT_SECRET = '0267a8a9aa6e45e79040688dafa05894';
-                    const ACCESS_TOKEN_URL = 'https://api.instagram.com/oauth/access_token';
+                        const CLIENT_ID = '21640a5dcfcf4d41923a6ab88d4195e8';
+                        const REDIRECT_URI = 'http://portal.sarvaria.net/ponty/instagram.html?loginWith=instagram';
 
-                    location.href = 'https://api.instagram.com/oauth/authorize/?client_id=' + CLIENT_ID + '&redirect_uri=' + REDIRECT_URI + '&response_type=token';
+                        location.href = 'https://api.instagram.com/oauth/authorize/?client_id=' + CLIENT_ID + '&redirect_uri=' + REDIRECT_URI + '&response_type=token';
                    }
             })();
         </script>
