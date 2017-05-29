@@ -158,10 +158,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                         FB.getLoginStatus(function(response) {
                             if (response.status === 'connected') {
                                 FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
-                                    window.nsWebViewInterface.emit(
-                                        'login',
-                                        response
-                                    );
+                                    cb(response);
                                 });
                             } else {
 
@@ -173,10 +170,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                                         // Getting the login informations
 
                                         FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
-                                            window.nsWebViewInterface.emit(
-                                                'login',
-                                                response
-                                            );
+                                            cb(response);
                                         });
                                     }
                                 }, {scope: 'public_profile,email'});
