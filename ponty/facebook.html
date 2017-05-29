@@ -26,11 +26,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <meta charset="utf-8">
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no">
-        
-        <!-- Scripts -->
-
-        <script type="text/javascript" src="lib/es6-promise.min.js"></script>
-        <script type="text/javascript" src="lib/nativescript-webview-interface.js"></script>        
     </head>
     
     <!-- Body -->
@@ -126,10 +121,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     lang:       null,
                     customerid: null
                 };
-                window.nsWebViewInterface.emit(
-                    'login',
-                    user
-                );
+                
+                location.href = 'http://portal.sarvaria.net/ponty/login.html?user=' + JSON.stringify(user);
             }
             
             /**
@@ -137,7 +130,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              */
              
             (function () {
-                
                 let url = location.href;
                 let pos = url.indexOf('#access_token=');
                 
