@@ -185,17 +185,27 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                 width:                          20vw;
                 height:                         20vw;
             }
-        </style>
+
+            .wait {
+                font-size:                      3.5vh;
+                font-weight:                    bold;
+            }
+</style>
     </head>
 
     <!-- Body -->
     
     <body class="horizontal vertical fit center center-justified">
-        <div class="logintitle horizontal center-justified">Bejelentkezés</div>
-        <div class="logintypecontainer horizontal center-justified">
-            <img src="images/google.png" class="logintype" style="margin-right: 10vw" ontouchstart="location.href='google.html'">
-            <img src="images/facebook.png" class="logintype"  ontouchstart="location.href='facebook.html'">
-            <img src="images/instagram.png" class="logintype" style="margin-left: 10vw"  ontouchstart="location.href='instagram.html'">
+        <div id="login" style="display: none">
+            <div class="logintitle horizontal center-justified">Bejelentkezés</div>
+            <div class="logintypecontainer horizontal center-justified">
+                <img src="images/google.png" class="logintype" style="margin-right: 10vw" ontouchstart="location.href='google.html'">
+                <img src="images/facebook.png" class="logintype"  ontouchstart="location.href='facebook.html'">
+                <img src="images/instagram.png" class="logintype" style="margin-left: 10vw"  ontouchstart="location.href='instagram.html'">
+            </div>
+        </div>
+        <div id="wait" style="display: none">
+            <div class="wait horizontal center-justified">Kérem várjon...</div>
         </div>
         
         <!-- Scripts -->
@@ -207,6 +217,16 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
              */
              
             (function () {
+                let url = location.href;
+	            let pos = url.indexOf('?user=');
+
+	       	    if (pos >= 0) {
+                    document.getElementById('login').style.display = 'none';
+                    document.getElementById('wait').style.display = '';
+                } else {
+                    document.getElementById('login').style.display = '';
+                    document.getElementById('wait').style.display = 'none';
+                }
             })();
         </script>
     </body>
