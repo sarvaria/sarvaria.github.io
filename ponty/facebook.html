@@ -137,7 +137,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     let accessToken = url.substring(pos + 14);
                     loadScript('https://graph.facebook.com/v2.8/me?access_token=' + accessToken + '&callback=cb&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey');
                 } else {
-                    location.href = 'https://graph.facebook.com/v2.8/me?access_token=EAAQPGR834GkBAKcZBABHe8AjNBZBpF2gySdtwm96qz2vvS7LeNvBhk1UDQsNcOSosprhDE5vFRjZAEsYbN0PSJcj6jQ2RGWL0wzvSBkaopmxnvPbRCQmlIIB3SanwurcxSWZBYzFYWr8N5GgDaaqdKTwI8IjAqZAPtkNUT5A1ZCbxxNjFxbd0dIH5ytyRjiCDmoQtOqauMaAZDZD&callback=alma&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey';
+                    location.href = 'https://www.facebook.com/dialog/oauth?client_id=1142500479197289&redirect_uri=http://portal.sarvaria.net/ponty/facebook.html&response_type=token';
                 }
             })();
         </script>
