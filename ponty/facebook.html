@@ -136,57 +136,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                 if (pos >= 0) {
                     let accessToken = url.substring(pos + 14);
                     loadScript('https://graph.facebook.com/v2.8/me?access_token=' + accessToken + '&callback=cb&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey');
-                    //https://graph.facebook.com/v2.8/me?access_token=EAAQPGR834GkBAKcZBABHe8AjNBZBpF2gySdtwm96qz2vvS7LeNvBhk1UDQsNcOSosprhDE5vFRjZAEsYbN0PSJcj6jQ2RGWL0wzvSBkaopmxnvPbRCQmlIIB3SanwurcxSWZBYzFYWr8N5GgDaaqdKTwI8IjAqZAPtkNUT5A1ZCbxxNjFxbd0dIH5ytyRjiCDmoQtOqauMaAZDZD&callback=alma&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey
                 } else {
-
-                    // FB callbacker
-
-                    window.fbAsyncInit = function() {
-
-                        // Initializing
-
-                        FB.init({
-                            appId      : '1142500479197289',
-                            xfbml      : true,
-                            version    : 'v2.8'
-                        });
-
-                        FB.AppEvents.logPageView();
-
-                        // Checking login status
-
-                        FB.getLoginStatus(function(response) {
-                            if (response.status === 'connected') {
-                                FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
-                                    cb(response);
-                                });
-                            } else {
-
-                                // Login with FACEBOOK account
-
-                                FB.login(function(response) {
-                                    if (response.authResponse) {
-
-                                        // Getting the login informations
-
-                                        FB.api('/me', {fields: 'name,email,first_name,last_name'}, function(response) {
-                                            cb(response);
-                                        });
-                                    }
-                                }, {scope: 'public_profile,email'});
-                            }
-                        });
-                    };
-
-                    // Loading Facebook SDK
-
-                    (function(d, s, id){
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) {return;}
-                    js = d.createElement(s); js.id = id;
-                    js.src = "https://connect.facebook.net/en_US/sdk.js";
-                    fjs.parentNode.insertBefore(js, fjs);
-                    }(document, 'script', 'facebook-jssdk'));                
+                    location.href = 'https://graph.facebook.com/v2.8/me?access_token=EAAQPGR834GkBAKcZBABHe8AjNBZBpF2gySdtwm96qz2vvS7LeNvBhk1UDQsNcOSosprhDE5vFRjZAEsYbN0PSJcj6jQ2RGWL0wzvSBkaopmxnvPbRCQmlIIB3SanwurcxSWZBYzFYWr8N5GgDaaqdKTwI8IjAqZAPtkNUT5A1ZCbxxNjFxbd0dIH5ytyRjiCDmoQtOqauMaAZDZD&callback=alma&fields=name%2Cemail%2Cfirst_name%2Clast_name&method=get&pretty=0&sdk=joey';
                 }
             })();
         </script>
