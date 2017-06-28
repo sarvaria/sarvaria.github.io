@@ -1,0 +1,203 @@
+<!--
+Copyright (C) 2017 Andras Sarvari <andras.sarvari@sarvaria.net>
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+-->
+
+<!DOCTYPE html>
+<html>
+
+    <!-- Header -->
+
+    <head>
+
+        <!-- Meta informations about the site -->
+
+        <meta charset="utf-8">
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+        <style>
+            /**
+             * HTML and BODY designing.
+             */
+            * {
+                -webkit-tap-highlight-color:  rgba(0,0,0,0);
+            }
+            html {
+                padding:                        0px;
+                margin:                         0px;
+            }
+            body {   
+                -webkit-touch-callout:          none;
+                -webkit-text-size-adjust:       none;
+                -webkit-user-select:            none;
+                -moz-user-select:               none;
+                -webkit-highlight:              none;
+                -webkit-tap-highlight-color:    rgba(0,0,0,0) ;
+                -webkit-tap-highlight-color:    transparent;
+                user-select:                    none;
+                padding:                        0px;
+                margin:                         0px;
+                background-color:               #F1F1F1;
+                color:                          #263238;
+                overflow:                       hidden;
+                font-family:                    Arial;
+            }
+            /**
+             * Input fields's content selection.
+             */
+            input, textarea  {
+                -webkit-user-select:            text;
+                -moz-user-select:               text;
+                -ms-user-select:                text;
+                user-select:                    text;
+            }
+            /**
+             * General table style.
+             */
+            table tr td {
+                padding:                        0;
+                margin:                         0;
+            }
+            /**
+             * No selection.
+             */
+            .noselect {
+                -webkit-touch-callout:          none;
+                -webkit-user-select:            none;
+                -khtml-user-select:             none;
+                -moz-user-select:               none;
+                -ms-user-select:                none;
+                user-select:                    none;
+            }
+            /**
+             * Layout attributes definition.
+             */
+            .horizontal {
+                display:                        -ms-flexbox;
+                display:                        -webkit-flex;
+                display:                        flex;
+                -ms-flex-direction:             row;
+                -webkit-flex-direction:         row;
+                flex-direction:                 row;
+            }
+            .vertical {
+                display:                        -ms-flexbox;
+                display:                        -webkit-flex;
+                display:                        flex;
+                -ms-flex-direction:             column;
+                -webkit-flex-direction:         column;
+                flex-direction:                 column;
+            }
+            .flex {
+                -ms-flex:                       1 1 0.000000001px;
+                -webkit-flex:                   1;
+                flex:                           1;
+                -webkit-flex-basis:             0.000000001px;
+                flex-basis:                     0.000000001px;
+            }
+            .center {
+                -ms-flex-align:                 center;
+                -webkit-align-items:            center;
+                align-items:                    center;
+            }
+            .end {
+                -ms-flex-align:                 end;
+                -webkit-align-items:            flex-end;
+                align-items:                    flex-end;
+            }
+            .center-justified {
+                -ms-flex-pack:                  center;
+                -webkit-justify-content:        center;
+                justify-content:                center;
+            }
+            .wrap {
+                -ms-flex-wrap:                  wrap;
+                -webkit-flex-wrap:              wrap;
+                flex-wrap:                      wrap;
+            }
+            .fit {
+                position:                       absolute;
+                top:                            0;
+                right:                          0;
+                bottom:                         0;
+                left:                           0;
+            }
+            ::-webkit-scrollbar {
+                width:                          0px;
+                height:                         0px;
+            }
+            .fittomax {
+                width:                          100%;
+                height:                         100%;
+            }
+            .hidden {
+                visibility:                     hidden;
+            }
+            .logintitle {
+                font-size:                      3.5vh;
+                font-weight:                    bold;
+                margin-bottom:                  8vh;
+            }
+            .logintypecontainer {
+                margin-bottom:                  8vh;
+            }
+            .logintype {
+                width:                          20vw;
+                height:                         20vw;
+            }
+            .wait {
+                font-size:                      3.5vh;
+                font-weight:                    bold;
+            }
+</style>
+    </head>
+
+    <!-- Body -->
+    
+    <body class="horizontal vertical fit center center-justified">
+        <div id="login" style="display: none">
+            <div class="logintitle horizontal center-justified">Bejelentkezés</div>
+            <div class="logintypecontainer horizontal center-justified">
+		<img src="images/google.png" class="logintype" ontouchstart="location.href='google.html'">
+                <!--<img src="images/google.png" class="logintype" style="margin-right: 10vw" ontouchstart="location.href='google.html'">
+                <img src="images/facebook.png" class="logintype"  ontouchstart="location.href='facebook.html'">
+                <img src="images/instagram.png" class="logintype" style="margin-left: 10vw"  ontouchstart="location.href='instagram.html'">-->
+            </div>
+        </div>
+        <div id="wait" style="display: none">
+            <div class="wait horizontal center-justified">Kérem várjon...</div>
+        </div>
+        
+        <!-- Scripts -->
+        
+        <script>
+            /**
+             * Auto starter.
+             */
+             
+            (function () {
+                let url = location.href;
+	            let pos = url.indexOf('?user=');
+	       	    if (pos >= 0) {
+                    document.getElementById('login').style.display = 'none';
+                    document.getElementById('wait').style.display = '';
+                } else {
+                    document.getElementById('login').style.display = '';
+                    document.getElementById('wait').style.display = 'none';
+                }
+            })();
+        </script>
+    </body>
+</html>
